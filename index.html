@@ -203,7 +203,7 @@
       </div>
       <div class="sidebar-header">
         <h1 id="sidebar-title">Alaska Trip</h1>
-        <p>11-Day Road Trip · Jul 12–22, 2026</p>
+        <p>11-Day Road Trip · Jul 12–22, 2026 <span id="sync-status" style="font-size:10px;color:#94a3b8;margin-left:4px">⋯</span></p>
       </div>
       <div class="sidebar-content" id="sidebar-content"></div>
     </div>
@@ -335,6 +335,62 @@
     };
 
     var noteData = JSON.parse(localStorage.getItem('alaskaTripNotes') || '{}');
+var NOTES_API = 'https://jsonblob.com/api/jsonBlob/019f4a6f-8a41-7c94-8eca-62e8b8567ee2';
+
+// Cross-device note sync
+function setSyncStatus(s) {
+  var el = document.getElementById('sync-status');
+  if (el) el.textContent = s;
+}
+function pushNotesToCloud() {
+  setSyncStatus('↑');
+  var xhr = new XMLHttpRequest();
+  xhr.open('PUT', NOTES_API, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() { setSyncStatus('✓'); setTimeout(function(){ setSyncStatus(''); }, 3000); };
+  xhr.onerror = function() { setSyncStatus('✗'); };
+  xhr.send(JSON.stringify(noteData));
+}
+function pullNotesFromCloud() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', NOTES_API, true);
+  xhr.onloadstart = function() { setSyncStatus('↓'); };
+  xhr.onload = function() {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      try {
+        var cloudData = JSON.parse(xhr.responseText);
+        if (cloudData && typeof cloudData === 'object') {
+          // Merge: cloud data wins for any key that exists in cloud
+          var changed = false;
+          for (var k in cloudData) {
+            if (cloudData[k] !== noteData[k]) {
+              noteData[k] = cloudData[k];
+              changed = true;
+            }
+          }
+          // Remove keys deleted on another device
+          for (var k in noteData) {
+            if (!(k in cloudData)) {
+              delete noteData[k];
+              changed = true;
+            }
+          }
+          if (changed) {
+            localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData));
+            // Refresh all visible note displays
+            for (var k in noteData) {
+              updateNoteDisplay(k);
+            }
+          }
+        }
+      } catch(e) {}
+    }
+  };
+  xhr.send();
+}
+// Sync: pull from cloud on load, push on every save, pull periodically
+pullNotesFromCloud();
+setInterval(pullNotesFromCloud, 30000);
 
 var wildlifeData = {
   "Denali Visitor Center":"🐻 棕熊与驼鹿 — 最佳观测时间为清晨或黄昏，常在河岸和草甸区域出没。迪纳利的棕熊7月下旬常在山坡上吃野莓。🦌 驯鹿（Caribou） — 经常成群穿越公园道路，尤其在Savage River区域最容易见到。🐑 多尔大角羊（Dall sheep） — 抬头看！它们在山坡悬崖上吃草，从Polychrome Pass路段最容易看到。",
@@ -689,9 +745,9 @@ var wildlifeData = {
     window.closeFullscreenDirect = function(e) { if (e) e.stopPropagation(); document.getElementById('fullscreen-overlay').style.display = 'none'; };
 
     window.toggleNoteInput = function(n) { var sid = getSanitizedId(n); var ic = document.getElementById('note-input-container-' + sid); if (ic) { if (ic.style.display === 'none') { ic.style.display = 'flex'; var ta = document.getElementById('note-textarea-' + sid); if (ta) { ta.value = noteData[n] || ''; ta.focus(); } } else { ic.style.display = 'none'; } } };
-    window.saveNote = function(n) { var sid = getSanitizedId(n); var ta = document.getElementById('note-textarea-' + sid); if (ta) { noteData[n] = ta.value.trim(); localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); updateNoteDisplay(n); document.getElementById('note-input-container-' + sid).style.display = 'none'; } };
-    window.updateNoteDisplay = function(n) { var sid = getSanitizedId(n); var d = document.getElementById('note-display-' + sid); if (d) { var t = noteData[n]; if (t) { d.innerHTML = '<div class="note-text-wrapper"><strong>✏️ Note:</strong> ' + t.replace(/\n/g,'<br>') + '</div><button class="note-delete-btn" title="Delete Note"><i class="fa-solid fa-trash"></i></button>'; d.style.display = 'flex'; d.querySelector('.note-delete-btn').addEventListener('click', function(){ delete noteData[n]; localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); updateNoteDisplay(n); }); } else { d.innerHTML = ''; d.style.display = 'none'; } } };
-    window.deleteNote = function(n) { delete noteData[n]; localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); updateNoteDisplay(n); };
+    window.saveNote = function(n) { var sid = getSanitizedId(n); var ta = document.getElementById('note-textarea-' + sid); if (ta) { noteData[n] = ta.value.trim(); localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); pushNotesToCloud(); updateNoteDisplay(n); document.getElementById('note-input-container-' + sid).style.display = 'none'; } };
+    window.updateNoteDisplay = function(n) { var sid = getSanitizedId(n); var d = document.getElementById('note-display-' + sid); if (d) { var t = noteData[n]; if (t) { d.innerHTML = '<div class="note-text-wrapper"><strong>✏️ Note:</strong> ' + t.replace(/\n/g,'<br>') + '</div><button class="note-delete-btn" title="Delete Note"><i class="fa-solid fa-trash"></i></button>'; d.style.display = 'flex'; d.querySelector('.note-delete-btn').addEventListener('click', function(){ delete noteData[n]; localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); pushNotesToCloud(); updateNoteDisplay(n); }); } else { d.innerHTML = ''; d.style.display = 'none'; } } };
+    window.deleteNote = function(n) { delete noteData[n]; localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); pushNotesToCloud(); updateNoteDisplay(n); };
 
     // ----------------------------------------------------
     // DRAWING - FIX 2: auto-disable on zoom/pan/day-select
