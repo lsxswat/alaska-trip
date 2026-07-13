@@ -204,6 +204,7 @@
       <div class="sidebar-header">
         <h1 id="sidebar-title">Alaska Trip</h1>
         <p>11-Day Road Trip · Jul 12–22, 2026 <span id="sync-status" style="font-size:10px;color:#94a3b8;margin-left:4px">⋯</span></p>
+        <p style="font-size:10px;color:#94a3b8;margin-top:2px">📡 NOAA weather.gov · Updated Jul 13 10AM AKDT</p>
       </div>
       <div class="sidebar-content" id="sidebar-content"></div>
     </div>
@@ -279,17 +280,17 @@
     };
 
     var weatherData = {
-      1: {condition:"\u2600\ufe0f", low:"14\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"8 km/h"},
-      2: {condition:"\u26c5", low:"12\u00b0C", avg:"16\u00b0C", high:"20\u00b0C", wind:"10 km/h"},
-      3: {condition:"\u2600\ufe0f", low:"16\u00b0C", avg:"22\u00b0C", high:"26\u00b0C", wind:"6 km/h"},
-      4: {condition:"\u26c5", low:"13\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"12 km/h"},
-      5: {condition:"\ud83c\udf27\ufe0f", low:"10\u00b0C", avg:"14\u00b0C", high:"17\u00b0C", wind:"15 km/h"},
-      6: {condition:"\u26c5", low:"11\u00b0C", avg:"16\u00b0C", high:"20\u00b0C", wind:"10 km/h"},
-      7: {condition:"\u2600\ufe0f", low:"14\u00b0C", avg:"19\u00b0C", high:"23\u00b0C", wind:"8 km/h"},
-      8: {condition:"\u26c5", low:"12\u00b0C", avg:"17\u00b0C", high:"21\u00b0C", wind:"12 km/h"},
-      9: {condition:"\ud83c\udf27\ufe0f", low:"9\u00b0C", avg:"13\u00b0C", high:"16\u00b0C", wind:"18 km/h"},
-      10: {condition:"\u26c5", low:"11\u00b0C", avg:"15\u00b0C", high:"19\u00b0C", wind:"10 km/h"},
-      11: {condition:"\u2600\ufe0f", low:"13\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"8 km/h"}
+      1: {condition:"\u2705", low:"9\u00b0C", high:"13\u00b0C", text:"Arrived", wind:"—"},
+      2: {condition:"\ud83c\udf27\ufe0f", low:"12\u00b0C", high:"14\u00b0C", text:"Scattered Showers", wind:"10 km/h", pop:"40%"},
+      3: {condition:"\u26c5", low:"9\u00b0C", high:"21\u00b0C", text:"Mostly Cloudy", wind:"5 km/h"},
+      4: {condition:"\ud83c\udf27\ufe0f", low:"11\u00b0C", high:"12\u00b0C", text:"Rain \u26a0\ufe0f", wind:"3 km/h", pop:"100%"},
+      5: {condition:"\ud83c\udf27\ufe0f", low:"7\u00b0C", high:"12\u00b0C", text:"Showers Likely", wind:"8 km/h", pop:"60%"},
+      6: {condition:"\ud83c\udf28\ufe0f", low:"0\u00b0C", high:"8\u00b0C", text:"Rain/Snow Mix \u26a0\ufe0f", wind:"5 km/h"},
+      7: {condition:"\ud83c\udf24\ufe0f", low:"8\u00b0C", high:"18\u00b0C", text:"Chance Showers", wind:"5 km/h"},
+      8: {condition:"\ud83c\udf27\ufe0f", low:"6\u00b0C", high:"10\u00b0C", text:"Showers", wind:"10 km/h"},
+      9: {condition:"\ud83c\udf27\ufe0f", low:"\u22484\u00b0C", high:"\u224811\u00b0C", text:"Showers Likely \ud83d\udd2e", wind:"—"},
+      10: {condition:"\ud83c\udf27\ufe0f", low:"\u22484\u00b0C", high:"\u224811\u00b0C", text:"Showers Likely \ud83d\udd2e", wind:"—"},
+      11: {condition:"\ud83c\udf24\ufe0f", low:"\u22488\u00b0C", high:"\u224818\u00b0C", text:"Chance Showers \ud83d\udd2e", wind:"—"}
     };
 
         var cityClusters = [
@@ -566,7 +567,7 @@ var wildlifeData = {
       }
       var wd = weatherData[day.day];
       if (wd) {
-        html += '<div class="weather-info">' + wd.condition + ' <span style="color:#1d4ed8;font-weight:600;font-size:14px;">' + wd.low + '</span> <span style="color:#64748b;">~</span> <span style="color:#b91c1c;font-weight:600;font-size:14px;">' + wd.high + '</span>  |  \uD83D\uDCA8 <span style="opacity:0.45;font-size:11px;">' + wd.wind + '</span></div>';
+        html += '<div class="weather-info">' + wd.condition + ' <b>' + wd.text + '</b> &nbsp;<span style="color:#1d4ed8;font-weight:600;">' + wd.low + '</span> <span style="color:#94a3b8;">—</span> <span style="color:#b91c1c;font-weight:600;">' + wd.high + '</span>';if(wd.pop)html+=' &nbsp;PoP ' + wd.pop;html+=' &nbsp;\uD83D\uDCA8 ' + wd.wind + '</div>';
       }
       return html;
     }
