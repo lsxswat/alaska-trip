@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Alaska Trip Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", PingFang SC, Microsoft YaHei, Noto Sans SC, Helvetica Neue, Arial, sans-serif; overflow: hidden; background-color: #f1f5f9; }
+    #app { position: relative; display: flex; width: 100%; height: 100%; }
+    #sidebar { width: 380px; height: 100%; background-color: #f0f2f5; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05); z-index: 1000; display: flex; flex-direction: column; flex-shrink: 0; }
+    .sidebar-header { padding: 24px; border-bottom: 1px solid #e2e8f0; }
+    .sidebar-header h1 { font-size: 26px; font-weight: 700; color: #0f172a; margin-bottom: 4px; cursor: pointer; transition: opacity 0.2s ease; }
+    .sidebar-header h1:hover { opacity: 0.7; }
+    .sidebar-header p { font-size: 13px; color: #64748b; }
+    .sidebar-content { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+    .day-card { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .day-card:hover { border-color: #cbd5e1; background-color: #f8fafc; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
+    .day-card.active { border-color: #0f172a; background-color: #ffffff; border-width: 2px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    .day-card.collapsed { font-size: 13px; padding: 8px 14px; background-color: #f8fafc; border: 1px solid transparent; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: none; }
+    .day-card.collapsed:hover { background-color: #e2e8f0; border-color: #cbd5e1; }
+    .day-card.collapsed .day-header { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; color: #64748b; text-transform: uppercase; margin-bottom: 0; }
+    .day-card.collapsed .day-title { font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .day-card.collapsed .collapsed-pois { font-size: 11px; color: #64748b; line-height: 1.3; margin-top: 4px; padding-top: 4px; border-top: 1px dashed #e2e8f0; }
+    .day-card.collapsed .collapsed-poi-name { font-size: 11px; color: #64748b; line-height: 1.3; }
+    .day-card.collapsed .driving-info,
+    .day-card.collapsed .sunlight-bar,
+    .day-card.collapsed .weather-info { display: none !important; }
+    .day-header { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; color: #64748b; margin-bottom: 4px; text-transform: uppercase; }
+    .day-title { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+    .day-pois { list-style-type: none; margin-bottom: 8px; }
+    .sidebar-poi-item { cursor: pointer; transition: all 0.2s ease; padding: 6px 8px; border-radius: 6px; display: flex; align-items: center; gap: 12px; width: 100%; margin-bottom: 4px; line-height: 1; }
+    .sidebar-poi-item:hover { background-color: #e2e8f0; }
+    .poi-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; vertical-align: middle; line-height: 1; margin: 0; }
+    .poi-name-text { flex: 1; font-size: 13px; font-weight: 500; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; line-height: 1; vertical-align: middle; display: inline-flex; align-items: center; }
+    .poi-arrow { font-size: 10px; color: #94a3b8; opacity: 0; transition: opacity 0.2s ease, transform 0.2s ease; margin-left: 4px; line-height: 1; vertical-align: middle; display: inline-flex; align-items: center; }
+    .sidebar-poi-item:hover .poi-arrow { opacity: 1; transform: translateX(2px); }
+    .driving-info { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e2e8f0; }
+    .stay-info { font-size: 12px; color: #0f172a; font-weight: 500; display: flex; align-items: center; gap: 6px; margin-top: 6px; padding-top: 6px; border-top: 1px dashed #e2e8f0; }
+    .sunlight-bar { margin-top: 6px; padding-top: 6px; border-top: 1px dashed #e2e8f0; }
+    .weather-info { font-size: 11px; color: #475569; margin-top: 4px; }
+    #map { flex: 1; height: 100%; background-color: #f1f5f9; }
+    .leaflet-tile { filter: grayscale(1) brightness(0.96) contrast(1.05); }
+    .satellite-active .leaflet-tile { filter: none; }
+    .map-annotation-label { font-size: 14px; font-weight: 600; color: #0f172a; white-space: nowrap; background: none !important; border: none !important; box-shadow: none !important; }
+    .map-toggle-control { background: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); padding: 4px; display: flex; align-items: center; gap: 4px; pointer-events: auto; }
+    .map-toggle-btn { border: none; padding: 6px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; background: transparent; color: #64748b; transition: all 0.15s ease; }
+    .map-toggle-btn.active { background-color: #0f172a; color: #ffffff; }
+    .map-toggle-divider { width: 1px; height: 16px; background-color: #e2e8f0; margin: 0 4px; }
+    .city-cluster-marker { display: block; width: 0 !important; height: 0 !important; }
+    .city-cluster-inner { background-color: #ffffff; color: #0f172a; border: 2px solid #0f172a; border-radius: 12px; padding: 6px 14px; display: inline-block; font-size: 16px; font-weight: 700; text-align: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transition: background-color 0.2s ease, color 0.2s ease; white-space: nowrap; position: absolute; transform: translate(-50%, -50%); }
+    .city-cluster-inner:hover { background-color: #0f172a; color: #ffffff; }
+    .map-legend { background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); padding: 10px 12px; font-size: 11px; color: #334155; display: flex; flex-direction: column; gap: 6px; pointer-events: auto; }
+    .legend-item { display: flex; align-items: center; gap: 8px; }
+    .legend-item i { width: 14px; text-align: center; }
+    /* FIX 13: Detail panel = float right */
+    .detail-modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.15); z-index: 2000; display: none; opacity: 0; transition: opacity 0.25s ease-out; pointer-events: none; }
+    .detail-modal-overlay.open { opacity: 1; }
+    .detail-panel { position: fixed; right: 20px; top: 20px; width: 420px; max-width: calc(100% - 32px); max-height: calc(100vh - 40px); background-color: #ffffff; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); border-radius: 12px; display: flex; flex-direction: column; overflow-y: auto; z-index: 2001; transform: scale(0.95); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: auto; }
+    .detail-modal-overlay.open .detail-panel { transform: scale(1); }
+    .detail-close-btn { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.9); border: 1px solid #e2e8f0; font-size: 20px; color: #475569; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: all 0.2s ease; }
+    .detail-close-btn:hover { background-color: #ffffff; color: #0f172a; transform: scale(1.05); }
+    .detail-carousel { position: relative; width: 100%; height: 250px; background-color: #e2e8f0; overflow: hidden; flex-shrink: 0; }
+    .detail-carousel img { width: 100%; height: 100%; object-fit: cover; display: none; cursor: pointer; transition: transform 0.3s ease; }
+    .detail-carousel img:hover { transform: scale(1.02); }
+    .detail-carousel img.active { display: block; }
+    .detail-carousel .carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(255, 255, 255, 0.8); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #0f172a; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.15s ease; }
+    .detail-carousel .carousel-nav:hover { background-color: #ffffff; transform: translateY(-50%) scale(1.05); }
+    .detail-carousel .carousel-prev { left: 12px; }
+    .detail-carousel .carousel-next { right: 12px; }
+    .detail-carousel .carousel-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+    .detail-carousel .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.5); border: none; cursor: pointer; transition: all 0.2s ease; }
+    .detail-carousel .carousel-dot.active { background-color: #ffffff; width: 16px; border-radius: 4px; }
+    .detail-body { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+    .detail-day-indicator { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+    .detail-title-container { display: flex; align-items: center; gap: 18px; }
+    .detail-title-container h2 { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0; }
+    .detail-title-container i { font-size: 20px; }
+    .detail-section { padding: 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02); }
+    .detail-section h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #0f172a; display: flex; align-items: center; gap: 6px; }
+    .description-section { border-left: 4px solid #3B82F6; background-color: #ffffff; border-top: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
+    .description-section p { font-size: 16px; line-height: 1.7; color: #334155; }
+    .tips-section { border-left: 4px solid #F59E0B; background-color: #FFFBEB; border-top: 1px solid #FEF3C7; border-right: 1px solid #FEF3C7; border-bottom: 1px solid #FEF3C7; }
+    .tips-section p { font-size: 15px; line-height: 1.7; color: #78350F; }
+    /* FIX 10: Wildlife section */
+    .wildlife-section { border: 2px solid #16A34A; background-color: #F0FDF4; }
+    .wildlife-section p { font-size: 15px; line-height: 1.7; color: #166534; }
+    .detail-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .detail-gmaps-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px 18px; background-color: #0f172a; color: #ffffff !important; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 8px; text-align: center; transition: background-color 0.2s ease, transform 0.1s ease; box-shadow: 0 2px 4px rgba(15, 23, 42, 0.1); }
+    .detail-gmaps-btn:hover { background-color: #1e293b; transform: translateY(-1px); }
+    .detail-note-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 8px 16px; background-color: transparent; color: #475569; border: 1px solid #cbd5e1; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
+    .detail-note-btn:hover { background-color: #f8fafc; border-color: #94a3b8; color: #0f172a; }
+    .detail-receipt-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px 18px; background-color: #059669; color: #ffffff !important; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 8px; text-align: center; transition: background-color 0.2s ease, transform 0.1s ease; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2); }
+    .detail-receipt-btn:hover { background-color: #047857; transform: translateY(-1px); }
+    .note-input-container { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 6px; }
+    .note-input-container textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; color: #334155; font-family: inherit; resize: none; }
+    .note-input-container textarea:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    .note-save-btn { align-self: flex-end; padding: 6px 14px; background-color: #0f172a; color: #ffffff; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.15s ease; }
+    .note-save-btn:hover { background-color: #1e293b; }
+    .note-display { margin-top: 6px; padding: 10px 12px; background-color: #f8fafc; border-left: 3px solid #64748b; border-radius: 0 6px 6px 0; font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .note-text-wrapper { flex: 1; }
+    .note-delete-btn { background: none; border: none; padding: 0; color: #94a3b8; cursor: pointer; font-size: 14px; transition: color 0.2s ease; display: flex; align-items: center; justify-content: center; }
+    .note-delete-btn:hover { color: #ef4444; }
+    .fullscreen-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.85); z-index: 2500; display: flex; align-items: center; justify-content: center; }
+    .fullscreen-image-container { width: 80vw; height: 80vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: grab; }
+    .fullscreen-image-container:active { cursor: grabbing; }
+    .fullscreen-image-container img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.1s ease; transform-origin: center center; user-select: none; }
+    .fullscreen-close-btn { position: absolute; top: 24px; right: 24px; font-size: 40px; color: #ffffff; background: none; border: none; cursor: pointer; z-index: 2600; opacity: 0.8; transition: opacity 0.2s; }
+    .fullscreen-close-btn:hover { opacity: 1; }
+    .leaflet-tooltip-own { background-color: #0f172a !important; color: #ffffff !important; border: none !important; opacity: 0.9 !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif !important; font-size: 13px !important; padding: 6px 10px !important; border-radius: 6px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
+    .drag-handle { display: none; }
+    @media (max-width: 768px) {
+      #app { flex-direction: column-reverse; height: 100vh; overflow: hidden; }
+      #sidebar {
+        width: 100%;
+        height: 32vh;
+        max-height: 100vh;
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+        background-color: #f0f2f5;
+        display: flex;
+        flex-direction: column;
+        transition: height 0.3s ease;
+        z-index: 2000;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        overflow: hidden;
+      }
+      #sidebar.dragging {
+        transition: none !important;
+      }
+      .sidebar-header { padding: 12px 16px; flex-shrink: 0; }
+      .sidebar-header h1 { font-size: 18px; }
+      .sidebar-header p { font-size: 11px; margin: 0; }
+      
+      .drag-handle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 20px;
+        background-color: #f0f2f5;
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+        flex-shrink: 0;
+      }
+      .drag-handle-bar {
+        width: 36px;
+        height: 4px;
+        background-color: #cbd5e1;
+        border-radius: 2px;
+      }
+      
+      /* Mobile Collapsed State Styles */
+      #sidebar.mobile-collapsed .sidebar-content {
+        flex-direction: column !important;
+        overflow-y: hidden !important;
+        overflow-x: hidden !important;
+        padding: 12px 16px !important;
+        gap: 0 !important;
+      }
+      #sidebar.mobile-collapsed .day-card {
+        min-width: 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        height: auto !important;
+        padding: 8px 14px !important;
+        background-color: #f8fafc !important;
+        border: 1px solid transparent !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+      }
+      #sidebar.mobile-collapsed .day-card.active {
+        display: block !important;
+      }
+      
+      /* Mobile Expanded State Styles */
+      #sidebar.mobile-expanded .sidebar-content {
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding: 16px 20px !important;
+        gap: 16px !important;
+      }
+      #sidebar.mobile-expanded .day-card {
+        min-width: 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        height: auto !important;
+      }
+      
+      #map { flex: 1; width: 100%; height: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="sidebar" class="mobile-collapsed">
+      <div id="sidebar-drag-handle" class="drag-handle">
+        <div class="drag-handle-bar"></div>
+      </div>
+      <div class="sidebar-header">
+        <h1 id="sidebar-title">Alaska Trip</h1>
+        <p>11-Day Road Trip · Jul 12–22, 2026 <span id="sync-status" style="font-size:10px;color:#94a3b8;margin-left:4px">⋯</span></p>
+      </div>
+      <div class="sidebar-content" id="sidebar-content"></div>
+    </div>
+    <div id="map"></div>
+    <div id="detail-overlay" class="detail-modal-overlay">
+      <div id="detail-panel" class="detail-panel">
+        <button class="detail-close-btn" id="detail-close-btn">&times;</button>
+        <div id="detail-content"></div>
+      </div>
+    </div>
+  </div>
+  <div id="fullscreen-overlay" class="fullscreen-overlay" style="display: none;">
+    <button class="fullscreen-close-btn" id="fullscreen-close-btn">&times;</button>
+    <div class="fullscreen-image-container">
+      <img id="fullscreen-img" src="" alt="Fullscreen Image">
+    </div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // ----------------------------------------------------
+    // DATA
+    // ----------------------------------------------------
+    var tripData = [
+      { day:1, dateStr:"DAY 1 · SUN JUL 12", title:"Arrive Anchorage", drivingInfo:"Airport to Motel 6 (~5min drive)", stay:"🏨 Stay: Motel 6 Midtown",
+        pois:[{name:"Airport (ANC)",coord:[61.1742,-149.9964],type:"airport",icon:"fa-plane-departure",color:"#c62828",desc:"",images:[]},{name:"Motel 6 Midtown",coord:[61.1770,-149.8700],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        routeCoords:[[61.1742,-149.9964],[61.1770,-149.8700]] },
+      { day:2, dateStr:"DAY 2 · MON JUL 13", title:"Denali National Park", drivingInfo:"Anchorage to Denali via Parks Hwy AK-3 (~2.5h)", stay:"🏨 Stay: Cantwell Cabins",
+        pois:[{name:"Denali Visitor Center",coord:[63.7327,-148.9107],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Horseshoe Lake",coord:[63.7200,-148.9000],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Mt Healy",coord:[63.7400,-148.8700],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Savage Alpine",coord:[63.7100,-148.8800],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Cantwell Cabins",coord:[63.3920,-148.9370],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        routeCoords:[[61.1770,-149.8700],[63.3920,-148.9370],[63.7327,-148.9107]] },
+      { day:3, dateStr:"DAY 3 · TUE JUL 14", title:"Denali to Fairbanks", drivingInfo:"Denali to Fairbanks (Parks Hwy AK-3, ~2h)", stay:"🏨 Stay: 7 Gables Inn",
+        pois:[{name:"Tundra Tour",coord:[63.7280,-148.9100],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[],receipt:"receipts/Reserve%20Denali%20-%20Order%20Confirmation.pdf"},{name:"7 Gables Inn",coord:[64.8580,-147.8340],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        routeCoords:[[63.7327,-148.9107],[64.8580,-147.8340]] },
+      { day:4, dateStr:"DAY 4 · WED JUL 15", title:"Fairbanks to Valdez", drivingInfo:"Fairbanks to Castner Glacier (~3h) · Castner to Valdez (~3h)", stay:"🏨 Stay: Valdez Harbor Inn",
+        pois:[{name:"Museum of North",coord:[64.8580,-147.8340],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Santa Claus House",coord:[64.7510,-147.3530],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Castner Glacier",coord:[63.4090,-145.7520],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Valdez Harbor Inn",coord:[61.1250,-146.3550],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        routeSegments:[{label:"Fairbanks → Castner (~3h)",coords:[[64.8580,-147.8340],[64.7510,-147.3530],[63.4090,-145.7520]]},{label:"Castner → Valdez (~3h)",coords:[[63.4090,-145.7520],[61.1250,-146.3550]]}],
+        routeCoords:[[64.8580,-147.8340],[64.7510,-147.3530],[63.4090,-145.7520],[61.1250,-146.3550]] },
+      { day:5, dateStr:"DAY 5 · THU JUL 16", title:"Explore Valdez", drivingInfo:"Stay in Valdez (same hotel)", stay:"🏨 Same: Valdez Harbor Inn",
+        pois:[{name:"Solomon Gulch",coord:[61.1190,-146.3260],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Keystone Canyon",coord:[61.0730,-146.0790],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Thompson Pass",coord:[61.1190,-145.7380],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Worthington Glacier",coord:[61.1740,-145.7740],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]}],
+        routeCoords:[[61.1250,-146.3550],[61.1190,-146.3260],[61.0730,-146.0790],[61.1190,-145.7380],[61.1740,-145.7740]] },
+      { day:6, dateStr:"DAY 6 · FRI JUL 17", title:"Valdez to Eagle River", drivingInfo:"Valdez → Matanuska (~3h) → Eagle River (~1h)", stay:"🏨 Stay: Microtel Eagle River",
+        pois:[{name:"Matanuska",coord:[61.7024,-147.6817],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[],receipt:"receipts/Matanuska%20Glacier%20Ice%20Climbing%20-%20Matanuska%20Glacier.pdf"},{name:"Microtel Eagle River",coord:[61.3210,-149.5670],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        routeCoords:[[61.1250,-146.3550],[61.7024,-147.6817],[61.3210,-149.5670]] },
+      { day:7, dateStr:"DAY 7 · SAT JUL 18", title:"Anchorage Area", drivingInfo:"Stay in Eagle River", stay:"🏨 Same: Microtel Eagle River",
+        pois:[{name:"Alaska Wildlife Conservation Center",coord:[60.7189,-148.9568],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Alaska Zoo",coord:[61.1390,-149.7960],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]}],
+        routeCoords:[[61.3210,-149.5670],[61.1390,-149.7960],[60.7189,-148.9568]] },
+      { day:8, dateStr:"DAY 8 · SUN JUL 19", title:"Anchorage to Seward", drivingInfo:"Anchorage to Seward via Seward Hwy AK-1 (~3h)", stay:"🏨 Stay: Airbnb Seward",
+        pois:[{name:"Portage Lake",coord:[60.7860,-148.9200],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Byron Glacier Trail",coord:[60.7600,-148.8450],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Whittier",coord:[60.7730,-148.6830],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Seward Eats",coord:[60.1040,-149.4430],type:"dining",icon:"fa-utensils",color:"#e65100",desc:"",images:[]},{name:"Airbnb Seward",coord:[60.1050,-149.4410],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        routeCoords:[[61.3210,-149.5670],[60.7860,-148.9200],[60.7730,-148.6830],[60.1050,-149.4410]] },
+      { day:9, dateStr:"DAY 9 · MON JUL 20", title:"Kenai Fjords Cruise", drivingInfo:"7.5h National Park boat tour from Seward", stay:"🏨 Same: Airbnb Seward",
+        pois:[{name:"Kenai Cruise",coord:[60.1043,-149.4388],type:"cruise",icon:"fa-ship",color:"#7b1fa2",desc:"",images:[],receipt:"receipts/Confirmation%20-%207.5%20HR%20Kenai%20Fjords%20National%20Park.pdf"}],
+        boatRouteCoords:[[60.1043,-149.4388],[60.08,-149.43],[60.04,-149.42],[59.96,-149.43],[59.91,-149.48],[59.87,-149.55],[59.83,-149.63],[59.81,-149.70],[59.82,-149.74],[59.81,-149.70],[59.83,-149.63],[59.87,-149.55],[59.91,-149.48],[59.96,-149.43],[60.04,-149.42],[60.08,-149.43],[60.1043,-149.4388]] },
+      { day:10, dateStr:"DAY 10 · TUE JUL 21", title:"Seward to Anchorage", drivingInfo:"Seward to Anchorage via Seward Hwy (~2.5h)", stay:"🏨 Stay: Motel 6 Midtown",
+        pois:[{name:"Bear Glacier",coord:[60.1500,-149.3800],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[],receipt:"receipts/Bear%20Glacier%20Iceberg%20Kayaking.pdf"},{name:"Harding Icefield",coord:[60.0900,-149.6600],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Motel 6 Midtown",coord:[61.1770,-149.8700],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        routeCoords:[[60.1050,-149.4410],[60.0900,-149.6600],[61.1770,-149.8700]] },
+      { day:11, dateStr:"DAY 11 · WED JUL 22", title:"Depart Anchorage", drivingInfo:"Fly home from Ted Stevens Intl Airport", stay:"🏨 Depart: Fly Home (No Stay)",
+        pois:[{name:"Airport (ANC)",coord:[61.1742,-149.9964],type:"airport",icon:"fa-plane-departure",color:"#c62828",desc:"",images:[]}],
+        routeCoords:[[61.1770,-149.8700],[61.1742,-149.9964]] }
+    ];
+
+
+    var sunlightData = {
+      1: {sunrise:"04:22", sunset:"23:18", daylight:"~18h56min"},
+      2: {sunrise:"04:24", sunset:"23:16", daylight:"~18h52min"},
+      3: {sunrise:"04:05", sunset:"23:35", daylight:"~19h30min"},
+      4: {sunrise:"04:10", sunset:"23:28", daylight:"~19h18min"},
+      5: {sunrise:"04:45", sunset:"23:00", daylight:"~18h15min"},
+      6: {sunrise:"04:55", sunset:"22:50", daylight:"~17h55min"},
+      7: {sunrise:"04:52", sunset:"22:48", daylight:"~17h56min"},
+      8: {sunrise:"05:00", sunset:"22:40", daylight:"~17h40min"},
+      9: {sunrise:"05:02", sunset:"22:38", daylight:"~17h36min"},
+      10: {sunrise:"05:05", sunset:"22:35", daylight:"~17h30min"},
+      11: {sunrise:"05:08", sunset:"22:32", daylight:"~17h24min"}
+    };
+
+    var weatherData = {
+      1: {condition:"\u2600\ufe0f", low:"14\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"8 km/h"},
+      2: {condition:"\u26c5", low:"12\u00b0C", avg:"16\u00b0C", high:"20\u00b0C", wind:"10 km/h"},
+      3: {condition:"\u2600\ufe0f", low:"16\u00b0C", avg:"22\u00b0C", high:"26\u00b0C", wind:"6 km/h"},
+      4: {condition:"\u26c5", low:"13\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"12 km/h"},
+      5: {condition:"\ud83c\udf27\ufe0f", low:"10\u00b0C", avg:"14\u00b0C", high:"17\u00b0C", wind:"15 km/h"},
+      6: {condition:"\u26c5", low:"11\u00b0C", avg:"16\u00b0C", high:"20\u00b0C", wind:"10 km/h"},
+      7: {condition:"\u2600\ufe0f", low:"14\u00b0C", avg:"19\u00b0C", high:"23\u00b0C", wind:"8 km/h"},
+      8: {condition:"\u26c5", low:"12\u00b0C", avg:"17\u00b0C", high:"21\u00b0C", wind:"12 km/h"},
+      9: {condition:"\ud83c\udf27\ufe0f", low:"9\u00b0C", avg:"13\u00b0C", high:"16\u00b0C", wind:"18 km/h"},
+      10: {condition:"\u26c5", low:"11\u00b0C", avg:"15\u00b0C", high:"19\u00b0C", wind:"10 km/h"},
+      11: {condition:"\u2600\ufe0f", low:"13\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"8 km/h"}
+    };
+
+        var cityClusters = [
+      { name:"Anchorage", coord:[61.1770,-149.8700], bounds:[[61.1,-150.1],[61.35,-149.5]] },
+      { name:"Denali", coord:[63.7327,-148.9107], bounds:[[63.6,-149.1],[63.8,-148.8]] },
+      { name:"Fairbanks", coord:[64.8580,-147.8340], bounds:[[64.7,-148.0],[64.9,-147.2]] },
+      { name:"Castner", coord:[63.4090,-145.7520], bounds:[[63.35,-145.8],[63.45,-145.7]] },
+      { name:"Valdez", coord:[61.1250,-146.3550], bounds:[[61.05,-146.4],[61.2,-145.7]] },
+      { name:"Matanuska", coord:[61.7024,-147.6817], bounds:[[61.65,-147.75],[61.75,-147.6]] },
+      { name:"Whittier", coord:[60.78,-148.8], bounds:[[60.7,-149.0],[60.85,-148.6]] },
+      { name:"Seward", coord:[60.1040,-149.4430], bounds:[[60.05,-149.7],[60.18,-149.3]] }
+    ];
+
+    var fullNames = {
+      "Alaska Wildlife Conservation Center":"Alaska Wildlife Conservation Center",
+      "Museum of North":"University of Alaska Museum of the North",
+      "Airport (ANC)":"Ted Stevens Anchorage International Airport (ANC)",
+      "Motel 6 Midtown":"Motel 6 Anchorage Midtown",
+      "Denali Visitor Center":"Denali National Park Visitor Center",
+      "Horseshoe Lake":"Horseshoe Lake Trail",
+      "Mt Healy":"Mount Healy Overlook Trail",
+      "Savage Alpine":"Savage Alpine Trail",
+      "Cantwell Cabins":"Cantwell Wilderness Cabins",
+      "Tundra Tour":"Tundra Wilderness Tour",
+      "7 Gables Inn":"7 Gables Inn & Suites Fairbanks",
+      "Santa Claus House":"Santa Claus House (North Pole)",
+      "Castner Glacier":"Castner Glacier Ice Cave",
+      "Valdez Harbor Inn":"Best Western Valdez Harbor Inn",
+      "Solomon Gulch":"Solomon Gulch Salmon Hatchery",
+      "Keystone Canyon":"Keystone Canyon Waterfalls",
+      "Thompson Pass":"Thompson Pass Scenic Overlook",
+      "Worthington Glacier":"Worthington Glacier State Recreation Site",
+      "Matanuska":"Matanuska Glacier Ice Climbing",
+      "Microtel Eagle River":"Microtel Inn & Suites by Wyndham Eagle River",
+      "Alaska Zoo":"The Alaska Zoo",
+      "Portage Lake":"Portage Lake & Portage Glacier",
+      "Byron Glacier Trail":"Byron Glacier Trail & Byron Glacier",
+      "Whittier":"Whittier Harbor Town",
+      "Seward Eats":"Seward Town & Local Dining",
+      "Airbnb Seward":"Seward Airbnb Apartment",
+      "Kenai Cruise":"Kenai Fjords National Park Cruise",
+      "Bear Glacier":"Bear Glacier Lagoon Kayaking",
+      "Harding Icefield":"Harding Icefield Trail"
+    };
+
+    var noteData = JSON.parse(localStorage.getItem('alaskaTripNotes') || '{}');
+var NOTES_API = 'https://jsonblob.com/api/jsonBlob/019f4a6f-8a41-7c94-8eca-62e8b8567ee2';
+
+// Cross-device note sync
+function setSyncStatus(s) {
+  var el = document.getElementById('sync-status');
+  if (el) el.textContent = s;
+}
+function pushNotesToCloud() {
+  setSyncStatus('↑');
+  var xhr = new XMLHttpRequest();
+  xhr.open('PUT', NOTES_API, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() { setSyncStatus('✓'); setTimeout(function(){ setSyncStatus(''); }, 3000); };
+  xhr.onerror = function() { setSyncStatus('✗'); };
+  xhr.send(JSON.stringify(noteData));
+}
+function pullNotesFromCloud() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', NOTES_API, true);
+  xhr.onloadstart = function() { setSyncStatus('↓'); };
+  xhr.onload = function() {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      try {
+        var cloudData = JSON.parse(xhr.responseText);
+        if (cloudData && typeof cloudData === 'object') {
+          // Merge: cloud data wins for any key that exists in cloud
+          var changed = false;
+          for (var k in cloudData) {
+            if (cloudData[k] !== noteData[k]) {
+              noteData[k] = cloudData[k];
+              changed = true;
+            }
+          }
+          // Remove keys deleted on another device
+          for (var k in noteData) {
+            if (!(k in cloudData)) {
+              delete noteData[k];
+              changed = true;
+            }
+          }
+          if (changed) {
+            localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData));
+            // Refresh all visible note displays
+            for (var k in noteData) {
+              updateNoteDisplay(k);
+            }
+          }
+        }
+      } catch(e) {}
+    }
+  };
+  xhr.send();
+}
+// Sync: pull from cloud on load, push on every save, pull periodically
+pullNotesFromCloud();
+setInterval(pullNotesFromCloud, 30000);
+
+var wildlifeData = {
+  "Denali Visitor Center":"🐻 棕熊与驼鹿 — 最佳观测时间为清晨或黄昏，常在河岸和草甸区域出没。迪纳利的棕熊7月下旬常在山坡上吃野莓。🦌 驯鹿（Caribou） — 经常成群穿越公园道路，尤其在Savage River区域最容易见到。🐑 多尔大角羊（Dall sheep） — 抬头看！它们在山坡悬崖上吃草，从Polychrome Pass路段最容易看到。",
+  "Horseshoe Lake":"🐻 棕熊与驼鹿 — 最佳观测时间为清晨或黄昏。马蹄湖周边是驼鹿最爱的觅食地，夏季傍晚看到驼鹿在湖中吃水草的概率极高。建议带望远镜在湖对岸安静观察。",
+  "Mt Healy":"🐻 棕熊 — 希利山步道沿途在清晨时段偶尔能见到。建议步道入口处向前台确认当天野生动物出没报告。🦅 金雕 — 经常在山顶附近盘旋。",
+  "Savage Alpine":"🐻 棕熊 — 此地区是最容易在步道上远距离观察到棕熊觅食的区域之一。建议清晨出发，保持结伴而行、制造声响。🦌 驯鹿 — 经常在Savage River区域过河。",
+  "Tundra Tour":"🐻 迪纳利野生动物密度最高区域 — 此巴士路线提供最好的棕熊、狼、驯鹿、驼鹿观赏机会。导游之间会用无线电互通动物出没情报。中午阳光充足时反而容易看到动物在雪坡上活动。",
+  "Kenai Cruise":"🐋 鲸鱼（座头鲸、虎鲸） — 6-8月最活跃。座头鲸常在Aialik Bay附近用气泡网捕食法集体捕鱼。🦅 海鹦（Puffin）与小海鸟 — 在峡湾峭壁悬崖上筑巢，带望远镜！🦭 海狮与海獭 — 在海边礁石上晒太阳，海獭常仰面漂浮在海带床上。",
+  "Bear Glacier":"🦭 斑海豹 — 经常趴在潟湖的冰山上休息，把冰山当作捕鱼间隙的休息平台。🦅 白头海雕 — 在周围云杉林中筑巢。幼雕有斑驳的棕色羽毛。",
+  "Harding Icefield":"🐻 黑熊 — 哈丁冰原步道上比较常见的访客。徒步时请制造噪音、携带防熊喷雾、结伴而行。最佳观赏时间为清晨。🐿️ 灰白旱獭 — 沿途岩石堆中经常听到它们互相吹哨警告同伴。",
+  "Alaska Wildlife Conservation Center":"🦬 北美森林野牛、麋鹿、麝牛、熊 — 这里是野生动物救治中心，不是动物园。夏季午后可以在池塘边看到棕熊捕三文鱼。🦌 驼鹿 — 清晨常在池塘附近区域出现。",
+  "Alaska Zoo":"🐻‍❄️ 北极熊 — Ahpun（园区北极熊）在喂食时间（11am和3pm）最活跃。🐺 狼与猞猁 — 害羞的动物，建议清晨开门后第一时间前往观赏，人少的时候它们更愿意出来活动。",
+  "Byron Glacier Trail":"🏔️ 土拨鼠 — 拜伦冰川步道沿途常见它们在岩石间穿梭。🐿️ 北极地松鼠 — 在冰川脚下的碎石区很活跃，经常站在大石头上张望。",
+  "Portage Lake":"🦅 白头海雕 — 经常站在湖中的冰山上捕鱼。傍晚的侧逆光是拍摄的最佳时机。🦦 水獭 — 很活泼，经常能看到它们沿着泥泞的河岸滑入水中嬉戏。",
+  "Solomon Gulch":"🐟 三文鱼（粉红鲑 & 狗鲑） — 7-8月数百万条三文鱼洄游，观看它们在鱼梯上奋力跳跃的壮观场面。🐻 棕熊 — 三文鱼季节常在孵化场附近出没捕鱼，尤其是清晨和傍晚。",
+  "Keystone Canyon":"🦅 白头海雕与游隼 — 峡谷悬崖是它们筑巢的地方。夏天常见在瀑布上空盘旋捕食。",
+  "Thompson Pass":"🦅 金雕 — 山谷上升暖气流中经常能看到金雕翱翔。高山苔原带可见北极地松鼠。",
+  "Worthington Glacier":"❄️ 冰川环境野生动物较少。停车场附近偶尔能看到高山山羊（Mountain goat）在悬崖上攀爬。",
+  "Castner Glacier":"❄️ 冰川冰洞区域几乎没有野生动物。但在步道沿途可能看到雷鸟（Ptarmigan，阿拉斯加州鸟）在夏季的棕色羽毛伪装。",
+  "Matanuska":"🐻 黑熊 — 在马塔努斯卡冰川停车场到冰川入口之间的步道上偶有出没。建议结伴行走并携带防熊喷雾。",
+  "Museum of North":"🦌 驼鹿 — 费尔班克斯郊区驼鹿极多，清晨在Chena河边常能看到驼鹿在吃水草。🌟 极光 — 虽然不属于夏季野生动物，但费尔班克斯8月下旬开始就是世界顶级的极光观测地。",
+  "Santa Claus House":"🦌 驼鹿 — 北极镇（North Pole）郊区在夏季傍晚经常能看到驼鹿在路边吃草。驾车请注意避让。",
+};
+
+
+
+    var expandedDetails = {
+      "Airport (ANC)":{desc:"安克雷奇国际机场（ANC，泰德·史蒂文斯安克雷奇国际机场）是阿拉斯加州最大且最繁忙的机场，作为该州乃至北极圈交通的核心枢纽。绝大多数游客前往阿拉斯加自驾旅行，都会选择此机场作为首要航空门户与旅途起点。机场大厅内陈列着精美的阿拉斯加本土原住民木雕艺术品以及北极熊等本地珍贵野生动物标本，充满了浓郁的极地风情，让您落地即能感受到极地王国的独特魅力。",tips:"自驾旅客强烈建议直接在机场航站楼内的交通中心取还车辆，各大主流租车公司（如 Hertz, Avis, Enterprise, Budget 等）柜台均设于此，取车流程简便。另外，阿拉斯加夏季野生蚊虫异常凶猛，建议在机场到达大厅的纪念品商店提前购买一个防蚊网头罩（Mosquito Net），这是后续进行山野徒步不可或缺的必备神器！"},
+      "Motel 6 Midtown":{desc:"Motel 6 安克雷奇中城店位于交通便利的 5000 A St，靠近安克雷奇市中心。周边步行距离内有 Fred Meyer 大型生活超市、REI 户外装备店以及多家美式快餐餐厅，非常适合刚刚抵达阿拉斯加、需要采购旅途物资和装备的自驾游客。旅馆提供免费高速无线网络与宽敞的免费停车场，是在安克雷奇进行短暂中转与物资整备的高性价比落脚点。",tips:"酒店距机场仅5分钟车程，极其适合首日落地或尾日乘机前过渡。旁边的大型超市 Fred Meyer 是补充矿泉水、徒步高能量零食、防熊喷雾（Bear Spray）及便携保温箱（Cooler）的绝佳地点。请注意，防熊喷雾不可带上飞机，务必在自驾出发前在此补齐。"},
+      "Denali Visitor Center":{desc:"迪纳利国家公园游客中心（Denali National Park Visitor Center）是探索这片广袤荒野景区的核心大本营。中心内设有高水准的迪纳利自然历史与生态展览，并播放屡获殊荣的公园纪录片。这里提供免费借用登山杖和雪地防滑链（grippers）的服务，并能获取最新的步道开放状态、天气预报及野生动物出没报告。",tips:"建议早上抵达公园后第一时间前来。迪纳利国家公园为了保护生态，私家车只能自驾行驶至 Mile 15 的 Savage River，之后的深入探索必须乘坐公园官方的穿梭巴士或观光巴士。请务必提前在网上预订好深入公园腹地的巴士车票。"},
+      "Horseshoe Lake":{desc:"马蹄湖步道（Horseshoe Lake Trail）是迪纳利国家公园入口附近最受欢迎、最轻松的经典徒步路线。这是一条全长约 2 至 4 英里的平缓环线，穿越茂密的北方针叶林，最终抵达形状犹如马蹄的宁静湖泊。沿途湖面如镜，倒映着远处的山峦与翠绿的树木，景色美不胜收。",tips:"步道难度低、耗时约 1 至 2 小时，非常适合全家老小一同漫步。这里是迪纳利公园内极佳的驼鹿（Moose）观赏点，驼鹿喜欢在清晨或傍晚来到湖边觅食。徒步时请保持安静，带上望远镜，并注意与野生动物保持至少 25 码（约 23 米）的安全距离。"},
+      "Mt Healy":{desc:"希利山观景步道（Mount Healy Overlook Trail）是迪纳利国家公园入口区域最具挑战性也最具回报的日间徒步路线之一。往返全长约 2.7 英里，海拔爬升约 500 英尺。步道穿过郁郁葱葱的针叶林林线后，视野豁然开朗，登顶后可以 360 度俯瞰迪纳利入口处的陡峭河谷、蜿蜒的尼纳纳河（Nenana River）以及连绵起伏的阿拉斯加山脉全景。",tips:"步道属于中等难度，单程需要 45 分钟至 1.5 小时。由于山顶风力较大且无遮挡，建议随身携带一件防风保暖外套。晴朗的清晨或傍晚是最佳的攀登时间，不仅光线柔美极佳，还能有效避开正午烈日暴晒。"},
+      "Savage Alpine":{desc:"野蛮高山步道（Savage Alpine Trail）是迪纳利国家公园私家车可达区域（Mile 15）最顶级的徒步线路。这是一条全长 4 英里的单向山脊徒步环线，连接了 Savage River 营地和 Savage River 停车场。步道海拔爬升约 800 英尺，穿越典型的高山苔原带与奇特的花岗岩怪石群，能提供无与伦比的野蛮河谷宏大视野。",tips:"步道难度中等偏难，全程预计需要 3 至 4 小时。建议从 Savage River 营地一侧出发往停车场方向走，这样陡峭的路段是上坡，对膝盖更友好。山顶苔原带地势开阔，常年风大，甚至夏季也会遇到残留积雪，必须穿防水耐磨的专业登山鞋，并随时注意防熊。"},
+      "Cantwell Cabins":{desc:"坎特韦尔林间木屋（Cantwell Cabins）坐落于迪纳利国家公园入口以南约 15 分钟车程的坎特韦尔小镇，提供独栋且极具阿拉斯加荒野风情的小木屋住宿。木屋四周被茂密的森林和雪山环抱，环境清幽。每个木屋都配备了完整的厨房设施、餐具、烧烤架和舒适的床铺，是在迪纳利大自然中深度放松的完美居所。",tips:"由于坎特韦尔镇规模极小，周边几乎没有餐饮和大型超市，强烈建议自驾旅客在 Healy 小镇或 Fairbanks 采购好食材，利用木屋的厨房自行料理美味晚宴。林区无线网络（WiFi）信号可能较为微弱，可以提前下载好离线地图和影音内容。"},
+      "Tundra Tour":{desc:"苔原荒野之旅（Tundra Wilderness Tour）是深入迪纳利国家公园内部最经典的官方观光巴士游项目。行程通常持续 5.5 小时，由经验丰富的公园自然学家驾驶并沿途解说，深入公园公路 Mile 53 处。这是观赏迪纳利五大野生动物（棕熊、驼鹿、驯鹿、大角羊、狼）和在天气晴朗时眺望北美最高峰迪纳利峰的黄金路线。",tips:"巴士游玩费用约每人 $150。观赏棕熊、驼鹿、驯鹿、大角羊等野生动物概率极高。车上配有专业解说员，建议坐靠窗位置方便观看拍照。记得自带午餐和水。"},
+      "7 Gables Inn":{desc:"七山墙旅馆（7 Gables Inn & Suites）是费尔班克斯（Fairbanks）市中心一栋极具历史底蕴与温馨氛围的标志性德式民居改建民宿。旅店内部装饰温馨雅致，充满了阿拉斯加本土艺术气息。这里不仅提供舒适干净的客房，每天早晨还为客准备温馨的手作早餐，步行即可轻松抵达市区核心餐厅与极地博物馆。",tips:"旅馆地理位置优越，距离阿拉斯加大学费尔班克斯分校和北方极地博物馆极近。前台工作人员非常热情，会提供详尽的极光观测建议与北极圈探险路线规划。夏季的深夜（凌晨1-3点），在天气晴朗且极光指数高时，您甚至可以直接在庭院内看到绚丽的北极光。"},
+      "Museum of North":{desc:"阿拉斯加大学北方极地博物馆（University of Alaska Museum of the North）位于费尔班克斯大学校区，是阿拉斯加最著名的地标建筑与博物馆之一。其波浪形的白色外墙设计灵感源自阿尔卑斯山脉和极光线条。馆内收藏了数百万件珍贵展品，涵盖阿拉斯加数万年的原住民文化艺术、丰富的地质矿产历史，以及包括蓝色宝贝（万年前冰冻野牛干尸）在内的极地野生动物标本。",tips:"门票约为每人 $16，建议预留 2 至 3 小时进行深度参观。博物馆二楼的观景平台和落地窗是俯瞰费尔班克斯全景、阿拉斯加大学校区以及远眺阿拉斯加山脉的绝佳摄影点。博物馆礼品店售卖非常独特的手工原住民手工艺品，值得一看。"},
+      "Santa Claus House":{desc:"圣诞老人之家（Santa Claus House）坐落于费尔班克斯东南郊的北极镇（North Pole, AK），是一座全年 365 天营业、充满童话色彩的巨型圣诞主题纪念品商店。这里矗立着一座高约 15 米的标志性巨型圣诞老人雕像，店内挂满了各式各样琳琅满目的圣诞装饰、极地玩具和手工艺品，洋溢着永不落幕的节日欢乐气氛。",tips:"这里是免费入场的！您可以在此亲笔写下明信片并寄出，盖上极具纪念意义的北极镇专属绿色邮戳。如果有兴趣，还可以付费定制一封由圣诞老人亲笔签名并盖章的圣诞信件，寄给国内的亲朋好友。店内还经常有圣诞老人本人坐镇，可以免费合影留念。"},
+      "Castner Glacier":{desc:"卡斯特纳冰川冰洞（Castner Glacier Ice Cave）是阿拉斯加 Richardson 航线旁最令人震撼的天然秘境之一。通过一条全长约 1.5 英里的平缓步道（沿卡斯特纳河谷），即可抵达宏伟的卡斯特纳冰川前沿。在这里，大自然雕琢出了一个巨大的蓝冰冰洞，冰壁在光线照射下呈现出如梦似幻的深蓝色与水晶般的质感。",tips:"步道入口位于 Richardson Highway Mile 37 处的桥旁停车场。夏季由于气温升高，冰洞内部结构会变得非常不稳定，随时可能发生塌方与融水落冰，⚠️强烈建议千万不要深入洞穴内部，仅在洞口安全区域拍摄。进入步道建议穿着坚固的防水登山靴，防滑冰爪在碎冰路段也十分有用。"},
+      "Valdez Harbor Inn":{desc:"贝斯特韦斯特瓦尔迪兹港酒店（Best Western Valdez Harbor Inn）锁落于 Valdez 秀丽的美丽渔港码头旁。酒店地理位置得天独厚，推开窗户即可欣赏到停泊在港湾内的成排渔船与背景中高耸入云、白雪皑皑的山峰倒影。酒店客房干净宽敞，配有海港景观餐厅，供应丰盛新鲜的阿拉斯加当地海鲜与热早餐。",tips:"步行即可轻松抵达 Valdez 港区的各大户外探险公司、游船码头和步行街。酒店配有超大免费停车场，对于自驾游客非常友好。海港傍晚气温骤降，用完晚餐后建议穿上羽绒服，沿海滨步道散步，有机会能看到在海湾里嬉戏的野生海獭（Sea Otters）。"},
+      "Solomon Gulch":{desc:"所罗门峡谷三文鱼孵化场（Solomon Gulch Salmon Hatchery）是 Valdez 最壮观、最独特的自然生态奇观之一。每年 7 月至 8 月期间，成千上万条成年三文鱼会顺着海水洄游至此，拥挤在孵化场外的阶梯水道中奋力跳跃，试图游回上游产卵。这股庞大的自然力量不仅壮观，还吸引了大量的野生动物，如白头海雕、海狮、甚至黑熊和棕熊前来捕食捕鱼。",tips:"孵化场设有专门的免费双层观景平台和科普步行道，非常适合近距离观察。孵化场外围的泄洪道附近是著名的观熊热门点，熊常在清晨和傍晚出没捕鱼。⚠️观熊时请务必服从现场工作人员指引，保持绝对的安全距离，切勿大声喧哗或投喂动物。"},
+      "Keystone Canyon":{desc:"奇石峡谷（Keystone Canyon）是 Richardson 航线通往 Valdez 必经的一段极其险峻雄壮的峡谷通道。两旁高耸的岩壁高达数百英尺，怪石嶙峋，其间悬挂着多条如白练般垂落的壮丽瀑布，其中最著名的当属新娘面纱瀑布（Bridal Veil Falls）与 Horsetail Falls 等多个瀑布景观。",tips:"峡谷公路旁设有专门的宽敞停车观景点，极大方便自驾游客安全驻车拍摄。由于峡谷路段较窄且弯道较急，行车时请格外注意安全并控制车速。夏季峡谷两旁绿意盎然，瀑布水量最大，是绝佳的公路旅行摄影背景。"},
+      "Thompson Pass":{desc:"汤普森山口（Thompson Pass）海拔约 2,500 英尺，是 Richardson Highway 上的最高点，也是阿拉斯加降雪量最大的区域。夏季这里则变身为一望无际的高山苔原绿洲，开阔的山谷中开满了五彩缤纷的野生高山花卉（7月中旬最盛），远处的雪山连绵，冰川闪耀，宛如一幅宏大的极地画卷。",tips:"山口常年风力强劲且天气变幻莫测，建议带防风外套。步道路标不明显，建议下载离线地图。可看到远处雄伟的冰川和野花盛开的美景。"},
+      "Worthington Glacier":{desc:"沃辛顿冰川（Worthington Glacier State Recreation Site）是全美乃至全球极少数可以直接驾车抵达、并近距离亲手触摸的标志性冰川。冰川从陡峭的山谷中倾泻而下，前沿形成了一个幽蓝的融冰湖。公园内修建了维护极佳的铺装木栈道和观景台，方便所有游客安全轻松地近距离瞻仰这尊万年冰蓝巨兽。",tips:"公园设有超大停车场和展示牌，详细介绍了由于气候变暖冰川急速退缩的历史。⚠️注意：由于冰川边缘经常有巨冰崩塌和暗裂缝，千万不要越过官方设置的安全警示铁丝网。如果计划踏上冰川徒步，必须穿着专业的防滑冰爪，并跟随有资质的本地冰川向导前行。"},
+      "Matanuska":{desc:"马塔努斯卡冰川（Matanuska Glacier）是阿拉斯加最大且唯一可以通过车辆直接抵达的活跃山谷冰川（长 27 英里宽 4 英里）。其纯净的蓝冰、巨大的裂缝、神秘的冰洞和高耸的冰塔林构成了一幅极其震撼的冰河世纪景观。这里是体验专业攀冰（Ice Climbing）和冰川深度徒步的终极圣地，无需经验即可参与。",tips:"8小时专业向导攀冰体验，全套装备由向导提供。费用约$250-300/人。包含冰川徒步和攀冰体验。建议穿多层保暖防风衣物，冰川上温度比周边低10°C以上，随时准备震撼大片。"},
+      "Microtel Eagle River":{desc:"Microtel Inn & Suites 旅馆坐落于安克雷奇以北约 15 分钟车程的鹰河（Eagle River）幽静小镇，地理位置优越，是连接安克雷奇与马塔努斯卡冰川的黄金中转站。酒店风格现代简约、干净舒适，提供高品质的免费热早餐、全天候高速 WiFi 及便利的免费自驾停车场。",tips:"旅馆旁边即是小镇的加油站、便利店和多家特色美式快餐，补充旅行补给极为便利。鹰河小镇背靠群山，清晨空气格外清新。从旅馆出发驾车约 10 分钟即可抵达鹰河自然中心（Eagle River Center），进行苔原森林徒步。"},
+      "Alaska Wildlife Conservation Center":{desc:"阿拉斯加野生动物保护中心（AWCC）是一座占地 200 英亩的非营利性野生动物庇护与救治中心，坐落于 Seward Highway 与 Portage Valley 的交汇处。这里专门收治、喂养并康复阿拉斯加因受伤、迷路或失去母亲的孤儿野生动物，包括壮硕的棕熊、黑熊、森林野牛、麋鹿、驯鹿、山羊以及巨大的驼鹿。中心通过宽敞的自然模拟栖息地，致力于向公众普及北极野生动物保护知识。",tips:"门票价格约为每人 $15。保护中心内修建了一条全长 1.5 英里的木栈道步道。可近距离观看棕熊在水中捕鱼，或驯鹿悠闲地吃草。建议携带长焦镜头进行拍摄，捕获野生动物最美瞬间。"},
+      "Alaska Zoo":{desc:"阿拉斯加动物园（The Alaska Zoo）坐落于安克雷奇市区的东南部山麓，是一座独特且深受喜爱的极地特色专业动物园。该动物园致力于救助、康复和保护阿拉斯加本土以及全球寒冷气候地区的珍稀野生动物，园内明星包括高大雄壮的北极熊、极地狼、加拿大猞猁、雪鸮、麝牛、美洲黑熊、驼鹿和双峰驼等。",tips:"门票售价为 $18。整个园区深深嵌入郁郁葱葱的北方原始针叶林中，漫步其间的木栈道与林荫路十分惬意。推荐在下午参观，并提前关注园区每日的饲养员科普互动时间（Keeper Chats），能极好地了解这群极地生灵在严酷环境下的奇妙生存本领。"},
+      "Byron Glacier Trail":{desc:"拜伦冰川步道（Byron Glacier Trail）是一条步行友好、全程仅 1.6 英里的轻量级徒步路线。与阿拉斯加众多高难度步道不同，这条步道既有平坦易行的山谷路段，又有直接将您带到宏伟拜伦冰川脚底的震撼终点。步道终点处您几乎可以走到冰川脚下，站在湛蓝发亮的冰川冰面前感受时间沉淀的庄严。",tips:"步道起点位于波特奇湖与波特奇冰川公路尽头，免费停车、无需门票。全程大约 45 分钟即可轻松走完。建议穿防水登山鞋，碎石路段较多。冰川底部气温明显降低，即使在盛夏也请携带一件轻薄冲锋衣。夏季经常能看到山坡上的土拨鼠对路过的人好奇地吹哨。"},
+      "Portage Lake":{desc:"波特奇湖（Portage Lake）是一座由于波特奇冰川（Portage Glacier）急速退缩而形成的幽深高山冰川融水湖，坐落于风景如画的波特奇山谷深处。湖水由于富含冰川粉末而呈现出迷人的松石绿与奶蓝色。夏季湖面上经常漂浮着从远处冰川上崩塌落下的冰蓝色碎冰，天气晴朗时，周围雪山和波特奇冰川的倒影在如镜的湖面上交相辉映，美不胜收。",tips:"湖畔设有设施完善的贝吉奇·博格斯游客中心（Begich, Boggs Visitor Center），展示了冰川地质演变历史。夏季您可以选择乘坐官方的 Portage Glacier Cruise 游船（票价约 $40/人，耗时1小时），游船会带您一路驶近波特奇冰川高达百英尺的幽蓝冰墙前，可以近距离听到万年古冰碎裂的震撼声响。"},
+      "Whittier":{desc:"惠蒂尔（Whittier）是阿拉斯加最神秘、最奇特的海滨小镇，坐落于威廉王子湾（Prince William Sound）的峡湾深处。进入该小镇的唯一陆路通道是一条全长 2.5 英里的安东·安德森纪念隧道（Anton Anderson Memorial Tunnel），这也是北美最长的单向公路铁路两用隧道，汽车和火车共用此道，实行整点与半点交替放行。最神奇的是，惠蒂尔全镇近 300 名居民几乎全部共同生活在一栋高 14 层的巨型苏联风格大楼（Begich Towers）内，大楼内甚至包含了邮局、诊所、超市和市政府。",tips:"规划行程时务必提前查询隧道的双向放行时间表，避免在隧道口长时间排队等待。惠蒂尔港口常年停靠着大型极地游轮，也是自驾游客租船出海垂钓阿拉斯加比目鱼（Halibut）和三文鱼的圣地。港口旁有多家供应超新鲜炸鱼薯条（Fish & Chips）的海边餐馆，极力推荐尝试。"},
+      "Seward Eats":{desc:"苏厄德（Seward）是基奈半岛（Kenai Peninsula）最著名的海滨历史小镇，也是复活湾（Resurrection Bay）的璀璨明珠。小镇常住人口约 2,800 人，历史底蕴深厚，是著名的阿拉斯加铁路南端终点站与艾迪塔罗德狗拉雪橇步道（Iditarod Trail）的起点。镇上聚集了众多优秀的画廊、手工艺品商店和顶级的海鲜餐厅，充满了阿拉斯加海港小镇独有的纯朴与活力。",tips:"极力推荐去小镇标志性的 Fifth Avenue Bistro 享用一顿极其奢华的帝王蟹（King Crab）与海鲜意大利面大餐。餐后去 Sweet Darlings 甜品店排队买一支纯正的阿拉斯加野生蓝莓口味手工冰淇淋（Wild Blueberry Ice Cream），绝对能让您的味蕾得到终极满足。港口滨海步道常能看到在水面漂浮睡觉的野生海獭（Sea Otters）。"},
+      "Airbnb Seward":{desc:"这是一间坐落于苏厄德（Seward）市中心黄金地段、温馨舒适的极简风格 Airbnb 私人公寓。公寓内部装饰充满了原木温暖与现代北欧风情，配备了功能完备的独立厨房、餐具、咖啡机、独立的卫浴设施以及超舒适的羽绒床铺。从公寓窗外即可远眺复活湾的波光粼粼与高耸的复活雪山，是在经历了一整天海上航行与户外徒步后，最温馨、私密的休憩港湾。",tips:"公寓地理位置绝佳，步行即可前往 Seward 游船码头、阿拉斯加海洋生物中心（Alaska SeaLife Center）以及多座本地人气餐馆。自驾房客可享受专属的免费停车位。夏季属于苏厄德旅游极旺季，此公寓极其抢手，强烈建议提前数月完成预订。"},
+      "Kenai Cruise":{desc:"基奈峡湾国家公园游船之旅（Kenai Fjords National Park Cruise）是探索阿拉斯加无与伦比海洋生态与入海冰川的终极体验。7.5 小时的航程从苏厄德港出发，一路驶向哈丁冰原倾泻入海的 Holgate 冰川或 Aialik 冰川。沿途两旁峡湾峭壁高耸，巨型冰川崩塌落海的声音如雷贯耳。这是观赏座头鲸喷水腾空、虎鲸（Orca）成群巡游、海鹦（Puffin）扇动褶子、以及成百上千只海狮、海獭在礁石上嬉戏的海洋生态圣殿。",tips:"票价约为每人 $170-200，夏季必须提前预约。复活湾外海风浪可能极大，即使平时不晕船的游客也强烈建议开船前半小时服用好晕船药（Dramamine）。甲板上海风极其刺骨寒冷，请务必全副武装：羽绒服、防风冲锋衣、防寒帽、手套和围巾一个都不能少。船上备有高倍望远镜租借，但建议自带高倍望远镜与长焦相机。"},
+      "Bear Glacier":{desc:"熊冰川皮划艇（Bear Glacier Lagoon Kayaking）是基奈峡湾国家公园最顶级、最震撼的私人定制探险项目。熊冰川（Bear Glacier）是基奈峡湾最大的冰川，其末端消融形成了一个巨大的潟湖，湖面上漂浮着无数高达数层楼、形状各异、闪耀着幽邃蓝光的巨型冰山。在这里划着皮划艇在如镜的湖面与巨大的冰山缝隙间缓缓穿行，仿佛置身于另一个星球，静谧得只能听到冰川融化的滴答声与远处的鸟鸣。",tips:"体验费用较高且必须跟随专业注册向导进行。皮划艇潟湖的水温极低，向导会提供全身干式防水服（Dry Suit）和专业救生衣。⚠️安全警示：请严格跟随向导路线，切勿自行靠近冰山！因为漂浮在水面的冰山只是其总体体积的 10%，水下部分随时可能发生重心漂移导致整座冰山翻转，掀起足以掀翻皮划艇的滔天巨浪。"},
+      "Harding Icefield":{desc:"哈丁冰原步道（Harding Icefield Trail）是全美最震撼、最壮丽、同时也最具挑战性的殿堂级徒步路线之一。步道单向长 4.1 英里（往返 8.2 英里），从出口冰川（Exit Glacier）谷底出发，垂直海拔爬升高达 3,000 英尺（约 914 米）。步道穿过茂密的灌木丛、高山草甸，一路上攀，最终抵达山顶，在悬崖边缘眺望无垠的哈丁冰原——一片面积超过 700 平方英里、孕育了数十条巨大冰川的茫茫万年古冰原，景色宏伟苍茫，震撼人心。",tips:"步道难度极大，全程往返通常需要 6 至 8 小时，极度考验体能。⚠️安全防范：山顶可能常年积雪，气候变化无常，必须穿着专业的硬底登山靴，携带防雨保暖层衣物，并带足3升水和高能量路餐。此区域是黑熊和黑尾鹿的活跃区，徒步时请保持结伴同行，大声交谈，并随身携带防熊喷雾（Bear Spray）。"}
+    };
+
+    var map = L.map('map', { zoomControl: true, minZoom: 4, maxZoom: 16 }).setView([62.2, -148.0], 6);
+    var positronTile = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>' });
+    var satelliteTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' });
+    positronTile.addTo(map);
+
+    var activeRouteGroup = L.layerGroup().addTo(map);
+    var staticRouteGroup = L.layerGroup().addTo(map);
+    var markerGroup = L.layerGroup().addTo(map);
+    var leaderLineGroup = L.layerGroup().addTo(map);
+    var textLabelGroup = L.layerGroup().addTo(map);
+    var clusterGroup = L.layerGroup().addTo(map);
+    var drawingLayerGroup = L.layerGroup().addTo(map);
+
+    var routes = {};
+    var poisMarkers = {};
+    var activeDay = null;
+    var sidebarContent = document.getElementById('sidebar-content');
+    var driveTimes = {1:"🚗 ~5 minutes",2:"🚗 ~2.5 hours",3:"🚗 ~2 hours",4:"🚗 ~6 hours",6:"🚗 ~4 hours",8:"🚗 ~3 hours",10:"🚗 ~2.5 hours"};
+    var fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/AK_DSC_4477.jpg/500px-AK_DSC_4477.jpg";
+
+    var verifiedImages = {
+      "Airport (ANC)":["https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ilyushin_IL-96_taking_off_from_Ted_Stevens_International_Airport_%28ANC%29_02.jpg/500px-Ilyushin_IL-96_taking_off_from_Ted_Stevens_International_Airport_%28ANC%29_02.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Ilyushin_IL-96_taking_off_from_Ted_Stevens_International_Airport_%28ANC%29_01.jpg/500px-Ilyushin_IL-96_taking_off_from_Ted_Stevens_International_Airport_%28ANC%29_01.jpg"],
+      "Motel 6 Midtown":["https://images.oyoroomscdn.com/uploads/hotel_image/294606/motel_6_midtown_anchorage_ak_exterior_2_1759841139567.jpg","https://images.oyoroomscdn.com/uploads/hotel_image/294606/motel_6_midtown_anchorage_ak_exterior_1_1759238765155.jpg"],
+      "Denali Visitor Center":["https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Wonder_Lake%2C_Denali2.jpg/500px-Wonder_Lake%2C_Denali2.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Wonder_Lake%2C_Denali.jpg/500px-Wonder_Lake%2C_Denali.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Reflection_in_Wonder_Lake.jpg/500px-Reflection_in_Wonder_Lake.jpg"],
+      "Horseshoe Lake":["https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Horseshoe_Lake_in_Fall_%28272e3912-c3aa-4731-b2d2-8c72a4407ef4%29.JPG/500px-Horseshoe_Lake_in_Fall_%28272e3912-c3aa-4731-b2d2-8c72a4407ef4%29.JPG","https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Moose_in_Horseshoe_Lake_%28474dffc1-c82d-4c22-94bb-c7533114fde9%29.JPG/500px-Moose_in_Horseshoe_Lake_%28474dffc1-c82d-4c22-94bb-c7533114fde9%29.JPG"],
+      "Mt Healy":["https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/0679_-_mount_healy_overlook.jpg/500px-0679_-_mount_healy_overlook.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/0715_-_mount_healy_overlook.jpg/500px-0715_-_mount_healy_overlook.jpg"],
+      "Savage Alpine":["https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/R%C3%ADo_Savage%2C_Parque_nacional_y_reserva_Denali%2C_Alaska%2C_Estados_Unidos%2C_2017-08-29%2C_DD_95.jpg/500px-R%C3%ADo_Savage%2C_Parque_nacional_y_reserva_Denali%2C_Alaska%2C_Estados_Unidos%2C_2017-08-29%2C_DD_95.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/R%C3%ADo_Savage%2C_Parque_nacional_y_reserva_Denali%2C_Alaska%2C_Estados_Unidos%2C_2017-08-29%2C_DD_110.jpg/500px-R%C3%ADo_Savage%2C_Parque_nacional_y_reserva_Denali%2C_Alaska%2C_Estados_Unidos%2C_2017-08-29%2C_DD_110.jpg"],
+      "Cantwell Cabins":["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Cantwell%2C_Alaska.jpg/500px-Cantwell%2C_Alaska.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cantwell%2C_AK_post_office_2024-08-08.jpg/500px-Cantwell%2C_AK_post_office_2024-08-08.jpg"],
+      "Tundra Tour":["https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Heinrich_Berann_NPS_Panorama_of_Denali_without_labels.jpg/500px-Heinrich_Berann_NPS_Panorama_of_Denali_without_labels.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Wonder_Lake%2C_Denali2.jpg/500px-Wonder_Lake%2C_Denali2.jpg"],
+      "7 Gables Inn":["https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Aerial_view_of_Fairbanks_Alaska_skyline_%28Quintin_Soloviev%29.jpg/500px-Aerial_view_of_Fairbanks_Alaska_skyline_%28Quintin_Soloviev%29.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/University_of_Alaska_Fairbanks_campus_view.jpg/500px-University_of_Alaska_Fairbanks_campus_view.jpg"],
+      "Museum of North":["https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/University_of_Alaska_Museum_of_the_North1.jpg/500px-University_of_Alaska_Museum_of_the_North1.jpg"],
+      "Santa Claus House":["https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Santa_Clause_House%2C_North_Pole%2C_Fairbanks%2C_Alaska.jpg/500px-Santa_Clause_House%2C_North_Pole%2C_Fairbanks%2C_Alaska.jpg"],
+      "Castner Glacier":["https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Mendenhall_Glacier_Ice_Cave_587.jpg/500px-Mendenhall_Glacier_Ice_Cave_587.jpg"],
+      "Valdez Harbor Inn":["https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg/500px-Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg"],
+      "Solomon Gulch":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Brown_Bear_catching_Salmon_-_10141864774.jpg/500px-Brown_Bear_catching_Salmon_-_10141864774.jpg"],
+      "Keystone Canyon":["https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Keystone_Canyon.jpg/500px-Keystone_Canyon.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Old_Railroad_Tunnel_Keystone_Canyon.jpg/500px-Old_Railroad_Tunnel_Keystone_Canyon.jpg"],
+      "Thompson Pass":["https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Color_post_card._%22Winter_Trail_over_Thompson_Pass%2C_Alaska.%22_Dog_Sled_Teams._-_NARA_-_297822.jpg/500px-Color_post_card._%22Winter_Trail_over_Thompson_Pass%2C_Alaska.%22_Dog_Sled_Teams._-_NARA_-_297822.jpg"],
+      "Worthington Glacier":["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Worthington_Glacier_2009-09-11.jpg/500px-Worthington_Glacier_2009-09-11.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Worthington_glacier.JPG/500px-Worthington_glacier.JPG"],
+      "Matanuska":["https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Matanuska_Glacier_mouth.jpg/500px-Matanuska_Glacier_mouth.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Glaciar_Matanuska%2C_Alaska%2C_Estados_Unidos%2C_2017-08-22%2C_DD_82.jpg/500px-Glaciar_Matanuska%2C_Alaska%2C_Estados_Unidos%2C_2017-08-22%2C_DD_82.jpg"],
+      "Microtel Eagle River":["https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Parque_Eagle_River%2C_Anchorage%2C_Alaska%2C_Estados_Unidos%2C_2017-09-01%2C_DD_02.jpg/500px-Parque_Eagle_River%2C_Anchorage%2C_Alaska%2C_Estados_Unidos%2C_2017-09-01%2C_DD_02.jpg"],
+      "Alaska Wildlife Conservation Center":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Brown_bear_at_Alaska_Wildlife_Conservation_Center%2C_Aug_2016.jpg/500px-Brown_bear_at_Alaska_Wildlife_Conservation_Center%2C_Aug_2016.jpg"],
+      "Alaska Zoo":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Alaska_Zoo%2C_Anchorage.jpg/500px-Alaska_Zoo%2C_Anchorage.jpg"],
+      "Portage Lake":["https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Portage_Glacier_Alaska.jpg/500px-Portage_Glacier_Alaska.jpg"],
+      "Byron Glacier Trail":["https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Byron_Glacier_AK.jpg/500px-Byron_Glacier_AK.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Winding_our_way_up_Byron_Glacier_trail_%286480079529%29.jpg/500px-Winding_our_way_up_Byron_Glacier_trail_%286480079529%29.jpg"],
+      "Whittier":["https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Whittier%2C_Alaska_%282006%29.jpg/500px-Whittier%2C_Alaska_%282006%29.jpg"],
+      "Seward Eats":["https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg/500px-Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg"],
+      "Airbnb Seward":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Seward_harbor%2C_Alaska_%28AL%2BCA_804%29.jpg/500px-Seward_harbor%2C_Alaska_%28AL%2BCA_804%29.jpg"],
+      "Kenai Cruise":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg"],
+      "Bear Glacier":["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Resurrection_Bay_Bear_Glacier.jpg/500px-Resurrection_Bay_Bear_Glacier.jpg"],
+      "Harding Icefield":["https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/HardingIcefield2.jpg/500px-HardingIcefield2.jpg"]
+    };
+
+    var uniquePois = [];
+    var seenNames = {};
+    for (var d = 0; d < tripData.length; d++) {
+      var day = tripData[d];
+      for (var p = 0; p < day.pois.length; p++) {
+        var poi = day.pois[p];
+        if (expandedDetails[poi.name]) { poi.desc = expandedDetails[poi.name].desc; poi.tips = expandedDetails[poi.name].tips; }
+        else { poi.desc = "No detailed description available."; poi.tips = "No tips available."; }
+        poi.day = day.day;
+        if (!seenNames[poi.name]) {
+          seenNames[poi.name] = true;
+          poi.dayDateStr = day.dateStr;
+          if (verifiedImages[poi.name] && verifiedImages[poi.name].length > 0) { poi.images = verifiedImages[poi.name]; }
+          else if (poi.name === "Alaska Wildlife Conservation Center" && verifiedImages["AWCC"]) { poi.images = verifiedImages["AWCC"]; }
+          else { poi.images = [fallbackImage]; }
+          uniquePois.push(poi);
+        }
+      }
+    }
+    for (var i = 0; i < uniquePois.length; i++) {
+      var poiA = uniquePois[i];
+      poiA.randY = (Math.random() - 0.5);
+      poiA.randX = (Math.random() - 0.5);
+      poiA.offsetCoord = [poiA.coord[0] + poiA.randY * 0.004, poiA.coord[1] + poiA.randX * 0.006];
+      poiA.labelAngle = (i % 2 === 0) ? ((i % 4 === 0) ? -0.1 * Math.PI : 0.1 * Math.PI) : ((i % 4 === 1) ? 1.1 * Math.PI : 0.9 * Math.PI);
+    }
+
+    function getSanitizedId(name) { return 'poi-' + name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase(); }
+
+    function getDayCardHtml(day, isActive) {
+      if (!isActive) {
+        var html = '<div class="day-header">' + day.dateStr + '</div><div class="day-title">' + day.title + '</div>';
+        if (day.pois && day.pois.length > 0) {
+          html += '<div class="collapsed-pois">';
+          for (var j = 0; j < day.pois.length; j++) {
+            html += '<div class="collapsed-poi-name">' + day.pois[j].name + '</div>';
+          }
+          html += '</div>';
+        }
+        if (day.stay) {
+          html += '<div class="stay-info">' + day.stay + '</div>';
+        }
+        return html;
+      }
+      var html = '<div class="day-header">' + day.dateStr + '</div><div class="day-title">' + day.title + '</div><ul class="day-pois">';
+      for (var j = 0; j < day.pois.length; j++) {
+        var poi = day.pois[j];
+        var dn = fullNames[poi.name] || poi.name;
+        html += '<li class="sidebar-poi-item" data-poi-name="' + poi.name.replace(/"/g, '&quot;') + '"><span class="poi-dot" style="background-color:' + poi.color + ';"></span><span class="poi-name-text">' + dn + '</span><i class="fa-solid fa-chevron-right poi-arrow"></i></li>';
+      }
+      html += '</ul>';
+      if (day.drivingInfo) html += '<div class="driving-info"><i class="fa-solid fa-route"></i> ' + day.drivingInfo + '</div>';
+      if (day.stay) html += '<div class="stay-info">' + day.stay + '</div>';
+      var sd = sunlightData[day.day];
+      if (sd) {
+        html += '<div class="sunlight-bar">';
+        html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:#64748B;margin-bottom:2px;">';
+        html += '<span>' + sd.sunrise + ' \u2191</span><span>' + sd.sunset + ' \u2193</span>';
+        html += '</div>';
+        html += '<div style="height:8px;border-radius:4px;background:linear-gradient(to right, #4A90D9, #F5D742, #6B5B95);width:100%;"></div>';
+        html += '</div>';
+      }
+      var wd = weatherData[day.day];
+      if (wd) {
+        html += '<div class="weather-info">' + wd.condition + ' <span style="color:#1d4ed8;font-weight:600;font-size:14px;">' + wd.low + '</span> <span style="color:#64748b;">~</span> <span style="color:#b91c1c;font-weight:600;font-size:14px;">' + wd.high + '</span>  |  \uD83D\uDCA8 <span style="opacity:0.45;font-size:11px;">' + wd.wind + '</span></div>';
+      }
+      return html;
+    }
+
+    function updateSidebar() {
+      sidebarContent.innerHTML = '';
+      var isMobileCollapsed = (window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('mobile-collapsed'));
+      
+      var displayDay = activeDay;
+      if (isMobileCollapsed && activeDay === null) {
+        displayDay = 1;
+      }
+      
+      for (var i = 0; i < tripData.length; i++) {
+        var day = tripData[i];
+        var isActive = (displayDay === day.day);
+        
+        if (isMobileCollapsed && !isActive) {
+          continue; 
+        }
+        
+        var card = document.createElement('div');
+        card.className = (isActive && !isMobileCollapsed) ? 'day-card active' : 'day-card collapsed';
+        card.id = 'day-card-' + day.day;
+        card.setAttribute('data-day', day.day);
+        card.innerHTML = getDayCardHtml(day, isActive && !isMobileCollapsed);
+        sidebarContent.appendChild(card);
+        (function(d) { card.addEventListener('click', function(e) {
+          if (!e.target.closest('.sidebar-poi-item')) { selectDay(d.day); }
+        }); })(day);
+      }
+      var items = document.querySelectorAll('.sidebar-poi-item');
+      for (var i = 0; i < items.length; i++) {
+        (function(item) { item.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var poiName = item.getAttribute('data-poi-name');
+          for (var j = 0; j < uniquePois.length; j++) {
+            if (uniquePois[j].name === poiName) {
+              selectDay(uniquePois[j].day);
+              map.flyTo(uniquePois[j].coord, 13, { duration: 1.0 });
+              openPoiDetails(uniquePois[j]);
+              break;
+            }
+          }
+        }); })(items[i]);
+      }
+    }
+
+    function createSidebar() {
+      updateSidebar();
+    }
+    createSidebar();
+
+    function getPoiCoord(poi, zoom) {
+      if (zoom >= 12) {
+        return poi.coord;
+      }
+      if (zoom < 10) {
+        return [poi.coord[0] + (poi.randY || 0) * 0.02, poi.coord[1] + (poi.randX || 0) * 0.03];
+      }
+      return poi.offsetCoord || poi.coord;
+    }
+
+    function renderPois() {
+      markerGroup.clearLayers();
+      var currentZoom = map.getZoom();
+      for (var i = 0; i < uniquePois.length; i++) {
+        var poi = uniquePois[i];
+        var coord = getPoiCoord(poi, currentZoom);
+        var iconHtml = '<i class="fa-solid ' + poi.icon + '" style="color:' + poi.color + ';font-size:22px;transform:translate(-50%,-50%);"></i>';
+        var markerIcon = L.divIcon({ html: iconHtml, className: 'custom-poi-marker', iconSize: [24, 24], iconAnchor: [12, 12] });
+        var marker = L.marker(coord, { icon: markerIcon });
+        markerGroup.addLayer(marker);
+        poisMarkers[poi.name] = marker;
+        (function(p, co) { marker.on('click', function(e) { L.DomEvent.stopPropagation(e); selectDay(p.day); map.flyTo(co, 13, { duration: 1.0 }); openPoiDetails(p); }); })(poi, coord);
+      }
+    }
+
+    function renderAnnotations() {
+      leaderLineGroup.clearLayers();
+      textLabelGroup.clearLayers();
+      var currentZoom = map.getZoom();
+      var scale = Math.pow(2, (10 - currentZoom));
+      for (var i = 0; i < uniquePois.length; i++) {
+        var poi = uniquePois[i];
+        var coord = getPoiCoord(poi, currentZoom);
+        var angleRad = poi.labelAngle;
+        var xo = Math.cos(angleRad) * 0.015 * scale;
+        var yo = Math.sin(angleRad) * 0.008 * scale;
+        var textCoord = [coord[0] + yo, coord[1] + xo];
+        var horizCoord = [textCoord[0], textCoord[1] + 0.008 * scale];
+        var displayName = poi.name.split(' (')[0];
+        var labelHtml = '<div style="color:#0f172a;font-weight:600;font-size:14px;display:flex;align-items:center;gap:18px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,Noto Sans SC,Helvetica Neue,Arial,sans-serif;text-shadow:1px 1px 1px rgba(255,255,255,0.8);text-align:left;padding-left:18px;">' +
+          '<span style="white-space:nowrap;">' + displayName + '</span></div>';
+        var tli = L.divIcon({ html: labelHtml, className: 'map-annotation-label', iconSize: [120, 20], iconAnchor: [0, 10] });
+        var tlm = L.marker(horizCoord, { icon: tli, interactive: true });
+        textLabelGroup.addLayer(tlm);
+        (function(p, co) { tlm.on('click', function(e) { L.DomEvent.stopPropagation(e); selectDay(p.day); map.flyTo(co, 13, { duration: 1.0 }); openPoiDetails(p); }); })(poi, coord);
+      }
+    }
+
+    // ----------------------------------------------------
+    // DETAIL PANEL
+    // ----------------------------------------------------
+    window.openPoiDetails = function(poi) {
+      if (closePanelTimeout) { clearTimeout(closePanelTimeout); closePanelTimeout = null; }
+      closeDrawingIfActive();
+      var sid = getSanitizedId(poi.name);
+      var dd = poi.dayDateStr || "";
+      var dn = fullNames[poi.name] || poi.name;
+      var gm = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(poi.name.replace(/\s*\(.*?\)\s*/g, ''));
+      var ch = '';
+      if (poi.images && poi.images.length > 0) {
+        ch += '<div class="detail-carousel">';
+        if (poi.images.length > 1) { ch += '<button class="carousel-nav carousel-prev" data-carousel-dir="-1"><i class="fa-solid fa-chevron-left"></i></button><button class="carousel-nav carousel-next" data-carousel-dir="1"><i class="fa-solid fa-chevron-right"></i></button>'; }
+        for (var i = 0; i < poi.images.length; i++) {
+          var isMotel6 = poi.name === "Motel 6 Midtown";
+          var crossOriginAttr = isMotel6 ? '' : 'crossorigin="anonymous"';
+          var referrerPolicyAttr = isMotel6 ? '' : 'referrerpolicy="no-referrer"';
+          ch += '<img src="' + poi.images[i] + '" class="' + (i===0?'active':'') + '" data-index="' + i + '" ' + referrerPolicyAttr + ' ' + crossOriginAttr + ' loading="lazy" data-img-src="' + poi.images[i] + '">';
+        }
+        if (poi.images.length > 1) {
+          ch += '<div class="carousel-dots">';
+          for (var j = 0; j < poi.images.length; j++) { ch += '<button class="carousel-dot ' + (j===0?'active':'') + '" data-dot-index="' + j + '"></button>'; }
+          ch += '</div>';
+        }
+        ch += '</div>';
+      }
+      var html = ch +
+        '<div class="detail-body">' +
+        '<div class="detail-day-indicator">' + dd + '</div>' +
+        '<div class="detail-title-container"><i class="fa-solid ' + poi.icon + '" style="color:' + poi.color + '"></i><h2>' + dn + '</h2></div>' +
+        '<div class="detail-section description-section"><h4>📖 Description</h4><p>' + (poi.desc || 'No detailed description available.') + '</p></div>' +
+        '<div class="detail-section tips-section"><h4>💡 Tips</h4><p>' + (poi.tips || 'No detailed tips available.') + '</p></div>' +
+        (wildlifeData[poi.name] ? '<div class="detail-section wildlife-section"><h4>🐻 Wildlife Spotting</h4><p>' + wildlifeData[poi.name] + '</p></div>' : '') +
+        '<div class="detail-actions">' +
+        '<a class="detail-gmaps-btn" href="' + gm + '" target="_blank"><i class="fa-solid fa-map-location-dot"></i> Open in Google Maps</a>' +
+        (poi.receipt ? '<a class="detail-receipt-btn" href="' + poi.receipt + '" target="_blank"><i class="fa-solid fa-file-pdf"></i> Confirmation Receipt</a>' : '') +
+        '<button class="detail-note-btn" data-poi-name="' + poi.name.replace(/"/g, '&quot;') + '"><i class="fa-solid fa-pen"></i> Add Trip Note</button>' +
+        '<div id="note-input-container-' + sid + '" class="note-input-container" style="display:none;"><textarea id="note-textarea-' + sid + '" placeholder="Type your note here..."></textarea><button class="note-save-btn" data-poi-name="' + poi.name.replace(/"/g, '&quot;') + '">Save Note</button></div>' +
+        '<div id="note-display-' + sid + '" class="note-display" style="display:none;"></div></div></div>';
+      document.getElementById('detail-content').innerHTML = html;
+      var overlay = document.getElementById('detail-overlay');
+      if (overlay) { overlay.style.display = 'block'; overlay.offsetHeight; overlay.classList.add('open'); }
+      var carousel = document.querySelector('.detail-carousel');
+      if (carousel) {
+        carousel.querySelectorAll('[data-carousel-dir]').forEach(function(btn) { btn.addEventListener('click', function() { changeImage(btn, parseInt(btn.getAttribute('data-carousel-dir'))); }); });
+        carousel.querySelectorAll('[data-dot-index]').forEach(function(dot) { dot.addEventListener('click', function() { jumpToImage(dot, parseInt(dot.getAttribute('data-dot-index'))); }); });
+        carousel.querySelectorAll('img').forEach(function(img) { img.addEventListener('click', function() { openFullscreen(img.getAttribute('data-img-src')); }); });
+      }
+      var nb = document.querySelector('#detail-content .detail-note-btn');
+      if (nb) nb.addEventListener('click', function() { toggleNoteInput(nb.getAttribute('data-poi-name')); });
+      var sb = document.querySelector('#detail-content .note-save-btn');
+      if (sb) sb.addEventListener('click', function() { saveNote(sb.getAttribute('data-poi-name')); });
+      updateNoteDisplay(poi.name);
+    };
+    var closePanelTimeout = null;
+    window.closeDetailPanel = function() { var o = document.getElementById('detail-overlay'); if (o) { if (closePanelTimeout) clearTimeout(closePanelTimeout); o.classList.remove('open'); closePanelTimeout = setTimeout(function(){o.style.display='none';closePanelTimeout=null;},250); } };
+
+    window.changeImage = function(btn, dir) {
+      var c = btn.parentNode; var imgs = c.getElementsByTagName('img'); var dots = c.getElementsByClassName('carousel-dot');
+      var ai = 0; for (var i = 0; i < imgs.length; i++) { if (imgs[i].className.indexOf('active') !== -1) { ai = i; break; } }
+      var ni = (ai + dir + imgs.length) % imgs.length;
+      for (var i = 0; i < imgs.length; i++) { imgs[i].className = ''; if (dots[i]) dots[i].className = 'carousel-dot'; }
+      imgs[ni].className = 'active'; if (dots[ni]) dots[ni].className = 'carousel-dot active';
+    };
+    window.jumpToImage = function(dot, idx) {
+      var dc = dot.parentNode; var c = dc.parentNode; var imgs = c.getElementsByTagName('img'); var dots = dc.getElementsByClassName('carousel-dot');
+      for (var i = 0; i < imgs.length; i++) { imgs[i].className = ''; dots[i].className = 'carousel-dot'; }
+      imgs[idx].className = 'active'; dots[idx].className = 'carousel-dot active';
+    };
+
+    var zs = 1.0, panning = false, sx = 0, sy = 0, tx = 0, ty = 0, imgEl = null;
+    window.openFullscreen = function(src) {
+      document.getElementById('fullscreen-overlay').style.display = 'flex';
+      imgEl = document.getElementById('fullscreen-img'); imgEl.src = src; zs = 1.0; tx = 0; ty = 0;
+      imgEl.style.transform = 'translate(0px,0px) scale(1)';
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape' || e.key === 'Esc') closeFullscreenDirect(); });
+    };
+    window.closeFullscreenDirect = function(e) { if (e) e.stopPropagation(); document.getElementById('fullscreen-overlay').style.display = 'none'; };
+
+    window.toggleNoteInput = function(n) { var sid = getSanitizedId(n); var ic = document.getElementById('note-input-container-' + sid); if (ic) { if (ic.style.display === 'none') { ic.style.display = 'flex'; var ta = document.getElementById('note-textarea-' + sid); if (ta) { ta.value = noteData[n] || ''; ta.focus(); } } else { ic.style.display = 'none'; } } };
+    window.saveNote = function(n) { var sid = getSanitizedId(n); var ta = document.getElementById('note-textarea-' + sid); if (ta) { noteData[n] = ta.value.trim(); localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); pushNotesToCloud(); updateNoteDisplay(n); document.getElementById('note-input-container-' + sid).style.display = 'none'; } };
+    window.updateNoteDisplay = function(n) { var sid = getSanitizedId(n); var d = document.getElementById('note-display-' + sid); if (d) { var t = noteData[n]; if (t) { d.innerHTML = '<div class="note-text-wrapper"><strong>✏️ Note:</strong> ' + t.replace(/\n/g,'<br>') + '</div><button class="note-delete-btn" title="Delete Note"><i class="fa-solid fa-trash"></i></button>'; d.style.display = 'flex'; d.querySelector('.note-delete-btn').addEventListener('click', function(){ delete noteData[n]; localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); pushNotesToCloud(); updateNoteDisplay(n); }); } else { d.innerHTML = ''; d.style.display = 'none'; } } };
+    window.deleteNote = function(n) { delete noteData[n]; localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); pushNotesToCloud(); updateNoteDisplay(n); };
+
+    // ----------------------------------------------------
+    // DRAWING - FIX 2: auto-disable on zoom/pan/day-select
+    // ----------------------------------------------------
+    var isDrawingMode = false, isDrawingActive = false, currentPolyline = null;
+    function closeDrawingIfActive() {
+      if (isDrawingMode) {
+        isDrawingMode = false; isDrawingActive = false; currentPolyline = null;
+        var btn = document.getElementById('map-draw-btn');
+        if (btn) btn.classList.remove('active');
+        map.getContainer().style.cursor = ''; map.dragging.enable(); drawingLayerGroup.clearLayers();
+      }
+    }
+    map.on('mousedown', function(e) { if (!isDrawingMode) return; isDrawingActive = true; map.dragging.disable(); currentPolyline = L.polyline([e.latlng], {color:'#ef4444',weight:2,opacity:0.8,interactive:false}).addTo(drawingLayerGroup); });
+    map.on('mousemove', function(e) { if (!isDrawingMode || !isDrawingActive || !currentPolyline) return; currentPolyline.addLatLng(e.latlng); });
+    map.on('mouseup', function() { if (!isDrawingMode) return; isDrawingActive = false; map.dragging.enable(); currentPolyline = null; });
+    map.on('mouseout', function() { if (isDrawingMode && isDrawingActive) { isDrawingActive = false; map.dragging.enable(); currentPolyline = null; } });
+    map.on('zoomstart', function() { if (isDrawingMode) closeDrawingIfActive(); });
+    map.on('dragstart', function() { if (isDrawingMode) closeDrawingIfActive(); });
+
+    // FIX 9: Only "Alaska Trip" resets; map click does nothing on blank
+    window.resetMapAndDrawing = function() { closeDetailPanel(); resetFullOverview(); closeDrawingIfActive(); };
+    map.on('click', function(e) { if (!isDrawingMode) { closeDetailPanel(); } });
+
+    // ----------------------------------------------------
+    // CITY CLUSTERS
+    // ----------------------------------------------------
+    function renderCityClusters() {
+      clusterGroup.clearLayers();
+      for (var i = 0; i < cityClusters.length; i++) {
+        var cc = cityClusters[i];
+        var m = L.marker(cc.coord, { icon: L.divIcon({html:'<div class="city-cluster-inner">' + cc.name + '</div>',className:'city-cluster-marker',iconSize:null,iconAnchor:null}) });
+        (function(b) { m.on('click', function() { map.flyToBounds(b, {padding:[50,50],duration:1.5}); }); })(cc.bounds);
+        clusterGroup.addLayer(m);
+      }
+    }
+
+    // ----------------------------------------------------
+    // FIX 11: 8 Alaska NP POIs
+    // ----------------------------------------------------
+    var npPois = [
+      { name:"Denali NP", coord:[63.42,-150.68], bounds:[[63.2,-151.0],[63.6,-150.3]] },
+      { name:"Kenai Fjords NP", coord:[60.00,-149.80], bounds:[[59.8,-150.0],[60.2,-149.5]] },
+      { name:"Wrangell-St. Elias NP", coord:[61.50,-142.50], bounds:[[61.0,-143.5],[62.0,-141.5]] },
+      { name:"Glacier Bay NP", coord:[58.80,-136.80], bounds:[[58.3,-137.2],[59.3,-136.3]] },
+      { name:"Katmai NP", coord:[58.67,-155.30], bounds:[[58.3,-155.8],[59.0,-154.5]] },
+      { name:"Lake Clark NP", coord:[60.50,-153.50], bounds:[[60.0,-154.0],[61.0,-153.0]] },
+      { name:"Gates of the Arctic NP", coord:[67.40,-153.30], bounds:[[67.0,-154.0],[67.8,-152.5]] },
+      { name:"Kobuk Valley NP", coord:[67.60,-159.50], bounds:[[67.2,-160.0],[68.0,-159.0]] }
+    ];
+    var npMarkers = [];
+    function renderNpPois() {
+      for (var n = 0; n < npMarkers.length; n++) markerGroup.removeLayer(npMarkers[n]);
+      npMarkers = [];
+      var zoom = map.getZoom();
+      if (zoom >= 8) {
+        for (var n = 0; n < npPois.length; n++) {
+          var np = npPois[n];
+          if (zoom < 8) {
+            var labelHtml = '<div style="display:flex;align-items:center;gap:6px;transform:translate(-50%,-50%);"><i class="fa-solid fa-tree" style="color:#1B5E20;font-size:22px;"></i></div>';
+          } else {
+            // FIX 5: Gray label next to tree icon, clickable
+            var labelHtml = '<div style="display:flex;align-items:center;gap:6px;transform:translate(-50%,-50%);"><i class="fa-solid fa-tree" style="color:#1B5E20;font-size:22px;"></i><span style="color:#64748B;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;">' + np.name + '</span></div>';
+          }
+          var icon = L.divIcon({html:labelHtml,className:'custom-poi-marker',iconSize:[120,24],iconAnchor:[60,12]});
+          var m = L.marker(np.coord, {icon:icon,interactive:true});
+          markerGroup.addLayer(m); npMarkers.push(m);
+          (function(npData) {
+            m.on('click', function(e) {
+              L.DomEvent.stopPropagation(e);
+              map.flyTo(npData.coord, 10, {duration:1.0});
+              var fakePoi = {
+                name: npData.name,
+                coord: npData.coord,
+                type: "national_park",
+                icon: "fa-tree",
+                color: "#64748B",
+                desc: npData.name + " is one of Alaska&#39;s 8 national parks, protecting vast wilderness landscapes.",
+                tips: "Check NPS.gov for current conditions, permits, and visitor center hours.",
+                images: [fallbackImage],
+                dayDateStr: ""
+              };
+              openPoiDetails(fakePoi);
+            });
+          })(np);
+        }
+      }
+    }
+
+    // ----------------------------------------------------
+    // ZOOM HANDLING - FIX 1: static routes always visible
+    // ----------------------------------------------------
+    function handleZoomVisibility() {
+      var z = map.getZoom();
+      if (z < 8) {
+        if (map.hasLayer(markerGroup)) map.removeLayer(markerGroup);
+        if (map.hasLayer(leaderLineGroup)) map.removeLayer(leaderLineGroup);
+        if (map.hasLayer(textLabelGroup)) map.removeLayer(textLabelGroup);
+        if (!map.hasLayer(clusterGroup)) map.addLayer(clusterGroup);
+      } else {
+        renderPois(); // Added so POIs positions adjust on zoom!
+        renderAnnotations();
+        if (!map.hasLayer(markerGroup)) map.addLayer(markerGroup);
+        if (!map.hasLayer(leaderLineGroup)) map.addLayer(leaderLineGroup);
+        if (!map.hasLayer(textLabelGroup)) map.addLayer(textLabelGroup);
+        // FIX 1: static routes always visible, don't remove them
+        if (!map.hasLayer(staticRouteGroup)) map.addLayer(staticRouteGroup);
+        if (!map.hasLayer(activeRouteGroup)) map.addLayer(activeRouteGroup);
+        if (map.hasLayer(clusterGroup)) map.removeLayer(clusterGroup);
+        renderNpPois();
+      }
+      updateRouteStyles();
+    }
+
+    map.on('zoomend', handleZoomVisibility);
+    renderPois();
+    renderCityClusters();
+    renderNpPois();
+    handleZoomVisibility();
+
+    for (var d = 1; d <= 11; d++) routes[d] = [];
+
+    // FIX 5: Tundra Tour - orange #E65100, weight 4, dash '3,6'
+    var tundraRoute = L.polyline([[63.7327,-148.9107],[63.735,-148.96],[63.73,-149.03],[63.725,-149.12],[63.735,-149.20],[63.74,-149.27],[63.72,-149.40],[63.66,-149.52],[63.63,-149.65],[63.58,-149.75],[63.54,-149.85],[63.53,-149.95],[63.54,-150.05]], {
+      color:'#E65100', weight:4, dashArray:'3,6', opacity:0.6
+    });
+    tundraRoute.isTundraRoute = true;
+    tundraRoute.bindTooltip("Tundra Wilderness Tour", {className:'leaflet-tooltip-own',sticky:true});
+    staticRouteGroup.addLayer(tundraRoute);
+    routes[3].push(tundraRoute);
+
+    // ----------------------------------------------------
+    // ROUTE FETCHING - FIX 8: Day 4 = 2 segments
+    // ----------------------------------------------------
+    function fetchRoute(dayObj) {
+      var dn = dayObj.day;
+      if (dn === 4 && dayObj.routeSegments) {
+        for (var s = 0; s < dayObj.routeSegments.length; s++) {
+          var seg = dayObj.routeSegments[s];
+          var cs = '';
+          for (var i = 0; i < seg.coords.length; i++) { cs += seg.coords[i][1] + ',' + seg.coords[i][0]; if (i < seg.coords.length-1) cs += ';'; }
+          (function(lb) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://router.project-osrm.org/route/v1/driving/' + cs + '?geometries=geojson&overview=full', true);
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                  try {
+                    var r = JSON.parse(xhr.responseText);
+                    if (r.routes && r.routes.length > 0) {
+                      var poly = L.geoJSON(r.routes[0].geometry, {style:function(){return{color:'#0f172a',weight:3,dashArray:'10,11',opacity:0.3};}});
+                      poly.bindTooltip(lb,{className:'leaflet-tooltip-own',sticky:true});
+                      staticRouteGroup.addLayer(poly); routes[dn].push(poly);
+                    }
+                  } catch(e) { fallbackSL(seg.coords, lb, dn); }
+                } else { fallbackSL(seg.coords, lb, dn); }
+              }
+            }; xhr.send();
+          })(seg.label);
+        }
+        return;
+      }
+      if (dn === 9) {
+        var bp = L.polyline(dayObj.boatRouteCoords, {color:'#7b1fa2',weight:3,dashArray:'5,5',opacity:0.3});
+        bp.bindTooltip("Kenai Fjords Cruise",{className:'leaflet-tooltip-own',sticky:true});
+        staticRouteGroup.addLayer(bp); routes[dn].push(bp); return;
+      }
+      if (!dayObj.routeCoords || dayObj.routeCoords.length < 2) return;
+      var cs = '';
+      for (var i = 0; i < dayObj.routeCoords.length; i++) { cs += dayObj.routeCoords[i][1] + ',' + dayObj.routeCoords[i][0]; if (i < dayObj.routeCoords.length-1) cs += ';'; }
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://router.project-osrm.org/route/v1/driving/' + cs + '?geometries=geojson&overview=full', true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            try {
+              var r = JSON.parse(xhr.responseText);
+              if (r.routes && r.routes.length > 0) {
+                var poly = L.geoJSON(r.routes[0].geometry, {style:function(){return{color:'#0f172a',weight:3,dashArray:'10,11',opacity:0.3};}});
+                var ts = driveTimes[dn]; if (ts) poly.bindTooltip(ts,{className:'leaflet-tooltip-own',sticky:true});
+                staticRouteGroup.addLayer(poly); routes[dn].push(poly);
+              }
+            } catch(e) { fallbackSL(dayObj.routeCoords, driveTimes[dn]||'', dn); }
+          } else { fallbackSL(dayObj.routeCoords, driveTimes[dn]||'', dn); }
+        }
+      }; xhr.send();
+    }
+    function fallbackSL(coords, label, dn) {
+      var poly = L.polyline(coords, {color:'#0f172a',weight:3,dashArray:'10,11',opacity:0.3});
+      if (label) poly.bindTooltip(label,{className:'leaflet-tooltip-own',sticky:true});
+      staticRouteGroup.addLayer(poly); routes[dn].push(poly);
+    }
+    for (var d = 0; d < tripData.length; d++) fetchRoute(tripData[d]);
+
+    // ----------------------------------------------------
+    // DAY SELECTION
+    // ----------------------------------------------------
+    function updateRouteStyles() {
+      var z = map.getZoom();
+      for (var id in routes) { if (routes.hasOwnProperty(id)) {
+        var dn = parseInt(id), list = routes[id];
+        for (var j = 0; j < list.length; j++) {
+          var line = list[j], isT = line.isTundraRoute, isC = (dn === activeDay);
+          var dash = isT ? '3,6' : (dn == 9 ? '5,5' : '10,11');
+          var col = isT ? '#E65100' : (dn == 9 ? '#7b1fa2' : '#0f172a');
+          var op, w;
+          if (z >= 10) {
+            op = (activeDay !== null) ? (isC ? 0.5 : 0.05) : 0.05;
+            w = isT ? 4 : (dn == 9 ? 3.5 : 3.5);
+          } else {
+            if (activeDay !== null) { op = isC ? 1.0 : 0.1; w = isC ? (isT ? 4 : (dn==9?3.5:3.5)) : (isT ? 4 : 3); }
+            else { op = 0.3; w = isT ? 4 : 3; }
+          }
+          line.setStyle({color:col, opacity:op, weight:w, dashArray:dash});
+          if (isC && op > 0.05 && typeof line.bringToFront === 'function') line.bringToFront();
+        }
+      }}
+    }
+
+    function selectDay(dayNum) {
+      closeDetailPanel();
+      closeDrawingIfActive();
+      activeDay = dayNum;
+      updateSidebar();
+      updateRouteStyles();
+      var ac = document.getElementById('day-card-' + dayNum);
+      if (ac) { ac.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+      var dd = null;
+      for (var k = 0; k < tripData.length; k++) { if (tripData[k].day === dayNum) { dd = tripData[k]; break; } }
+      if (dd) {
+        // FIX 3: Day 2 = Denali only
+        if (dayNum === 2) {
+          map.flyTo([63.7327, -148.9107], 11, {duration:1.5});
+        } else {
+          var b = [];
+          for (var p = 0; p < dd.pois.length; p++) b.push(dd.pois[p].coord);
+          if (dd.boatRouteCoords && dd.boatRouteCoords.length > 0) { for (var r = 0; r < dd.boatRouteCoords.length; r++) b.push(dd.boatRouteCoords[r]); }
+          else if (dd.routeCoords && dd.routeCoords.length > 0) { for (var r = 0; r < dd.routeCoords.length; r++) b.push(dd.routeCoords[r]); }
+          if (b.length > 0) map.flyToBounds(b, {padding:[80,80],duration:1.5});
+        }
+      }
+    }
+
+    function resetFullOverview() {
+      activeDay = null;
+      updateSidebar();
+      updateRouteStyles();
+      var all = [];
+      for (var d = 0; d < tripData.length; d++) { for (var p = 0; p < tripData[d].pois.length; p++) { all.push(tripData[d].pois[p].coord); } }
+      if (all.length > 0) map.flyToBounds(all, {padding:[50,50],duration:1.5});
+    }
+
+    // Keyboard
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') closeDetailPanel();
+      else if (e.key === 'ArrowRight') { var n = (activeDay===null)?1:activeDay+1; if (n>tripData.length) n=1; selectDay(n); }
+      else if (e.key === 'ArrowLeft') { var p = (activeDay===null)?tripData.length:activeDay-1; if (p<1) p=tripData.length; selectDay(p); }
+    });
+
+    var tsx = 0, tex = 0;
+    sidebarContent.addEventListener('touchstart',function(e){tsx=e.changedTouches[0].screenX;},false);
+    sidebarContent.addEventListener('touchend',function(e){
+      tex=e.changedTouches[0].screenX; if(window.innerWidth>=768) return;
+      if(tex<tsx-50){var n=(activeDay===null)?1:activeDay+1; if(n>tripData.length)n=1; selectDay(n);}
+      else if(tex>tsx+50){var p=(activeDay===null)?tripData.length:activeDay-1; if(p<1)p=tripData.length; selectDay(p);}
+    },false);
+
+    // ----------------------------------------------------
+    // CONTROLS
+    // ----------------------------------------------------
+    var ToggleControl = L.Control.extend({
+      options:{position:'topright'},
+      onAdd:function(){
+        var c = L.DomUtil.create('div','map-toggle-control');
+        var sb = L.DomUtil.create('button','map-toggle-btn active',c); sb.innerHTML='Street';
+        var sat = L.DomUtil.create('button','map-toggle-btn',c); sat.innerHTML='Satellite';
+        L.DomUtil.create('div','map-toggle-divider',c);
+        var db = L.DomUtil.create('button','map-toggle-btn',c); db.id='map-draw-btn'; db.innerHTML='<i class="fa-solid fa-pen"></i>'; db.title='Draw Mode';
+        L.DomEvent.on(sb,'click',function(){if(!map.hasLayer(positronTile)){map.removeLayer(satelliteTile);map.addLayer(positronTile);L.DomUtil.removeClass(map.getContainer(),'satellite-active');L.DomUtil.addClass(sb,'active');L.DomUtil.removeClass(sat,'active');}});
+        L.DomEvent.on(sat,'click',function(){if(!map.hasLayer(satelliteTile)){map.removeLayer(positronTile);map.addLayer(satelliteTile);L.DomUtil.addClass(map.getContainer(),'satellite-active');L.DomUtil.addClass(sat,'active');L.DomUtil.removeClass(sb,'active');}});
+        L.DomEvent.on(db,'click',function(){
+          isDrawingMode = !isDrawingMode;
+          if(isDrawingMode){db.classList.add('active');map.getContainer().style.cursor='crosshair';}
+          else{db.classList.remove('active');map.getContainer().style.cursor='';drawingLayerGroup.clearLayers();}
+        });
+        return c;
+      }
+    });
+    map.addControl(new ToggleControl());
+
+    // FIX 12: Legend = 1 icon per row (no duplicate emoji)
+    var LegendControl = L.Control.extend({
+      options:{position:'bottomright'},
+      onAdd:function(){
+        var c = L.DomUtil.create('div','map-legend');
+        c.innerHTML =
+          '<div class="legend-item"><i class="fa-solid fa-mountain" style="color:#2e7d32"></i> <span>Hiking / Activity</span></div>' +
+          '<div class="legend-item"><i class="fa-solid fa-hotel" style="color:#1565c0"></i> <span>Hotel / Lodging</span></div>' +
+          '<div class="legend-item"><i class="fa-solid fa-utensils" style="color:#e65100"></i> <span>Dining</span></div>' +
+          '<div class="legend-item"><i class="fa-solid fa-plane-departure" style="color:#c62828"></i> <span>Airport</span></div>' +
+          '<div class="legend-item"><i class="fa-solid fa-ship" style="color:#7b1fa2"></i> <span>Cruise</span></div>' +
+          '<div class="legend-item"><i class="fa-solid fa-tree" style="color:#1B5E20"></i> <span>National Park</span></div>';
+        return c;
+      }
+    });
+    map.addControl(new LegendControl());
+
+    // ----------------------------------------------------
+    // EVENT BINDING (no inline onclick)
+    // ----------------------------------------------------
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('sidebar-title').addEventListener('click', function() { resetMapAndDrawing(); });
+      document.getElementById('detail-close-btn').addEventListener('click', function() { closeDetailPanel(); });
+      document.getElementById('detail-overlay').addEventListener('click', function(e) { if (e.target === this) closeDetailPanel(); });
+      document.getElementById('fullscreen-close-btn').addEventListener('click', function(e) { closeFullscreenDirect(e); });
+      document.getElementById('fullscreen-overlay').addEventListener('click', function(e) { if (e.target === this) closeFullscreenDirect(e); });
+      var fc = document.querySelector('.fullscreen-image-container');
+      if (fc) {
+        fc.addEventListener('wheel', function(e) { e.preventDefault(); var zf=1.1; if(e.deltaY>0) zs=Math.max(0.5,zs/zf); else zs=Math.min(5.0,zs*zf); if(imgEl) imgEl.style.transform='translate('+tx+'px,'+ty+'px) scale('+zs+')'; }, {passive:false});
+        fc.addEventListener('mousedown', function(e) { e.preventDefault(); panning=true; sx=e.clientX-tx; sy=e.clientY-ty; });
+        window.addEventListener('mousemove', function(e) { if(!panning) return; tx=e.clientX-sx; ty=e.clientY-sy; if(imgEl) imgEl.style.transform='translate('+tx+'px,'+ty+'px) scale('+zs+')'; });
+        window.addEventListener('mouseup', function() { panning=false; });
+        fc.addEventListener('touchstart', function(e) { if(e.touches.length===1){panning=true;lastTouchX=e.touches[0].clientX;lastTouchY=e.touches[0].clientY;}else if(e.touches.length===2){panning=false;initialDistance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);initialScale=zs;} }, {passive:false});
+        fc.addEventListener('touchmove', function(e) { e.preventDefault(); if(panning&&e.touches.length===1){tx+=e.touches[0].clientX-lastTouchX;ty+=e.touches[0].clientY-lastTouchY;lastTouchX=e.touches[0].clientX;lastTouchY=e.touches[0].clientY;if(imgEl)imgEl.style.transform='translate('+tx+'px,'+ty+'px) scale('+zs+')';}else if(e.touches.length===2){var dist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);zs=Math.min(5,Math.max(0.5,initialScale*(dist/initialDistance)));if(imgEl)imgEl.style.transform='translate('+tx+'px,'+ty+'px) scale('+zs+')';} }, {passive:false});
+        fc.addEventListener('touchend', function() { panning=false; });
+      }
+    });
+
+    setTimeout(function() { resetFullOverview(); }, 500);
+
+    // Mobile Drag Handle Touch Interaction
+    var dragHandle = document.getElementById('sidebar-drag-handle');
+    var sidebar = document.getElementById('sidebar');
+    
+    if (dragHandle && sidebar) {
+      var startY = 0;
+      var startHeight = 0;
+      var isDragging = false;
+      
+      dragHandle.addEventListener('touchstart', function(e) {
+        if (e.touches.length === 1) {
+          startY = e.touches[0].clientY;
+          startHeight = sidebar.getBoundingClientRect().height;
+          isDragging = true;
+          sidebar.classList.add('dragging');
+        }
+      }, { passive: true });
+      
+      window.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
+        if (e.cancelable) e.preventDefault();
+        var currentY = e.touches[0].clientY;
+        var deltaY = startY - currentY;
+        var newHeight = startHeight + deltaY;
+        
+        var minH = window.innerHeight * 0.32;
+        var maxH = window.innerHeight;
+        if (newHeight < minH) newHeight = minH;
+        if (newHeight > maxH) newHeight = maxH;
+        
+        sidebar.style.height = newHeight + 'px';
+      }, { passive: false });
+      
+      window.addEventListener('touchend', function(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        sidebar.classList.remove('dragging');
+        
+        var currentHeight = sidebar.getBoundingClientRect().height;
+        var threshold = window.innerHeight * 0.55;
+        
+        if (currentHeight > threshold) {
+          sidebar.style.height = '100vh';
+          sidebar.classList.remove('mobile-collapsed');
+          sidebar.classList.add('mobile-expanded');
+        } else {
+          sidebar.style.height = '32vh';
+          sidebar.classList.add('mobile-collapsed');
+          sidebar.classList.remove('mobile-expanded');
+        }
+        
+        updateSidebar();
+        
+        setTimeout(function() {
+          map.invalidateSize();
+        }, 320);
+      }, { passive: true });
+    }
+
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768) {
+        if (sidebar) sidebar.style.height = '';
+      } else {
+        if (sidebar) {
+          if (sidebar.classList.contains('mobile-collapsed')) {
+            sidebar.style.height = '32vh';
+          } else {
+            sidebar.style.height = '100vh';
+          }
+        }
+      }
+      updateSidebar();
+    });
+  </script>
+</body>
+</html>
