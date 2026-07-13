@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Alaska Trip Map · 阿拉斯加之旅</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#ececec;color:#222}
+#app{display:flex;height:100vh;overflow:hidden}
+#sidebar{width:380px;min-width:380px;background:#fff;overflow-y:auto;padding:20px 16px;border-right:1px solid #d0d0d0;z-index:1000}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#bbb;border-radius:2px}
+.sidebar-header{margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e0e0e0}
+.sidebar-header h1{font-size:20px;font-weight:700;color:#111;letter-spacing:-0.3px}
+.sidebar-header .subtitle{font-size:12px;color:#888;margin-top:2px}
+.sidebar-header .date-range{font-size:12px;color:#666;margin-top:1px}
+.sidebar-header .weather-note{font-size:10px;color:#999;margin-top:3px;line-height:1.3}
+.day-weather{font-size:11px;padding:2px 0;margin-bottom:2px;line-height:1.3;white-space:normal}
+.day-card{background:#f5f5f5;border-radius:8px;padding:10px 14px;margin-bottom:7px;cursor:pointer;transition:all .12s;border:1.5px solid transparent}
+.day-card:hover{background:#ececec}
+.day-card.active{border-color:#111;background:#e0e0e0}
+.day-card .day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.day-card .day-num{font-size:11px;font-weight:600;color:#999;letter-spacing:0.3px}
+.day-card .day-date{font-size:11px;color:#999}
+.day-card .day-title{font-size:14px;font-weight:600;color:#111;margin-bottom:2px}
+.day-card .day-drive{font-size:11px;color:#777;padding:3px 0;border-top:1px solid #ddd;margin-top:3px;padding-top:4px}
+.day-card .day-drive i{font-size:10px;margin-right:3px}
+.day-card ul{list-style:none;padding:0;margin-top:1px}
+.day-card ul li{font-size:12px;padding:2px 0 2px 18px;position:relative;line-height:1.4;color:#444}
+.day-card ul li .li-icon{position:absolute;left:0;top:3px;width:14px;text-align:center;font-size:10px}
+#map{flex:1;height:100vh;z-index:500}
+.leaflet-container{background:#ddd !important}
+.leaflet-tile-pane img{filter:brightness(0.82) contrast(1.12) saturate(0.4)}
+.leaflet-control-zoom a{background:#fff;color:#333;border-color:#bbb;width:30px;height:30px;line-height:30px}
+.leaflet-control-zoom a:hover{background:#f0f0f0}
+.layer-toggle{position:absolute;top:16px;right:16px;z-index:1000;background:#fff;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.1);overflow:hidden;display:flex}
+.layer-btn{padding:6px 12px;font-size:12px;cursor:pointer;border:none;background:transparent;color:#666;transition:all .12s;font-family:inherit}
+.layer-btn:hover{background:#f0f0f0}
+.layer-btn.active{background:#222;color:#fff}
+.custom-popup .leaflet-popup-content-wrapper{background:#fff;color:#222;border-radius:8px;box-shadow:0 2px 16px rgba(0,0,0,.12)}
+.custom-popup .leaflet-popup-content{margin:0;font-size:13px;line-height:1.5}
+.custom-popup .leaflet-popup-tip{background:#fff}
+.popup-inner{padding:10px 14px 12px}
+.popup-title{font-size:14px;font-weight:600;color:#111;margin-bottom:2px}
+.popup-day{color:#888;font-size:11px;margin-bottom:2px}
+.popup-desc{color:#666;font-size:12px;margin-bottom:4px}
+.popup-btn{display:inline-flex;align-items:center;gap:4px;background:#222;color:#fff;padding:5px 12px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:500;transition:background .15s;margin-top:4px}
+.popup-btn:hover{background:#444}
+.popup-btn i{font-size:10px}
+.popup-carousel{width:100%;height:140px;overflow:hidden;position:relative;background:#e0e0e0;border-radius:8px 8px 0 0}
+.carousel-imgs{width:100%;height:100%}
+.carousel-img{width:100%;height:100%;object-fit:cover;display:none}
+.carousel-img.active{display:block}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);color:#fff;border:none;width:22px;height:22px;border-radius:50%;font-size:14px;cursor:pointer;line-height:22px;text-align:center;z-index:2}
+.carousel-btn:hover{background:rgba(0,0,0,.65)}
+.carousel-prev{left:5px}
+.carousel-next{right:5px}
+.carousel-dots{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:2}
+.carousel-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.45);cursor:pointer}
+.carousel-dot.active{background:#fff;width:7px;height:7px}
+.popup-desc-cn{font-size:12px;color:#555;line-height:1.6;padding:4px 0 2px;border-top:1px solid #eee;margin-top:4px}
+.legend{position:absolute;bottom:24px;right:16px;z-index:1000;background:rgba(255,255,255,.93);padding:8px 12px;border-radius:8px;border:1px solid #ccc;box-shadow:0 1px 8px rgba(0,0,0,.06);font-size:11px;min-width:120px}
+.legend h3{font-size:11px;color:#888;margin-bottom:4px;font-weight:500;letter-spacing:0.3px}
+.legend-item{display:flex;align-items:center;gap:6px;padding:1px 0}
+.legend-icon{width:16px;text-align:center;color:#555;font-size:11px}
+.legend-text{color:#444;font-size:11px}
+.legend-line{display:flex;align-items:center;gap:6px;padding:1px 0}
+.legend-line-swatch{width:18px;height:2px;border-radius:1px;flex-shrink:0}
+.leaflet-control-attribution{background:rgba(255,255,255,.8)!important;color:#999!important;font-size:9px!important;padding:2px 6px!important}
+.leaflet-control-attribution a{color:#666!important}
+@media(max-width:820px){
+  #app{flex-direction:column}
+  #sidebar{width:100%;min-width:unset;max-height:32vh;border-right:none;border-bottom:1px solid #ddd;padding:12px}
+  #map{height:68vh}
+  .legend{bottom:12px;right:10px;padding:6px 10px;font-size:10px;min-width:100px}
+  .layer-toggle{top:10px;right:10px}
+  .layer-btn{padding:4px 8px;font-size:11px}
+}
+@media(max-width:480px){
+  #sidebar{max-height:28vh;padding:8px}
+  .day-card{padding:8px 10px}
+  .day-card .day-title{font-size:13px}
+}
+.leaflet-marker-icon.leaflet-div-icon{background:transparent;border:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sidebar"><div class="sidebar-header"><h1>Alaska Road Trip</h1><div class="subtitle">阿拉斯加自驾之旅 · 含天气预报</div><div class="date-range">Jul 12 – 22, 2026 · 11 Days · Updated: Jul 13 10AM AKDT</div><div class="weather-note">📡 数据源: NOAA weather.gov · 🔮 表示超出预报范围</div></div><div id="day-list"></div></div>
+  <div id="map"></div>
+  <div class="layer-toggle"><button class="layer-btn active" data-layer="street">Street</button><button class="layer-btn" data-layer="satellite">Satellite</button></div>
+  <div class="legend"><h3>Legend</h3>
+    <div class="legend-item"><span class="legend-icon"><i class="fas fa-mountain"></i></span><span>Activity</span></div>
+    <div class="legend-item"><span class="legend-icon"><i class="fas fa-hotel"></i></span><span>Hotel</span></div>
+    <div class="legend-item"><span class="legend-icon"><i class="fas fa-utensils"></i></span><span>Food</span></div>
+    <div class="legend-item"><span class="legend-icon"><i class="fas fa-plane-departure"></i></span><span>Airport</span></div>
+    <div class="legend-item"><span class="legend-icon"><i class="fas fa-ship"></i></span><span>Cruise</span></div>
+    <div class="legend-line"><span class="legend-line-swatch" style="background:#222"></span><span>Driving Route</span></div>
+    <div class="legend-line"><span class="legend-line-swatch" style="background:#7b1fa2;border-top:2px dashed #7b1fa2;height:0"></span><span>Cruise Route</span></div>
+  </div>
+</div>
+<script>
+// ═══════════════════════════════════════════════════════ DATA
+const COLORS={activity:'#2e7d32',hotel:'#1565c0',food:'#e65100',airport:'#c62828',cruise:'#7b1fa2'};
+const FAI={activity:'<i class="fas fa-mountain"></i>',hotel:'<i class="fas fa-hotel"></i>',food:'<i class="fas fa-utensils"></i>',airport:'<i class="fas fa-plane-departure"></i>',cruise:'<i class="fas fa-ship"></i>'};
+var DAYS,IMG,DESC,allPoints,detailMarkers,clusterMarkers,fullRouteLine,dayRouteLines;
+var detailLayer,clusterLayer,CLUSTER_ZOOM=8;
+var CLUSTERS,CRUISE,OSRM='https://router.project-osrm.org/route/v1/driving/';
+
+function initData(){
+DAYS=[
+{day:1,date:'Sun Jul 12',title:'Arrive Anchorage',weather:'—',wicon:'✅',wcolor:'#999',events:[{type:'airport',title:'Ted Stevens Anchorage Intl Airport',desc:'ANC - 抵达',lat:61.1742,lng:-149.9964},{type:'hotel',title:'Motel 6 Anchorage Midtown',desc:'入住 - 5000 A St',lat:61.1770,lng:-149.8700}],drive:'Airport to Motel 6 Midtown - 5 min'},
+{day:2,date:'Mon Jul 13',title:'Denali National Park',weather:'53—58°F Scattered Showers · PoP 40%',wicon:'🌧️',wcolor:'#e65100',events:[{type:'activity',title:'Murie Science Learning Center',desc:'游客中心 - 借grippers',lat:63.7327,lng:-148.9107},{type:'activity',title:'Horseshoe Lake Trail',desc:'2-4 mi - 动物观测',lat:63.7200,lng:-148.9000},{type:'activity',title:'Mount Healy Overlook Trail',desc:'2.7 mi - 河谷全景',lat:63.7400,lng:-148.8700},{type:'activity',title:'Savage Alpine Trail',desc:'4 mi - 苔原山脊',lat:63.7100,lng:-148.8800},{type:'hotel',title:'Cantwell Cabins',desc:'Denali区域住宿',lat:63.3920,lng:-148.9370}],drive:'Anchorage to Denali - Parks Hwy AK-3 - 2.5h'},
+{day:3,date:'Tue Jul 14',title:'Denali to Fairbanks',weather:'48—70°F Mostly Cloudy',wicon:'⛅',wcolor:'#2e7d32',events:[{type:'activity',title:'Tundra Wilderness Tour',desc:'5.5h 巴士游',lat:63.7280,lng:-148.9100},{type:'hotel',title:'7 Gables Inn and Suites',desc:'Fairbanks住宿',lat:64.8580,lng:-147.8340}],drive:'Denali to Fairbanks - Parks Hwy AK-3 - 2h'},
+{day:4,date:'Wed Jul 15',title:'Fairbanks to Valdez',weather:'52—54°F Rain · PoP 100% ⚠️',wicon:'🌧️',wcolor:'#c62828',events:[{type:'activity',title:'University of Alaska Museum of the North',desc:'北方极地博物馆',lat:64.8580,lng:-147.8340},{type:'activity',title:'Santa Claus House',desc:'圣诞老人之家 - 北极邮戳',lat:64.7510,lng:-147.3530},{type:'activity',title:'Castner Glacier Ice Cave',desc:'冰洞探索',lat:63.4090,lng:-145.7520},{type:'hotel',title:'Best Western Valdez Harbor Inn',desc:'Valdez住宿 Jul 15-17',lat:61.1250,lng:-146.3550}],drive:'Fairbanks to Valdez - Richardson Hwy - 6h'},
+{day:5,date:'Thu Jul 16',title:'Valdez Day',weather:'44—53°F Showers Likely · PoP 60%',wicon:'🌧️',wcolor:'#e65100',events:[{type:'activity',title:'Solomon Gulch Hatchery',desc:'三文鱼洄游',lat:61.1190,lng:-146.3260},{type:'activity',title:'Keystone Canyon',desc:'峡谷瀑布',lat:61.0730,lng:-146.0790},{type:'activity',title:'Thompson Pass Trail',desc:'高山苔原',lat:61.1190,lng:-145.7380},{type:'activity',title:'Worthington Glacier',desc:'州立休闲区',lat:61.1740,lng:-145.7740}],drive:'Valdez area day loop'},
+{day:6,date:'Fri Jul 17',title:'Valdez to Eagle River',weather:'33—47°F Rain/Snow Mix ⚠️',wicon:'🌨️',wcolor:'#c62828',events:[{type:'activity',title:'Matanuska Glacier Ice Climbing',desc:'8h 冰川攀冰',lat:61.7024,lng:-147.6817},{type:'hotel',title:'Microtel Inn and Suites Eagle River',desc:'入住 Jul 17-19',lat:61.3210,lng:-149.5670}],drive:'Valdez to Matanuska Glenn Hwy to Eagle River - 4h'},
+{day:7,date:'Sat Jul 18',title:'Anchorage Area',weather:'47—64°F Chance Showers',wicon:'🌤️',wcolor:'#2e7d32',events:[{type:'activity',title:'Alaska Wildlife Conservation Center',desc:'野生动物保育中心',lat:60.7189,lng:-148.9568},{type:'activity',title:'Alaska Zoo',desc:'安克雷奇动物园',lat:61.1390,lng:-149.7960}],drive:'Eagle River to AWCC to Zoo to Eagle River'},
+{day:8,date:'Sun Jul 19',title:'Anchorage to Seward',weather:'42—50°F Showers',wicon:'🌧️',wcolor:'#e65100',events:[{type:'activity',title:'Portage Lake',desc:'冰川湖',lat:60.7860,lng:-148.9200},{type:'activity',title:'Byron Glacier Trail',desc:'1.6 mi 步道 - 近距离看冰川',lat:60.7600,lng:-148.8450},{type:'activity',title:'Whittier Tunnel Town',desc:'穿越隧道的小镇',lat:60.7730,lng:-148.6830},{type:'food',title:'Seward Eats',desc:'Fifth Avenue Bistro and 冰淇淋',lat:60.1040,lng:-149.4430},{type:'hotel',title:'Airbnb Seward Downtown',desc:'Small Lovely Nook Jul 19-21',lat:60.1050,lng:-149.4410}],drive:'Eagle River to Portage to Whittier to Seward - 3h'},
+{day:9,date:'Mon Jul 20',title:'Kenai Fjords Cruise',weather:'~40—51°F Showers Likely 🔮',wicon:'🌧️',wcolor:'#e65100',events:[{type:'cruise',title:'Kenai Fjords National Park Cruise',desc:'7.5h - 冰川/鲸鱼/海鹦',lat:60.1043,lng:-149.4388}],drive:'Seward Harbor往返 - 船程约40海里'},
+{day:10,date:'Tue Jul 21',title:'Seward to Anchorage',weather:'~40—51°F Showers Likely 🔮',wicon:'🌧️',wcolor:'#e65100',events:[{type:'activity',title:'Bear Glacier Kayaking',desc:'4h 海上皮划艇',lat:60.1500,lng:-149.3800},{type:'activity',title:'Harding Icefield Trail',desc:'8.2 mi 冰原徒步',lat:60.0900,lng:-149.6600},{type:'hotel',title:'Motel 6 Anchorage Midtown',desc:'回程住宿',lat:61.1770,lng:-149.8700}],drive:'Seward to Anchorage - Seward Hwy - 2.5h'},
+{day:11,date:'Wed Jul 22',title:'Depart Anchorage',weather:'~47—64°F Chance Showers 🔮',wicon:'🌤️',wcolor:'#2e7d32',events:[{type:'airport',title:'Ted Stevens Anchorage Intl Airport',desc:'ANC - 离开',lat:61.1742,lng:-149.9964}],drive:'Motel 6 to Airport - 5 min'}
+];
+
+IMG={
+airport:['https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Lake_Hood_Seaplane_Base_Anchorage.jpg/500px-Lake_Hood_Seaplane_Base_Anchorage.jpg'],
+denali:['https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Wonder_Lake_and_Denali.jpg/500px-Wonder_Lake_and_Denali.jpg','https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Denali_Mt_McKinley.jpg/500px-Denali_Mt_McKinley.jpg'],
+matanuska:['https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Matanuska_Glacier_Alaska.jpg/500px-Matanuska_Glacier_Alaska.jpg','https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Matanuska_Glacier_ice_falls.jpg/500px-Matanuska_Glacier_ice_falls.jpg'],
+kenai:['https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Kenai_Fjords_National_Park_boat_tour.jpg/500px-Kenai_Fjords_National_Park_boat_tour.jpg','https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Holgate_Glacier_Kenai_Fjords.jpg/500px-Holgate_Glacier_Kenai_Fjords.jpg'],
+museum:['https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/University_of_Alaska_Museum_of_the_North.jpg/500px-University_of_Alaska_Museum_of_the_North.jpg'],
+santa:['https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Santa_Claus_House_North_Pole_Alaska.jpg/500px-Santa_Claus_House_North_Pole_Alaska.jpg'],
+whittier:['https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Whittier_Alaska.jpg/500px-Whittier_Alaska.jpg'],
+portage:['https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Portage_Glacier_Alaska.jpg/500px-Portage_Glacier_Alaska.jpg'],
+byron:['https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Byron_Glacier_AK.jpg/500px-Byron_Glacier_AK.jpg','https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Winding_our_way_up_Byron_Glacier_trail_%286480079529%29.jpg/500px-Winding_our_way_up_Byron_Glacier_trail_%286480079529%29.jpg'],
+seward:['https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Seward_Alaska_aerial_view.jpg/500px-Seward_Alaska_aerial_view.jpg'],
+bear:['https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Bear_Glacier_Kenai_Fjords.jpg/500px-Bear_Glacier_Kenai_Fjords.jpg'],
+harding:['https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Harding_Icefield_from_Harding_Icefield_Trail.jpg/500px-Harding_Icefield_from_Harding_Icefield_Trail.jpg'],
+zoo:['https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Alaska_Zoo_entrance.jpg/500px-Alaska_Zoo_entrance.jpg'],
+awcc:['https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Alaska_Wildlife_Conservation_Center.jpg/500px-Alaska_Wildlife_Conservation_Center.jpg'],
+valdez:['https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Valdez_Harbor_Alaska.jpg/500px-Valdez_Harbor_Alaska.jpg'],
+worthington:['https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Worthington_Glacier.jpg/500px-Worthington_Glacier.jpg'],
+keystone:['https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Keystone_Canyon_Alaska.jpg/500px-Keystone_Canyon_Alaska.jpg'],
+castner:['https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Castner_Glacier.jpg/500px-Castner_Glacier.jpg'],
+hotel:['https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Motel_6_sign.jpg/500px-Motel_6_sign.jpg'],
+cruise:['https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Kenai_Fjords_National_Park.jpg/500px-Kenai_Fjords_National_Park.jpg'],
+fairbanks:['https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Fairbanks_Alaska_aerial.jpg/500px-Fairbanks_Alaska_aerial.jpg']
+};
+
+DESC={
+'Ted Stevens Anchorage Intl Airport':'安克雷奇国际机场ANC - 阿拉斯加最大机场',
+'Motel 6 Anchorage Midtown':'Motel 6中城店 - 5000 A St - 交通便利',
+'Murie Science Learning Center':'Denali国家公园游客中心 - 免费借用登山杖',
+'Horseshoe Lake Trail':'马蹄湖步道 - 2-4英里环线 - 常见野生动物',
+'Mount Healy Overlook Trail':'希利山观景步道 - 2.7英里 - 河谷全景',
+'Savage Alpine Trail':'野蛮高山步道 - 4英里 - 苔原山脊',
+'Cantwell Cabins':'坎特韦尔小木屋 - Denali入口附近林间住宿',
+'Tundra Wilderness Tour':'苔原荒野之旅 - 5.5小时Denali巴士游',
+'7 Gables Inn and Suites':'七山墙旅馆 - Fairbanks市中心',
+'University of Alaska Museum of the North':'北方极地博物馆 - 原住民文化/极地自然',
+'Santa Claus House':'圣诞老人之家 - 北极镇 - 北极邮戳信件',
+'Castner Glacier Ice Cave':'Castner冰川冰洞 - 可徒步到达天然蓝冰冰洞',
+'Best Western Valdez Harbor Inn':'贝斯特韦斯特Valdez港酒店 - 看渔船雪山',
+'Solomon Gulch Hatchery':'所罗门峡谷三文鱼孵化场 - 夏季洄游壮观',
+'Keystone Canyon':'奇石峡谷 - 多个瀑布景观',
+'Thompson Pass Trail':'汤普森山口 - 高海拔苔原徒步',
+'Worthington Glacier':'沃辛顿冰川 - 阿拉斯加最易到达的冰川之一',
+'Matanuska Glacier Ice Climbing':'马塔努斯卡冰川攀冰 - 8小时专业体验',
+'Microtel Inn and Suites Eagle River':'Microtel旅馆 - Eagle River - Anchorage北郊',
+'Alaska Wildlife Conservation Center':'阿拉斯加野生动物保护中心 - 熊/麋鹿/野牛',
+'Alaska Zoo':'阿拉斯加动物园 - 北极熊/狼/猞猁/雪鸮',
+'Portage Lake':'波特奇湖 - 冰川融水湖 - 近距离看冰川',
+'Byron Glacier Trail':'拜伦冰川步道 - 1.6英里往返 - 可走到冰川脚下触冰',
+'Whittier Tunnel Town':'惠蒂尔 - 穿过2.5英里隧道的神秘小镇',
+'Seward Eats':'苏厄德 - 基奈半岛海滨小镇 - 海鲜/冰淇淋',
+'Airbnb Seward Downtown':'苏厄德市中心Airbnb - 步行可达港口',
+'Kenai Fjords National Park Cruise':'基奈峡湾国家公园游船 - 7.5h - 冰川/鲸鱼',
+'Bear Glacier Kayaking':'熊冰川皮划艇 - 4小时海上穿行冰山',
+'Harding Icefield Trail':'哈丁冰原步道 - 8.2英里高难度徒步'
+};
+
+CLUSTERS=[
+{name:'Anchorage',lat:61.18,lng:-149.88,color:'#c62828',icon:'plane-departure',zoom:[61.15,61.2,-150.0,-149.8]},
+{name:'Denali NP',lat:63.70,lng:-148.91,color:'#2e7d32',icon:'mountain',zoom:[63.68,63.76,-149.0,-148.8]},
+{name:'Fairbanks',lat:64.84,lng:-147.70,color:'#2e7d32',icon:'mountain',zoom:[64.74,64.9,-147.85,-147.6]},
+{name:'Castner Glacier',lat:63.409,lng:-145.752,color:'#2e7d32',icon:'mountain',zoom:[63.38,63.44,-145.8,-145.7]},
+{name:'Valdez',lat:61.12,lng:-146.10,color:'#2e7d32',icon:'mountain',zoom:[61.05,61.2,-146.4,-145.7]},
+{name:'Matanuska Glacier',lat:61.702,lng:-147.682,color:'#2e7d32',icon:'mountain',zoom:[61.68,61.74,-147.74,-147.6]},
+{name:'Eagle River',lat:61.321,lng:-149.567,color:'#1565c0',icon:'hotel',zoom:[61.3,61.35,-149.6,-149.5]},
+{name:'Whittier/Portage',lat:60.78,lng:-148.80,color:'#2e7d32',icon:'mountain',zoom:[60.74,60.82,-149.0,-148.6]},
+{name:'Seward',lat:60.11,lng:-149.44,color:'#7b1fa2',icon:'ship',zoom:[60.07,60.14,-149.48,-149.4]}
+];
+
+CRUISE=[
+[60.1043,-149.4388],[60.08,-149.42],[60.05,-149.4],[60.02,-149.38],[59.99,-149.37],[59.96,-149.38],[59.935,-149.41],[59.91,-149.45],[59.89,-149.5],[59.87,-149.55],[59.855,-149.59],[59.84,-149.63],[59.83,-149.67],[59.82,-149.71],[59.81,-149.75],[59.80,-149.80],[59.795,-149.85],[59.79,-149.90],[59.788,-149.93],[59.79,-149.95],[59.795,-149.90],[59.80,-149.80],[59.81,-149.75],[59.82,-149.70],[59.83,-149.65],[59.85,-149.60],[59.87,-149.55],[59.89,-149.5],[59.91,-149.45],[59.93,-149.41],[59.96,-149.38],[59.99,-149.37],[60.02,-149.38],[60.05,-149.4],[60.08,-149.42],[60.1043,-149.4388]
+];
+}
+
+function getImg(key){
+var k=key.toLowerCase().replace(/[^a-z0-9]/g,'');
+if(k.indexOf('airport')>=0||k.indexOf('anc')>=0)return IMG.airport;
+if(k.indexOf('denali')>=0||k.indexOf('murie')>=0||k.indexOf('horseshoe')>=0||k.indexOf('healy')>=0||k.indexOf('savage')>=0||k.indexOf('tundra')>=0||k.indexOf('cantwell')>=0)return IMG.denali;
+if(k.indexOf('matanuska')>=0)return IMG.matanuska;
+if(k.indexOf('kenai')>=0||k.indexOf('cruise')>=0||k.indexOf('fjord')>=0)return IMG.kenai;
+if(k.indexOf('santa')>=0||k.indexOf('claus')>=0)return IMG.santa;
+if(k.indexOf('museum')>=0||k.indexOf('north')>=0)return IMG.museum;
+if(k.indexOf('castner')>=0)return IMG.castner;
+if(k.indexOf('solomon')>=0||k.indexOf('valdez')>=0)return IMG.valdez;
+if(k.indexOf('keystone')>=0)return IMG.keystone;
+if(k.indexOf('worthington')>=0)return IMG.worthington;
+if(k.indexOf('thompson')>=0)return IMG.thompson;
+if(k.indexOf('wildlife')>=0||k.indexOf('conservation')>=0||k.indexOf('awcc')>=0)return IMG.awcc;
+if(k.indexOf('zoo')>=0)return IMG.zoo;
+if(k.indexOf('byron')>=0)return IMG.byron;
+if(k.indexOf('portage')>=0||(k.indexOf('lake')>=0&&!k.includes('horseshoe')))return IMG.portage;
+if(k.indexOf('whittier')>=0||k.indexOf('tunnel')>=0)return IMG.whittier;
+if(k.indexOf('seward')>=0||k.indexOf('bistro')>=0||k.indexOf('eats')>=0||k.indexOf('dining')>=0)return IMG.seward;
+if(k.indexOf('bear')>=0||k.indexOf('kayak')>=0)return IMG.bear;
+if(k.indexOf('harding')>=0||k.indexOf('icefield')>=0)return IMG.harding;
+if(k.indexOf('fairbanks')>=0)return IMG.fairbanks;
+if(k.indexOf('motel')>=0||k.indexOf('inn')>=0||k.indexOf('suites')>=0||k.indexOf('cabins')>=0||k.indexOf('western')>=0||k.indexOf('airbnb')>=0||k.indexOf('gables')>=0||k.indexOf('microtel')>=0)return IMG.hotel;
+return IMG.seward;
+}
+
+function getDesc(title){return DESC[title]||'';}
+
+// ═══════════════════════════════════════════════════════ MAP
+initData();
+allPoints=[];
+DAYS.forEach(function(d){d.events.forEach(function(e){allPoints.push({type:e.type,title:e.title,desc:e.desc,lat:e.lat,lng:e.lng,day:d.day,date:d.date,dayTitle:d.title})})});
+
+var streetLayer=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:20,attribution:'&copy; OSM &copy; <a href="https://carto.com/">CARTO</a>'});
+var satelliteLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,attribution:'&copy; Esri'});
+var map=L.map('map',{center:[62.5,-149],zoom:7,zoomControl:true,attributionControl:true,layers:[streetLayer]});
+
+document.querySelectorAll('.layer-btn').forEach(function(b){
+b.addEventListener('click',function(){
+document.querySelectorAll('.layer-btn').forEach(function(x){x.classList.remove('active')});
+b.classList.add('active');
+if(b.dataset.layer==='street'){map.removeLayer(satelliteLayer);map.addLayer(streetLayer)}
+else{map.removeLayer(streetLayer);map.addLayer(satelliteLayer)}
+})});
+
+// ═══════════════════════════════════════════════════════ MARKERS
+detailMarkers=[];
+clusterMarkers=[];
+
+function makePOIMarker(p,active,idx){
+var c=COLORS[p.type]||'#2e7d32';
+var iS=active?24:18,lS=active?13:11;
+var R=idx%2===0;
+var gap=18;
+var lw=Math.min(p.title.length*8+6,200);
+var tw=iS+gap+lw;
+var h=iS+8;
+var labelHtml='<div style="font-size:'+lS+'px;font-weight:400;color:#000;white-space:nowrap;pointer-events:none">'+esc(p.title)+'</div>';
+var iconHtml='<div style="font-size:'+iS+'px;color:'+c+';line-height:1;pointer-events:auto">'+FAI[p.type]+'</div>';
+var html='<div style="display:flex;align-items:center;gap:'+gap+'px;height:'+h+'px">'+(R?iconHtml+labelHtml:labelHtml+iconHtml)+'</div>';
+var ax=R?(iS)/2:tw-(iS)/2;
+return L.divIcon({className:'',html:html,iconSize:[tw,h],iconAnchor:[ax,h/2]});
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function buildDetail(){
+var g=L.layerGroup();
+allPoints.forEach(function(p,i){
+var m=L.marker([p.lat,p.lng],{icon:makePOIMarker(p,false,i)}).addTo(g);
+var imgs=getImg(p.title);
+var cId='ci'+i;
+var car='';
+if(imgs&&imgs.length){
+car='<div class="popup-carousel" id="'+cId+'"><div class="carousel-imgs">';
+for(var k=0;k<imgs.length;k++){
+car+='<img src="'+imgs[k]+'" class="carousel-img'+(k===0?' active':'')+'" onerror="this.style.display=\'none\'">';
+}
+car+='</div>';
+if(imgs.length>1){
+car+='<button class="carousel-btn carousel-prev" onclick="navC(\''+cId+'\',-1)">&lsaquo;</button>';
+car+='<button class="carousel-btn carousel-next" onclick="navC(\''+cId+'\',1)">&rsaquo;</button>';
+car+='<div class="carousel-dots">';
+for(var k=0;k<imgs.length;k++)car+='<span class="carousel-dot'+(k===0?' active':'')+'" onclick="goC(\''+cId+'\','+k+')"></span>';
+car+='</div>';
+}
+car+='</div>';
+}
+var de=getDesc(p.title);
+var html='<div class="popup-inner">'+car+'<div class="popup-title">'+FAI[p.type]+' '+esc(p.title)+'</div><div class="popup-day">Day '+p.day+' - '+p.date+'</div>';
+if(p.desc)html+='<div class="popup-desc">'+esc(p.desc)+'</div>';
+if(de)html+='<div class="popup-desc-cn">'+de+'</div>';
+html+='<a class="popup-btn" href="https://www.google.com/maps/search/?api=1&query='+p.lat+','+p.lng+'" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Google Maps</a></div>';
+m.bindPopup(html,{className:'custom-popup',offset:[0,-10],maxWidth:300});
+detailMarkers.push(m);
+});
+return g;
+}
+
+function makeClusterIcon(c){
+return L.divIcon({className:'',html:'<div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.93);border-radius:18px;padding:4px 12px 4px 8px;border:1.5px solid #bbb;box-shadow:0 1px 5px rgba(0,0,0,.08);font-size:12px;font-weight:500;color:#000;white-space:nowrap"><i class="fas fa-'+c.icon+'" style="color:'+c.color+';font-size:13px"></i> '+c.name+'</div>',iconSize:[0,0],iconAnchor:[0,0]});
+}
+
+function buildCluster(){
+var g=L.layerGroup();
+CLUSTERS.forEach(function(c){
+var m=L.marker([c.lat,c.lng],{icon:makeClusterIcon(c)}).addTo(g);
+m.on('click',function(){if(c.zoom)map.fitBounds([[c.zoom[0],c.zoom[2]],[c.zoom[1],c.zoom[3]]],{padding:[60,60]});setTimeout(function(){syncZ()},600)});
+clusterMarkers.push(m)
+});
+return g;
+}
+
+detailLayer=buildDetail();
+clusterLayer=buildCluster();
+
+function syncZ(){
+var z=map.getZoom();
+if(z<CLUSTER_ZOOM){
+if(map.hasLayer(detailLayer))map.removeLayer(detailLayer);
+if(!map.hasLayer(clusterLayer))map.addLayer(clusterLayer);
+}else{
+if(map.hasLayer(clusterLayer))map.removeLayer(clusterLayer);
+if(!map.hasLayer(detailLayer))map.addLayer(detailLayer);
+}
+}
+map.on('zoomend',syncZ);
+syncZ();
+
+// ─── CRUISE ROUTE
+L.polyline(CRUISE,{color:'#7b1fa2',weight:3,opacity:.45,dashArray:'8,10'}).addTo(map);
+
+// ─── OSRM ROUTING
+fullRouteLine=null;
+dayRouteLines={};
+
+async function fetchR(coords){
+if(coords.length<2)return null;
+var s=coords.map(function(c){return c[1]+','+c[0]}).join(';');
+try{var r=await fetch(OSRM+s+'?geometries=geojson&overview=full&alternatives=false&steps=false');var d=await r.json();if(d.code!=='Ok'||!d.routes||!d.routes[0])return null;return d.routes[0].geometry.coordinates.map(function(c){return[c[1],c[0]]})}catch(e){return null}
+}
+
+async function buildRoutes(){
+var fc=allPoints.map(function(p){return[p.lat,p.lng]});
+var fg=await fetchR(fc);
+if(fg){fullRouteLine=L.polyline(fg,{color:'#222',weight:4.5,opacity:.5,dashArray:'10,11'}).addTo(map)}
+else{fullRouteLine=L.polyline(fc,{color:'#222',weight:3.5,opacity:.4,dashArray:'9,9'}).addTo(map)}
+for(var di=0;di<DAYS.length;di++){
+var d=DAYS[di];
+var pts=d.events.map(function(e){return[e.lat,e.lng]});
+if(pts.length<2)continue;
+var g=await fetchR(pts);
+if(g){dayRouteLines[d.day]=L.polyline(g,{color:'#222',weight:3.5,opacity:.35,dashArray:'7,8'})}
+}
+if(fullRouteLine)map.fitBounds(fullRouteLine.getBounds(),{padding:[40,40]});
+}
+
+// ─── SIDEBAR
+function renderSidebar(){
+var html='';
+for(var di=0;di<DAYS.length;di++){
+var d=DAYS[di];
+html+='<div class="day-card" data-day="'+d.day+'" onclick="focusDay('+d.day+')">';
+html+='<div class="day-header"><span class="day-num">Day '+d.day+'</span><span class="day-date">'+d.date+'</span></div>';
+html+='<div class="day-title">'+esc(d.title)+'</div>';
+if(d.weather)html+='<div class="day-weather" style="color:'+(d.wcolor||'#888')+'">'+(d.wicon||'')+' '+esc(d.weather)+'</div>';
+html+='<ul>';
+for(var ei=0;ei<d.events.length;ei++){
+html+='<li><span class="li-icon">'+FAI[d.events[ei].type]+'</span>'+esc(d.events[ei].title)+'</li>';
+}
+html+='</ul>';
+if(d.drive)html+='<div class="day-drive"><i class="fas fa-car"></i> '+esc(d.drive)+'</div>';
+html+='</div>';
+}
+document.getElementById('day-list').innerHTML=html;
+}
+
+// ─── INTERACTION
+window.focusDay=function(day){
+document.querySelectorAll('.day-card').forEach(function(c){c.classList.remove('active')});
+var card=document.querySelector('.day-card[data-day="'+day+'"]');
+if(card){card.classList.add('active');card.scrollIntoView({behavior:'smooth',block:'nearest'})}
+var pts=allPoints.filter(function(p){return p.day===day});
+if(!pts.length)return;
+var b=L.latLngBounds(pts.map(function(p){return[p.lat,p.lng]}));
+map.fitBounds(b,{padding:[80,80],maxZoom:13});
+Object.values(dayRouteLines).forEach(function(l){map.removeLayer(l)});
+if(dayRouteLines[day])dayRouteLines[day].addTo(map);
+if(fullRouteLine)fullRouteLine.setStyle({opacity:.08,weight:1.5});
+detailMarkers.forEach(function(m,i){m.setIcon(makePOIMarker(allPoints[i],allPoints[i].day===day,i))});
+};
+
+window.resetMap=function(){
+document.querySelectorAll('.day-card').forEach(function(c){c.classList.remove('active')});
+Object.values(dayRouteLines).forEach(function(l){map.removeLayer(l)});
+if(fullRouteLine){map.fitBounds(fullRouteLine.getBounds(),{padding:[40,40]});fullRouteLine.setStyle({opacity:.5,weight:4.5,dashArray:'10,11'})}
+detailMarkers.forEach(function(m,i){m.setIcon(makePOIMarker(allPoints[i],false,i))});
+};
+map.on('click',resetMap);
+
+document.addEventListener('keydown',function(e){
+var a=document.querySelector('.day-card.active');var c=a?parseInt(a.dataset.day):1;
+if(e.key==='ArrowRight'||e.key==='ArrowDown'){var n=Math.min(c+1,DAYS.length);if(n!==c)focusDay(n)}
+else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){var p=Math.max(c-1,1);if(p!==c)focusDay(p)}
+});
+
+var tx=0;
+document.addEventListener('touchstart',function(e){tx=e.changedTouches[0].screenX});
+document.addEventListener('touchend',function(e){
+var d=e.changedTouches[0].screenX-tx;if(Math.abs(d)<60)return;
+var a=document.querySelector('.day-card.active');var c=a?parseInt(a.dataset.day):1;
+if(d<0){var n=Math.min(c+1,DAYS.length);if(n!==c)focusDay(n)}else{var p=Math.max(c-1,1);if(p!==c)focusDay(p)}
+});
+
+window.navC=function(id,dir){
+var w=document.getElementById(id);if(!w)return;
+var imgs=w.querySelectorAll('.carousel-img'),dots=w.querySelectorAll('.carousel-dot');
+var cur=-1;for(var i=0;i<imgs.length;i++)if(imgs[i].classList.contains('active')){cur=i;break}
+if(cur<0)return;
+imgs[cur].classList.remove('active');if(dots[cur])dots[cur].classList.remove('active');
+cur=(cur+dir+imgs.length)%imgs.length;
+imgs[cur].classList.add('active');if(dots[cur])dots[cur].classList.add('active');
+};
+
+window.goC=function(id,idx){
+var w=document.getElementById(id);if(!w)return;
+var imgs=w.querySelectorAll('.carousel-img'),dots=w.querySelectorAll('.carousel-dot');
+imgs.forEach(function(i){i.classList.remove('active')});dots.forEach(function(d){d.classList.remove('active')});
+if(imgs[idx])imgs[idx].classList.add('active');if(dots[idx])dots[idx].classList.add('active');
+};
+
+// ─── INIT
+renderSidebar();
+buildRoutes();
+</script>
+</body>
+</html>
