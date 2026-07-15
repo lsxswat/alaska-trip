@@ -139,18 +139,29 @@
         justify-content: center;
         align-items: center;
         width: 100%;
-        height: 20px;
+        height: 40px;
+        min-height: 40px;
         background-color: #f0f2f5;
         cursor: grab;
         touch-action: none;
         user-select: none;
         flex-shrink: 0;
+        padding: 8px 0;
       }
       .drag-handle-bar {
         width: 36px;
-        height: 4px;
-        background-color: #cbd5e1;
-        border-radius: 2px;
+        height: 5px;
+        background-color: #94a3b8;
+        border-radius: 3px;
+      }
+      .drag-handle::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        right: 0;
+        height: 30px;
+        pointer-events: auto;
       }
       
       /* Mobile Collapsed State Styles */
@@ -203,8 +214,7 @@
       </div>
       <div class="sidebar-header">
         <h1 id="sidebar-title">Alaska Trip</h1>
-        <p>11-Day Road Trip · Jul 12–22, 2026 <span id="sync-status" style="font-size:10px;color:#94a3b8;margin-left:4px">⋯</span></p>
-        <p style="font-size:10px;color:#94a3b8;margin-top:2px">📡 NOAA weather.gov · Updated Jul 13 10AM AKDT</p>
+        <p>11-Day Road Trip · Jul 12–22, 2026</p>
       </div>
       <div class="sidebar-content" id="sidebar-content"></div>
     </div>
@@ -235,10 +245,10 @@
         pois:[{name:"Denali Visitor Center",coord:[63.7327,-148.9107],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Horseshoe Lake",coord:[63.7200,-148.9000],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Mt Healy",coord:[63.7400,-148.8700],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Savage Alpine",coord:[63.7100,-148.8800],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Cantwell Cabins",coord:[63.3920,-148.9370],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
         routeCoords:[[61.1770,-149.8700],[63.3920,-148.9370],[63.7327,-148.9107]] },
       { day:3, dateStr:"DAY 3 · TUE JUL 14", title:"Denali to Fairbanks", drivingInfo:"Denali to Fairbanks (Parks Hwy AK-3, ~2h)", stay:"🏨 Stay: 7 Gables Inn",
-        pois:[{name:"Tundra Tour",coord:[63.7280,-148.9100],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[],receipt:"receipts/Reserve%20Denali%20-%20Order%20Confirmation.pdf"},{name:"7 Gables Inn",coord:[64.8580,-147.8340],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        pois:[{name:"Tundra Tour",coord:[63.7280,-148.9100],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[],receipt:"receipts/Reserve%20Denali%20-%20Order%20Confirmation.pdf"},{name:"Museum of North",coord:[64.8588,-147.8440],type:"museum",icon:"fa-landmark",color:"#6d4c41",desc:"",images:[]},{name:"Fairbanks Downtown Visitor Center",coord:[64.8440,-147.7180],type:"info",icon:"fa-circle-info",color:"#0288d1",desc:"",images:[]},{name:"Pioneer Park",coord:[64.8380,-147.7740],type:"park",icon:"fa-tree-city",color:"#558b2f",desc:"",images:[]},{name:"7 Gables Inn",coord:[64.8580,-147.8340],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
         routeCoords:[[63.7327,-148.9107],[64.8580,-147.8340]] },
       { day:4, dateStr:"DAY 4 · WED JUL 15", title:"Fairbanks to Valdez", drivingInfo:"Fairbanks to Castner Glacier (~3h) · Castner to Valdez (~3h)", stay:"🏨 Stay: Valdez Harbor Inn",
-        pois:[{name:"Museum of North",coord:[64.8580,-147.8340],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Santa Claus House",coord:[64.7510,-147.3530],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Castner Glacier",coord:[63.4090,-145.7520],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Valdez Harbor Inn",coord:[61.1250,-146.3550],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        pois:[{name:"Santa Claus House",coord:[64.7510,-147.3530],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Castner Glacier",coord:[63.4090,-145.7520],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Valdez Harbor Inn",coord:[61.1250,-146.3550],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
         routeSegments:[{label:"Fairbanks → Castner (~3h)",coords:[[64.8580,-147.8340],[64.7510,-147.3530],[63.4090,-145.7520]]},{label:"Castner → Valdez (~3h)",coords:[[63.4090,-145.7520],[61.1250,-146.3550]]}],
         routeCoords:[[64.8580,-147.8340],[64.7510,-147.3530],[63.4090,-145.7520],[61.1250,-146.3550]] },
       { day:5, dateStr:"DAY 5 · THU JUL 16", title:"Explore Valdez", drivingInfo:"Stay in Valdez (same hotel)", stay:"🏨 Same: Valdez Harbor Inn",
@@ -251,7 +261,7 @@
         pois:[{name:"Alaska Wildlife Conservation Center",coord:[60.7189,-148.9568],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Alaska Zoo",coord:[61.1390,-149.7960],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]}],
         routeCoords:[[61.3210,-149.5670],[61.1390,-149.7960],[60.7189,-148.9568]] },
       { day:8, dateStr:"DAY 8 · SUN JUL 19", title:"Anchorage to Seward", drivingInfo:"Anchorage to Seward via Seward Hwy AK-1 (~3h)", stay:"🏨 Stay: Airbnb Seward",
-        pois:[{name:"Portage Lake",coord:[60.7860,-148.9200],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Byron Glacier Trail",coord:[60.7600,-148.8450],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Whittier",coord:[60.7730,-148.6830],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Seward Eats",coord:[60.1040,-149.4430],type:"dining",icon:"fa-utensils",color:"#e65100",desc:"",images:[]},{name:"Airbnb Seward",coord:[60.1050,-149.4410],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
+        pois:[{name:"Portage Lake",coord:[60.7860,-148.9200],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Whittier",coord:[60.7730,-148.6830],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Seward Eats",coord:[60.1040,-149.4430],type:"dining",icon:"fa-utensils",color:"#e65100",desc:"",images:[]},{name:"Airbnb Seward",coord:[60.1050,-149.4410],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
         routeCoords:[[61.3210,-149.5670],[60.7860,-148.9200],[60.7730,-148.6830],[60.1050,-149.4410]] },
       { day:9, dateStr:"DAY 9 · MON JUL 20", title:"Kenai Fjords Cruise", drivingInfo:"7.5h National Park boat tour from Seward", stay:"🏨 Same: Airbnb Seward",
         pois:[{name:"Kenai Cruise",coord:[60.1043,-149.4388],type:"cruise",icon:"fa-ship",color:"#7b1fa2",desc:"",images:[],receipt:"receipts/Confirmation%20-%207.5%20HR%20Kenai%20Fjords%20National%20Park.pdf"}],
@@ -280,17 +290,17 @@
     };
 
     var weatherData = {
-      1: {condition:"\u2705", low:"9\u00b0C", high:"13\u00b0C", text:"Arrived", wind:"—"},
-      2: {condition:"\ud83c\udf27\ufe0f", low:"12\u00b0C", high:"14\u00b0C", text:"Scattered Showers", wind:"10 km/h", pop:"40%"},
-      3: {condition:"\u26c5", low:"9\u00b0C", high:"21\u00b0C", text:"Mostly Cloudy", wind:"5 km/h"},
-      4: {condition:"\ud83c\udf27\ufe0f", low:"11\u00b0C", high:"12\u00b0C", text:"Rain \u26a0\ufe0f", wind:"3 km/h", pop:"100%"},
-      5: {condition:"\ud83c\udf27\ufe0f", low:"7\u00b0C", high:"12\u00b0C", text:"Showers Likely", wind:"8 km/h", pop:"60%"},
-      6: {condition:"\ud83c\udf28\ufe0f", low:"0\u00b0C", high:"8\u00b0C", text:"Rain/Snow Mix \u26a0\ufe0f", wind:"5 km/h"},
-      7: {condition:"\ud83c\udf24\ufe0f", low:"8\u00b0C", high:"18\u00b0C", text:"Chance Showers", wind:"5 km/h"},
-      8: {condition:"\ud83c\udf27\ufe0f", low:"6\u00b0C", high:"10\u00b0C", text:"Showers", wind:"10 km/h"},
-      9: {condition:"\ud83c\udf27\ufe0f", low:"\u22484\u00b0C", high:"\u224811\u00b0C", text:"Showers Likely \ud83d\udd2e", wind:"—"},
-      10: {condition:"\ud83c\udf27\ufe0f", low:"\u22484\u00b0C", high:"\u224811\u00b0C", text:"Showers Likely \ud83d\udd2e", wind:"—"},
-      11: {condition:"\ud83c\udf24\ufe0f", low:"\u22488\u00b0C", high:"\u224818\u00b0C", text:"Chance Showers \ud83d\udd2e", wind:"—"}
+      1: {condition:"\u2600\ufe0f", low:"14\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"8 km/h"},
+      2: {condition:"\u26c5", low:"12\u00b0C", avg:"16\u00b0C", high:"20\u00b0C", wind:"10 km/h"},
+      3: {condition:"\u2600\ufe0f", low:"16\u00b0C", avg:"22\u00b0C", high:"26\u00b0C", wind:"6 km/h"},
+      4: {condition:"\u26c5", low:"13\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"12 km/h"},
+      5: {condition:"\ud83c\udf27\ufe0f", low:"10\u00b0C", avg:"14\u00b0C", high:"17\u00b0C", wind:"15 km/h"},
+      6: {condition:"\u26c5", low:"11\u00b0C", avg:"16\u00b0C", high:"20\u00b0C", wind:"10 km/h"},
+      7: {condition:"\u2600\ufe0f", low:"14\u00b0C", avg:"19\u00b0C", high:"23\u00b0C", wind:"8 km/h"},
+      8: {condition:"\u26c5", low:"12\u00b0C", avg:"17\u00b0C", high:"21\u00b0C", wind:"12 km/h"},
+      9: {condition:"\ud83c\udf27\ufe0f", low:"9\u00b0C", avg:"13\u00b0C", high:"16\u00b0C", wind:"18 km/h"},
+      10: {condition:"\u26c5", low:"11\u00b0C", avg:"15\u00b0C", high:"19\u00b0C", wind:"10 km/h"},
+      11: {condition:"\u2600\ufe0f", low:"13\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"8 km/h"}
     };
 
         var cityClusters = [
@@ -327,72 +337,17 @@
       "Microtel Eagle River":"Microtel Inn & Suites by Wyndham Eagle River",
       "Alaska Zoo":"The Alaska Zoo",
       "Portage Lake":"Portage Lake & Portage Glacier",
-      "Byron Glacier Trail":"Byron Glacier Trail & Byron Glacier",
       "Whittier":"Whittier Harbor Town",
       "Seward Eats":"Seward Town & Local Dining",
       "Airbnb Seward":"Seward Airbnb Apartment",
       "Kenai Cruise":"Kenai Fjords National Park Cruise",
       "Bear Glacier":"Bear Glacier Lagoon Kayaking",
-      "Harding Icefield":"Harding Icefield Trail"
+      "Harding Icefield":"Harding Icefield Trail",
+      "Fairbanks Downtown Visitor Center":"Morris Thompson Cultural & Visitor Center",
+      "Pioneer Park":"Pioneer Park (Alaskaland)"
     };
 
-    var noteData = JSON.parse(localStorage.getItem('alaskaTripNotes') || '{}');
-var NOTES_API = 'https://jsonblob.com/api/jsonBlob/019f4a6f-8a41-7c94-8eca-62e8b8567ee2';
-
-// Cross-device note sync
-function setSyncStatus(s) {
-  var el = document.getElementById('sync-status');
-  if (el) el.textContent = s;
-}
-function pushNotesToCloud() {
-  setSyncStatus('↑');
-  var xhr = new XMLHttpRequest();
-  xhr.open('PUT', NOTES_API, true);
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.onload = function() { setSyncStatus('✓'); setTimeout(function(){ setSyncStatus(''); }, 3000); };
-  xhr.onerror = function() { setSyncStatus('✗'); };
-  xhr.send(JSON.stringify(noteData));
-}
-function pullNotesFromCloud() {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', NOTES_API, true);
-  xhr.onloadstart = function() { setSyncStatus('↓'); };
-  xhr.onload = function() {
-    if (xhr.status >= 200 && xhr.status < 300) {
-      try {
-        var cloudData = JSON.parse(xhr.responseText);
-        if (cloudData && typeof cloudData === 'object') {
-          // Merge: cloud data wins for any key that exists in cloud
-          var changed = false;
-          for (var k in cloudData) {
-            if (cloudData[k] !== noteData[k]) {
-              noteData[k] = cloudData[k];
-              changed = true;
-            }
-          }
-          // Remove keys deleted on another device
-          for (var k in noteData) {
-            if (!(k in cloudData)) {
-              delete noteData[k];
-              changed = true;
-            }
-          }
-          if (changed) {
-            localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData));
-            // Refresh all visible note displays
-            for (var k in noteData) {
-              updateNoteDisplay(k);
-            }
-          }
-        }
-      } catch(e) {}
-    }
-  };
-  xhr.send();
-}
-// Sync: pull from cloud on load, push on every save, pull periodically
-pullNotesFromCloud();
-setInterval(pullNotesFromCloud, 30000);
+    var noteData = {};
 
 var wildlifeData = {
   "Denali Visitor Center":"🐻 棕熊与驼鹿 — 最佳观测时间为清晨或黄昏，常在河岸和草甸区域出没。迪纳利的棕熊7月下旬常在山坡上吃野莓。🦌 驯鹿（Caribou） — 经常成群穿越公园道路，尤其在Savage River区域最容易见到。🐑 多尔大角羊（Dall sheep） — 抬头看！它们在山坡悬崖上吃草，从Polychrome Pass路段最容易看到。",
@@ -405,7 +360,6 @@ var wildlifeData = {
   "Harding Icefield":"🐻 黑熊 — 哈丁冰原步道上比较常见的访客。徒步时请制造噪音、携带防熊喷雾、结伴而行。最佳观赏时间为清晨。🐿️ 灰白旱獭 — 沿途岩石堆中经常听到它们互相吹哨警告同伴。",
   "Alaska Wildlife Conservation Center":"🦬 北美森林野牛、麋鹿、麝牛、熊 — 这里是野生动物救治中心，不是动物园。夏季午后可以在池塘边看到棕熊捕三文鱼。🦌 驼鹿 — 清晨常在池塘附近区域出现。",
   "Alaska Zoo":"🐻‍❄️ 北极熊 — Ahpun（园区北极熊）在喂食时间（11am和3pm）最活跃。🐺 狼与猞猁 — 害羞的动物，建议清晨开门后第一时间前往观赏，人少的时候它们更愿意出来活动。",
-  "Byron Glacier Trail":"🏔️ 土拨鼠 — 拜伦冰川步道沿途常见它们在岩石间穿梭。🐿️ 北极地松鼠 — 在冰川脚下的碎石区很活跃，经常站在大石头上张望。",
   "Portage Lake":"🦅 白头海雕 — 经常站在湖中的冰山上捕鱼。傍晚的侧逆光是拍摄的最佳时机。🦦 水獭 — 很活泼，经常能看到它们沿着泥泞的河岸滑入水中嬉戏。",
   "Solomon Gulch":"🐟 三文鱼（粉红鲑 & 狗鲑） — 7-8月数百万条三文鱼洄游，观看它们在鱼梯上奋力跳跃的壮观场面。🐻 棕熊 — 三文鱼季节常在孵化场附近出没捕鱼，尤其是清晨和傍晚。",
   "Keystone Canyon":"🦅 白头海雕与游隼 — 峡谷悬崖是它们筑巢的地方。夏天常见在瀑布上空盘旋捕食。",
@@ -415,6 +369,8 @@ var wildlifeData = {
   "Matanuska":"🐻 黑熊 — 在马塔努斯卡冰川停车场到冰川入口之间的步道上偶有出没。建议结伴行走并携带防熊喷雾。",
   "Museum of North":"🦌 驼鹿 — 费尔班克斯郊区驼鹿极多，清晨在Chena河边常能看到驼鹿在吃水草。🌟 极光 — 虽然不属于夏季野生动物，但费尔班克斯8月下旬开始就是世界顶级的极光观测地。",
   "Santa Claus House":"🦌 驼鹿 — 北极镇（North Pole）郊区在夏季傍晚经常能看到驼鹿在路边吃草。驾车请注意避让。",
+  "Fairbanks Downtown Visitor Center":"🦌 驼鹿 — 切纳河沿岸是费尔班克斯市区最常见的驼鹿观赏区。🦅 白头海雕 — 切纳河上常能看到白头海雕在上空盘旋觅食。🦫 河狸 — 两岸经常能看到河狸啃断的树木和水坝。",
+  "Pioneer Park":"🐿️ 北极地松鼠 — 公园草坪上到处能看到它们跳来跳去，活泼好动不怕人。🦆 水鸟 — 园内湖泊和小溪吸引了许多野生水鸟栖息。🦅 白头海雕 — 偶尔飞越公园上空，尤其在切纳河方向。",
 };
 
 
@@ -441,14 +397,15 @@ var wildlifeData = {
       "Microtel Eagle River":{desc:"Microtel Inn & Suites 旅馆坐落于安克雷奇以北约 15 分钟车程的鹰河（Eagle River）幽静小镇，地理位置优越，是连接安克雷奇与马塔努斯卡冰川的黄金中转站。酒店风格现代简约、干净舒适，提供高品质的免费热早餐、全天候高速 WiFi 及便利的免费自驾停车场。",tips:"旅馆旁边即是小镇的加油站、便利店和多家特色美式快餐，补充旅行补给极为便利。鹰河小镇背靠群山，清晨空气格外清新。从旅馆出发驾车约 10 分钟即可抵达鹰河自然中心（Eagle River Center），进行苔原森林徒步。"},
       "Alaska Wildlife Conservation Center":{desc:"阿拉斯加野生动物保护中心（AWCC）是一座占地 200 英亩的非营利性野生动物庇护与救治中心，坐落于 Seward Highway 与 Portage Valley 的交汇处。这里专门收治、喂养并康复阿拉斯加因受伤、迷路或失去母亲的孤儿野生动物，包括壮硕的棕熊、黑熊、森林野牛、麋鹿、驯鹿、山羊以及巨大的驼鹿。中心通过宽敞的自然模拟栖息地，致力于向公众普及北极野生动物保护知识。",tips:"门票价格约为每人 $15。保护中心内修建了一条全长 1.5 英里的木栈道步道。可近距离观看棕熊在水中捕鱼，或驯鹿悠闲地吃草。建议携带长焦镜头进行拍摄，捕获野生动物最美瞬间。"},
       "Alaska Zoo":{desc:"阿拉斯加动物园（The Alaska Zoo）坐落于安克雷奇市区的东南部山麓，是一座独特且深受喜爱的极地特色专业动物园。该动物园致力于救助、康复和保护阿拉斯加本土以及全球寒冷气候地区的珍稀野生动物，园内明星包括高大雄壮的北极熊、极地狼、加拿大猞猁、雪鸮、麝牛、美洲黑熊、驼鹿和双峰驼等。",tips:"门票售价为 $18。整个园区深深嵌入郁郁葱葱的北方原始针叶林中，漫步其间的木栈道与林荫路十分惬意。推荐在下午参观，并提前关注园区每日的饲养员科普互动时间（Keeper Chats），能极好地了解这群极地生灵在严酷环境下的奇妙生存本领。"},
-      "Byron Glacier Trail":{desc:"拜伦冰川步道（Byron Glacier Trail）是一条步行友好、全程仅 1.6 英里的轻量级徒步路线。与阿拉斯加众多高难度步道不同，这条步道既有平坦易行的山谷路段，又有直接将您带到宏伟拜伦冰川脚底的震撼终点。步道终点处您几乎可以走到冰川脚下，站在湛蓝发亮的冰川冰面前感受时间沉淀的庄严。",tips:"步道起点位于波特奇湖与波特奇冰川公路尽头，免费停车、无需门票。全程大约 45 分钟即可轻松走完。建议穿防水登山鞋，碎石路段较多。冰川底部气温明显降低，即使在盛夏也请携带一件轻薄冲锋衣。夏季经常能看到山坡上的土拨鼠对路过的人好奇地吹哨。"},
       "Portage Lake":{desc:"波特奇湖（Portage Lake）是一座由于波特奇冰川（Portage Glacier）急速退缩而形成的幽深高山冰川融水湖，坐落于风景如画的波特奇山谷深处。湖水由于富含冰川粉末而呈现出迷人的松石绿与奶蓝色。夏季湖面上经常漂浮着从远处冰川上崩塌落下的冰蓝色碎冰，天气晴朗时，周围雪山和波特奇冰川的倒影在如镜的湖面上交相辉映，美不胜收。",tips:"湖畔设有设施完善的贝吉奇·博格斯游客中心（Begich, Boggs Visitor Center），展示了冰川地质演变历史。夏季您可以选择乘坐官方的 Portage Glacier Cruise 游船（票价约 $40/人，耗时1小时），游船会带您一路驶近波特奇冰川高达百英尺的幽蓝冰墙前，可以近距离听到万年古冰碎裂的震撼声响。"},
       "Whittier":{desc:"惠蒂尔（Whittier）是阿拉斯加最神秘、最奇特的海滨小镇，坐落于威廉王子湾（Prince William Sound）的峡湾深处。进入该小镇的唯一陆路通道是一条全长 2.5 英里的安东·安德森纪念隧道（Anton Anderson Memorial Tunnel），这也是北美最长的单向公路铁路两用隧道，汽车和火车共用此道，实行整点与半点交替放行。最神奇的是，惠蒂尔全镇近 300 名居民几乎全部共同生活在一栋高 14 层的巨型苏联风格大楼（Begich Towers）内，大楼内甚至包含了邮局、诊所、超市和市政府。",tips:"规划行程时务必提前查询隧道的双向放行时间表，避免在隧道口长时间排队等待。惠蒂尔港口常年停靠着大型极地游轮，也是自驾游客租船出海垂钓阿拉斯加比目鱼（Halibut）和三文鱼的圣地。港口旁有多家供应超新鲜炸鱼薯条（Fish & Chips）的海边餐馆，极力推荐尝试。"},
       "Seward Eats":{desc:"苏厄德（Seward）是基奈半岛（Kenai Peninsula）最著名的海滨历史小镇，也是复活湾（Resurrection Bay）的璀璨明珠。小镇常住人口约 2,800 人，历史底蕴深厚，是著名的阿拉斯加铁路南端终点站与艾迪塔罗德狗拉雪橇步道（Iditarod Trail）的起点。镇上聚集了众多优秀的画廊、手工艺品商店和顶级的海鲜餐厅，充满了阿拉斯加海港小镇独有的纯朴与活力。",tips:"极力推荐去小镇标志性的 Fifth Avenue Bistro 享用一顿极其奢华的帝王蟹（King Crab）与海鲜意大利面大餐。餐后去 Sweet Darlings 甜品店排队买一支纯正的阿拉斯加野生蓝莓口味手工冰淇淋（Wild Blueberry Ice Cream），绝对能让您的味蕾得到终极满足。港口滨海步道常能看到在水面漂浮睡觉的野生海獭（Sea Otters）。"},
       "Airbnb Seward":{desc:"这是一间坐落于苏厄德（Seward）市中心黄金地段、温馨舒适的极简风格 Airbnb 私人公寓。公寓内部装饰充满了原木温暖与现代北欧风情，配备了功能完备的独立厨房、餐具、咖啡机、独立的卫浴设施以及超舒适的羽绒床铺。从公寓窗外即可远眺复活湾的波光粼粼与高耸的复活雪山，是在经历了一整天海上航行与户外徒步后，最温馨、私密的休憩港湾。",tips:"公寓地理位置绝佳，步行即可前往 Seward 游船码头、阿拉斯加海洋生物中心（Alaska SeaLife Center）以及多座本地人气餐馆。自驾房客可享受专属的免费停车位。夏季属于苏厄德旅游极旺季，此公寓极其抢手，强烈建议提前数月完成预订。"},
       "Kenai Cruise":{desc:"基奈峡湾国家公园游船之旅（Kenai Fjords National Park Cruise）是探索阿拉斯加无与伦比海洋生态与入海冰川的终极体验。7.5 小时的航程从苏厄德港出发，一路驶向哈丁冰原倾泻入海的 Holgate 冰川或 Aialik 冰川。沿途两旁峡湾峭壁高耸，巨型冰川崩塌落海的声音如雷贯耳。这是观赏座头鲸喷水腾空、虎鲸（Orca）成群巡游、海鹦（Puffin）扇动褶子、以及成百上千只海狮、海獭在礁石上嬉戏的海洋生态圣殿。",tips:"票价约为每人 $170-200，夏季必须提前预约。复活湾外海风浪可能极大，即使平时不晕船的游客也强烈建议开船前半小时服用好晕船药（Dramamine）。甲板上海风极其刺骨寒冷，请务必全副武装：羽绒服、防风冲锋衣、防寒帽、手套和围巾一个都不能少。船上备有高倍望远镜租借，但建议自带高倍望远镜与长焦相机。"},
       "Bear Glacier":{desc:"熊冰川皮划艇（Bear Glacier Lagoon Kayaking）是基奈峡湾国家公园最顶级、最震撼的私人定制探险项目。熊冰川（Bear Glacier）是基奈峡湾最大的冰川，其末端消融形成了一个巨大的潟湖，湖面上漂浮着无数高达数层楼、形状各异、闪耀着幽邃蓝光的巨型冰山。在这里划着皮划艇在如镜的湖面与巨大的冰山缝隙间缓缓穿行，仿佛置身于另一个星球，静谧得只能听到冰川融化的滴答声与远处的鸟鸣。",tips:"体验费用较高且必须跟随专业注册向导进行。皮划艇潟湖的水温极低，向导会提供全身干式防水服（Dry Suit）和专业救生衣。⚠️安全警示：请严格跟随向导路线，切勿自行靠近冰山！因为漂浮在水面的冰山只是其总体体积的 10%，水下部分随时可能发生重心漂移导致整座冰山翻转，掀起足以掀翻皮划艇的滔天巨浪。"},
-      "Harding Icefield":{desc:"哈丁冰原步道（Harding Icefield Trail）是全美最震撼、最壮丽、同时也最具挑战性的殿堂级徒步路线之一。步道单向长 4.1 英里（往返 8.2 英里），从出口冰川（Exit Glacier）谷底出发，垂直海拔爬升高达 3,000 英尺（约 914 米）。步道穿过茂密的灌木丛、高山草甸，一路上攀，最终抵达山顶，在悬崖边缘眺望无垠的哈丁冰原——一片面积超过 700 平方英里、孕育了数十条巨大冰川的茫茫万年古冰原，景色宏伟苍茫，震撼人心。",tips:"步道难度极大，全程往返通常需要 6 至 8 小时，极度考验体能。⚠️安全防范：山顶可能常年积雪，气候变化无常，必须穿着专业的硬底登山靴，携带防雨保暖层衣物，并带足3升水和高能量路餐。此区域是黑熊和黑尾鹿的活跃区，徒步时请保持结伴同行，大声交谈，并随身携带防熊喷雾（Bear Spray）。"}
+      "Harding Icefield":{desc:"哈丁冰原步道（Harding Icefield Trail）是全美最震撼、最壮丽、同时也最具挑战性的殿堂级徒步路线之一。步道单向长 4.1 英里（往返 8.2 英里），从出口冰川（Exit Glacier）谷底出发，垂直海拔爬升高达 3,000 英尺（约 914 米）。步道穿过茂密的灌木丛、高山草甸，一路上攀，最终抵达山顶，在悬崖边缘眺望无垠的哈丁冰原——一片面积超过 700 平方英里、孕育了数十条巨大冰川的茫茫万年古冰原，景色宏伟苍茫，震撼人心。",tips:"步道难度极大，全程往返通常需要 6 至 8 小时，极度考验体能。⚠️安全防范：山顶可能常年积雪，气候变化无常，必须穿着专业的硬底登山靴，携带防雨保暖层衣物，并带足3升水和高能量路餐。此区域是黑熊和黑尾鹿的活跃区，徒步时请保持结伴同行，大声交谈，并随身携带防熊喷雾（Bear Spray）。"},
+      "Fairbanks Downtown Visitor Center":{desc:"莫里斯·汤普森文化及游客中心（Morris Thompson Cultural & Visitor Center）坐落于费尔班克斯市中心，坐拥美丽的切纳河（Chena River）河畔景观。这是阿拉斯加内陆最顶级的游客信息与文化体验综合体，内部设有宽敞的阿拉斯加原住民文化展览厅，展示了阿萨巴斯卡印第安人、因纽特人与其他原住民族群的精美传统手工艺品、历史照片和交互式多媒体展览。馆内还设有季节性开放的免费阿拉斯加本土植物花园，是了解费尔班克斯历史、规划内陆探险路线的不二之选。",tips:"完全免费入场！中心工作人员极其热情，可以为您提供费尔班克斯及阿拉斯加内陆最新、最详尽的公路状况、极光预报、徒步路线和野生动物观测情报。建议旅程首日就来这里获取免费地图和旅游资讯。中心纪念品商店售卖大量的本土艺术家手工制作的阿拉斯加原住民工艺品，货真价实。"},
+      "Pioneer Park":{desc:"先锋公园（Pioneer Park，原名 Alaskaland）是费尔班克斯最著名、最受本地居民与游客喜爱的历史文化主题公园与户外休闲综合体。占地44英亩的巨大园区内，陈列着大量来自阿拉斯加淘金热时代（Gold Rush Era）的珍贵历史建筑与原木小屋，包括旧法院、百年老教堂、蒸汽机火车博物馆，以及停泊在公园中央的 SS Nenana 号——一艘被列入美国国家历史地标的百年蒸汽明轮船（Sternwheeler）。此外，园区内还有免费开放的先锋航空博物馆（Pioneer Air Museum）、众多本土艺术画廊、特色餐厅和儿童游乐场。",tips:"公园完全免费入场，免费停车。建议预留 3 至 4 小时充分享受。园内 Salmon Bake 餐厅供应正宗的阿拉斯加烤三文鱼自助大餐，在充满历史气息的原木餐厅用餐是绝佳的阿拉斯加体验。夏季晚间常有免费露天音乐会和本土舞蹈表演，具体时间表可在入口处查阅。迷你高尔夫球场和古董旋转木马也非常受家庭游客的欢迎。"}
     };
 
     var map = L.map('map', { zoomControl: true, minZoom: 4, maxZoom: 16 }).setView([62.2, -148.0], 6);
@@ -481,7 +438,7 @@ var wildlifeData = {
       "Cantwell Cabins":["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Cantwell%2C_Alaska.jpg/500px-Cantwell%2C_Alaska.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cantwell%2C_AK_post_office_2024-08-08.jpg/500px-Cantwell%2C_AK_post_office_2024-08-08.jpg"],
       "Tundra Tour":["https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Heinrich_Berann_NPS_Panorama_of_Denali_without_labels.jpg/500px-Heinrich_Berann_NPS_Panorama_of_Denali_without_labels.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Wonder_Lake%2C_Denali2.jpg/500px-Wonder_Lake%2C_Denali2.jpg"],
       "7 Gables Inn":["https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Aerial_view_of_Fairbanks_Alaska_skyline_%28Quintin_Soloviev%29.jpg/500px-Aerial_view_of_Fairbanks_Alaska_skyline_%28Quintin_Soloviev%29.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/University_of_Alaska_Fairbanks_campus_view.jpg/500px-University_of_Alaska_Fairbanks_campus_view.jpg"],
-      "Museum of North":["https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/University_of_Alaska_Museum_of_the_North1.jpg/500px-University_of_Alaska_Museum_of_the_North1.jpg"],
+      "Museum of North":["https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/University_of_Alaska_Museum_of_the_North1.jpg/500px-University_of_Alaska_Museum_of_the_North1.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/University_of_Alaska_Fairbanks_campus_view.jpg/500px-University_of_Alaska_Fairbanks_campus_view.jpg"],
       "Santa Claus House":["https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Santa_Clause_House%2C_North_Pole%2C_Fairbanks%2C_Alaska.jpg/500px-Santa_Clause_House%2C_North_Pole%2C_Fairbanks%2C_Alaska.jpg"],
       "Castner Glacier":["https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Mendenhall_Glacier_Ice_Cave_587.jpg/500px-Mendenhall_Glacier_Ice_Cave_587.jpg"],
       "Valdez Harbor Inn":["https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg/500px-Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg"],
@@ -494,13 +451,14 @@ var wildlifeData = {
       "Alaska Wildlife Conservation Center":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Brown_bear_at_Alaska_Wildlife_Conservation_Center%2C_Aug_2016.jpg/500px-Brown_bear_at_Alaska_Wildlife_Conservation_Center%2C_Aug_2016.jpg"],
       "Alaska Zoo":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Alaska_Zoo%2C_Anchorage.jpg/500px-Alaska_Zoo%2C_Anchorage.jpg"],
       "Portage Lake":["https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Portage_Glacier_Alaska.jpg/500px-Portage_Glacier_Alaska.jpg"],
-      "Byron Glacier Trail":["https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Byron_Glacier_AK.jpg/500px-Byron_Glacier_AK.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Winding_our_way_up_Byron_Glacier_trail_%286480079529%29.jpg/500px-Winding_our_way_up_Byron_Glacier_trail_%286480079529%29.jpg"],
       "Whittier":["https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Whittier%2C_Alaska_%282006%29.jpg/500px-Whittier%2C_Alaska_%282006%29.jpg"],
       "Seward Eats":["https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg/500px-Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg"],
       "Airbnb Seward":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Seward_harbor%2C_Alaska_%28AL%2BCA_804%29.jpg/500px-Seward_harbor%2C_Alaska_%28AL%2BCA_804%29.jpg"],
       "Kenai Cruise":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg"],
       "Bear Glacier":["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Resurrection_Bay_Bear_Glacier.jpg/500px-Resurrection_Bay_Bear_Glacier.jpg"],
-      "Harding Icefield":["https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/HardingIcefield2.jpg/500px-HardingIcefield2.jpg"]
+      "Harding Icefield":["https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/HardingIcefield2.jpg/500px-HardingIcefield2.jpg"],
+      "Fairbanks Downtown Visitor Center":["https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/By_ovedc_-_Fairbanks%2C_Alaska_-_18.jpg/500px-By_ovedc_-_Fairbanks%2C_Alaska_-_18.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Downtown_Fairbanks%2C_Chena_River.jpg/500px-Downtown_Fairbanks%2C_Chena_River.jpg"],
+      "Pioneer Park":["https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA21.jpg/500px-Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA21.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA03.jpg/500px-Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA03.jpg"]
     };
 
     var uniquePois = [];
@@ -567,7 +525,7 @@ var wildlifeData = {
       }
       var wd = weatherData[day.day];
       if (wd) {
-        html += '<div class="weather-info">' + wd.condition + ' <b>' + wd.text + '</b> &nbsp;<span style="color:#1d4ed8;font-weight:600;">' + wd.low + '</span> <span style="color:#94a3b8;">—</span> <span style="color:#b91c1c;font-weight:600;">' + wd.high + '</span>';if(wd.pop)html+=' &nbsp;PoP ' + wd.pop;html+=' &nbsp;\uD83D\uDCA8 ' + wd.wind + '</div>';
+        html += '<div class="weather-info">' + wd.condition + ' <span style="color:#1d4ed8;font-weight:600;font-size:14px;">' + wd.low + '</span> <span style="color:#64748b;">~</span> <span style="color:#b91c1c;font-weight:600;font-size:14px;">' + wd.high + '</span>  |  \uD83D\uDCA8 <span style="opacity:0.45;font-size:11px;">' + wd.wind + '</span></div>';
       }
       return html;
     }
@@ -750,9 +708,9 @@ var wildlifeData = {
     window.closeFullscreenDirect = function(e) { if (e) e.stopPropagation(); document.getElementById('fullscreen-overlay').style.display = 'none'; };
 
     window.toggleNoteInput = function(n) { var sid = getSanitizedId(n); var ic = document.getElementById('note-input-container-' + sid); if (ic) { if (ic.style.display === 'none') { ic.style.display = 'flex'; var ta = document.getElementById('note-textarea-' + sid); if (ta) { ta.value = noteData[n] || ''; ta.focus(); } } else { ic.style.display = 'none'; } } };
-    window.saveNote = function(n) { var sid = getSanitizedId(n); var ta = document.getElementById('note-textarea-' + sid); if (ta) { noteData[n] = ta.value.trim(); localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); pushNotesToCloud(); updateNoteDisplay(n); document.getElementById('note-input-container-' + sid).style.display = 'none'; } };
-    window.updateNoteDisplay = function(n) { var sid = getSanitizedId(n); var d = document.getElementById('note-display-' + sid); if (d) { var t = noteData[n]; if (t) { d.innerHTML = '<div class="note-text-wrapper"><strong>✏️ Note:</strong> ' + t.replace(/\n/g,'<br>') + '</div><button class="note-delete-btn" title="Delete Note"><i class="fa-solid fa-trash"></i></button>'; d.style.display = 'flex'; d.querySelector('.note-delete-btn').addEventListener('click', function(){ delete noteData[n]; localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); pushNotesToCloud(); updateNoteDisplay(n); }); } else { d.innerHTML = ''; d.style.display = 'none'; } } };
-    window.deleteNote = function(n) { delete noteData[n]; localStorage.setItem('alaskaTripNotes', JSON.stringify(noteData)); pushNotesToCloud(); updateNoteDisplay(n); };
+    window.saveNote = function(n) { var sid = getSanitizedId(n); var ta = document.getElementById('note-textarea-' + sid); if (ta) { noteData[n] = ta.value.trim(); updateNoteDisplay(n); document.getElementById('note-input-container-' + sid).style.display = 'none'; } };
+    window.updateNoteDisplay = function(n) { var sid = getSanitizedId(n); var d = document.getElementById('note-display-' + sid); if (d) { var t = noteData[n]; if (t) { d.innerHTML = '<div class="note-text-wrapper"><strong>✏️ Note:</strong> ' + t.replace(/\n/g,'<br>') + '</div><button class="note-delete-btn" title="Delete Note"><i class="fa-solid fa-trash"></i></button>'; d.style.display = 'flex'; d.querySelector('.note-delete-btn').addEventListener('click', function(){ delete noteData[n]; updateNoteDisplay(n); }); } else { d.innerHTML = ''; d.style.display = 'none'; } } };
+    window.deleteNote = function(n) { delete noteData[n]; updateNoteDisplay(n); };
 
     // ----------------------------------------------------
     // DRAWING - FIX 2: auto-disable on zoom/pan/day-select
@@ -976,6 +934,13 @@ var wildlifeData = {
       closeDetailPanel();
       closeDrawingIfActive();
       activeDay = dayNum;
+      // Auto-expand sidebar on mobile when a day is selected
+      if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('mobile-collapsed')) {
+        sidebar.style.height = '100vh';
+        sidebar.classList.remove('mobile-collapsed');
+        sidebar.classList.add('mobile-expanded');
+        setTimeout(function() { map.invalidateSize(); }, 320);
+      }
       updateSidebar();
       updateRouteStyles();
       var ac = document.getElementById('day-card-' + dayNum);
@@ -1051,6 +1016,9 @@ var wildlifeData = {
         c.innerHTML =
           '<div class="legend-item"><i class="fa-solid fa-mountain" style="color:#2e7d32"></i> <span>Hiking / Activity</span></div>' +
           '<div class="legend-item"><i class="fa-solid fa-hotel" style="color:#1565c0"></i> <span>Hotel / Lodging</span></div>' +
+          '<div class="legend-item"><i class="fa-solid fa-landmark" style="color:#6d4c41"></i> <span>Museum</span></div>' +
+          '<div class="legend-item"><i class="fa-solid fa-circle-info" style="color:#0288d1"></i> <span>Info / Visitor Center</span></div>' +
+          '<div class="legend-item"><i class="fa-solid fa-tree-city" style="color:#558b2f"></i> <span>Park</span></div>' +
           '<div class="legend-item"><i class="fa-solid fa-utensils" style="color:#e65100"></i> <span>Dining</span></div>' +
           '<div class="legend-item"><i class="fa-solid fa-plane-departure" style="color:#c62828"></i> <span>Airport</span></div>' +
           '<div class="legend-item"><i class="fa-solid fa-ship" style="color:#7b1fa2"></i> <span>Cruise</span></div>' +
@@ -1081,7 +1049,7 @@ var wildlifeData = {
       }
     });
 
-    setTimeout(function() { resetFullOverview(); }, 500);
+    setTimeout(function() { selectDay(3); }, 500);
 
     // Mobile Drag Handle Touch Interaction
     var dragHandle = document.getElementById('sidebar-drag-handle');
