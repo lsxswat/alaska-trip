@@ -1100,8 +1100,8 @@ var wildlifeData = {
       var todayAlaska = new Date(now.toLocaleString('en-US', {timeZone: 'America/Anchorage'}));
       var diffMs = todayAlaska.getTime() - tripStart.getTime();
       var dayNum = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
-      if (dayNum < 1) dayNum = 1;
-      if (dayNum > 11) dayNum = 11;
+      if (dayNum < 1 || dayNum > 11) { setTimeout(function() { resetFullOverview(); }, 500); return; }
+      // dayNum validated, proceed below
       setTimeout(function() { selectDay(dayNum); }, 500);
     })();
 
