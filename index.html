@@ -289,19 +289,63 @@
       11: {sunrise:"05:08", sunset:"22:32", daylight:"~17h24min"}
     };
 
-    var weatherData = {
-      1: {condition:"\u2600\ufe0f", low:"14\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"8 km/h"},
-      2: {condition:"\u26c5", low:"12\u00b0C", avg:"16\u00b0C", high:"20\u00b0C", wind:"10 km/h"},
-      3: {condition:"\u2600\ufe0f", low:"16\u00b0C", avg:"22\u00b0C", high:"26\u00b0C", wind:"6 km/h"},
-      4: {condition:"\u26c5", low:"13\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"12 km/h"},
-      5: {condition:"\ud83c\udf27\ufe0f", low:"10\u00b0C", avg:"14\u00b0C", high:"17\u00b0C", wind:"15 km/h"},
-      6: {condition:"\u26c5", low:"11\u00b0C", avg:"16\u00b0C", high:"20\u00b0C", wind:"10 km/h"},
-      7: {condition:"\u2600\ufe0f", low:"14\u00b0C", avg:"19\u00b0C", high:"23\u00b0C", wind:"8 km/h"},
-      8: {condition:"\u26c5", low:"12\u00b0C", avg:"17\u00b0C", high:"21\u00b0C", wind:"12 km/h"},
-      9: {condition:"\ud83c\udf27\ufe0f", low:"9\u00b0C", avg:"13\u00b0C", high:"16\u00b0C", wind:"18 km/h"},
-      10: {condition:"\u26c5", low:"11\u00b0C", avg:"15\u00b0C", high:"19\u00b0C", wind:"10 km/h"},
-      11: {condition:"\u2600\ufe0f", low:"13\u00b0C", avg:"18\u00b0C", high:"22\u00b0C", wind:"8 km/h"}
+    var weatherData = {};
+    // WMO weather codes → emoji
+    var weatherEmoji = {
+      0:"\u2600\ufe0f",1:"\u2600\ufe0f",2:"\u26c5",3:"\u2601\ufe0f",
+      45:"\ud83c\udf2b\ufe0f",48:"\ud83c\udf2b\ufe0f",
+      51:"\ud83c\udf27\ufe0f",53:"\ud83c\udf27\ufe0f",55:"\ud83c\udf27\ufe0f",
+      61:"\ud83c\udf27\ufe0f",63:"\ud83c\udf27\ufe0f",65:"\ud83c\udf27\ufe0f",
+      71:"\u2744\ufe0f",73:"\u2744\ufe0f",75:"\u2744\ufe0f",
+      80:"\ud83c\udf27\ufe0f",81:"\ud83c\udf27\ufe0f",82:"\ud83c\udf27\ufe0f",
+      95:"\u26c8\ufe0f",96:"\u26c8\ufe0f",99:"\u26c8\ufe0f"
     };
+    // Day → [lat, lon] for Open-Meteo
+    var dayCoordsForWeather = {"1":[61.17,-149.87],"2":[63.73,-148.91],"3":[64.86,-147.83],"4":[61.13,-146.36],"5":[61.13,-146.36],"6":[61.32,-149.57],"7":[61.32,-149.57],"8":[60.10,-149.44],"9":[60.10,-149.44],"10":[61.17,-149.87],"11":[61.17,-149.87]};
+    // Unique locations → which trip days they cover
+    var locToDays = {"61.17,-149.87":[1,10,11],"63.73,-148.91":[2],"64.86,-147.83":[3],"61.13,-146.36":[4,5],"61.32,-149.57":[6,7],"60.10,-149.44":[8,9]};
+    // Fallback weather shown immediately before API responds
+    var fallbackWeather = {1:{condition:"\u2600\ufe0f",low:"14\u00b0C",high:"22\u00b0C",wind:"8 km/h"},2:{condition:"\u26c5",low:"12\u00b0C",high:"20\u00b0C",wind:"10 km/h"},3:{condition:"\u2600\ufe0f",low:"16\u00b0C",high:"26\u00b0C",wind:"6 km/h"},4:{condition:"\u26c5",low:"13\u00b0C",high:"22\u00b0C",wind:"12 km/h"},5:{condition:"\ud83c\udf27\ufe0f",low:"10\u00b0C",high:"17\u00b0C",wind:"15 km/h"},6:{condition:"\u26c5",low:"11\u00b0C",high:"20\u00b0C",wind:"10 km/h"},7:{condition:"\u2600\ufe0f",low:"14\u00b0C",high:"23\u00b0C",wind:"8 km/h"},8:{condition:"\u26c5",low:"12\u00b0C",high:"21\u00b0C",wind:"12 km/h"},9:{condition:"\ud83c\udf27\ufe0f",low:"9\u00b0C",high:"16\u00b0C",wind:"18 km/h"},10:{condition:"\u26c5",low:"11\u00b0C",high:"19\u00b0C",wind:"10 km/h"},11:{condition:"\u2600\ufe0f",low:"13\u00b0C",high:"22\u00b0C",wind:"8 km/h"}};
+    for (var d=1;d<=11;d++) weatherData[d]=fallbackWeather[d];
+    function fetchLiveWeather(){
+      var fetched={};
+      for(var d=1;d<=11;d++){
+        var c=dayCoordsForWeather[d];
+        var key=c[0]+','+c[1];
+        if(fetched[key]) continue;
+        fetched[key]=true;
+        var url='https://api.open-meteo.com/v1/forecast?latitude='+c[0]+'&longitude='+c[1]+'&daily=temperature_2m_max,temperature_2m_min,weathercode,wind_speed_10m_max&timezone=America%2FAnchorage&start_date=2026-07-12&end_date=2026-07-22';
+        (function(lk,cd){
+          var xhr=new XMLHttpRequest();
+          xhr.open('GET',url,true);
+          xhr.onreadystatechange=function(){
+            if(xhr.readyState===4&&xhr.status===200){
+              try{
+                var data=JSON.parse(xhr.responseText);
+                if(data.daily){
+                  var days=locToDays[cd[0]+','+cd[1]];
+                  if(!days)return;
+                  for(var i=0;i<days.length;i++){
+                    var idx=days[i]-1;
+                    if(idx>=0&&idx<data.daily.time.length){
+                      weatherData[days[i]]={
+                        condition:weatherEmoji[data.daily.weathercode[idx]]||"\u2600\ufe0f",
+                        low:Math.round(data.daily.temperature_2m_min[idx])+"\u00b0C",
+                        high:Math.round(data.daily.temperature_2m_max[idx])+"\u00b0C",
+                        wind:Math.round(data.daily.wind_speed_10m_max[idx])+" km/h"
+                      };
+                    }
+                  }
+                  updateSidebar();
+                }
+              }catch(e){}
+            }
+          };
+          xhr.send();
+        })(key,c);
+      }
+    }
+    fetchLiveWeather();
 
         var cityClusters = [
       { name:"Anchorage", coord:[61.1770,-149.8700], bounds:[[61.1,-150.1],[61.35,-149.5]] },
@@ -1049,7 +1093,17 @@ var wildlifeData = {
       }
     });
 
-    setTimeout(function() { selectDay(3); }, 500);
+    // Auto-detect today's date (Alaska time) and open corresponding trip day
+    (function autoSelectToday() {
+      var tripStart = new Date(Date.UTC(2026, 6, 12)); // July 12, 2026 = Day 1
+      var now = new Date();
+      var todayAlaska = new Date(now.toLocaleString('en-US', {timeZone: 'America/Anchorage'}));
+      var diffMs = todayAlaska.getTime() - tripStart.getTime();
+      var dayNum = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
+      if (dayNum < 1) dayNum = 1;
+      if (dayNum > 11) dayNum = 11;
+      setTimeout(function() { selectDay(dayNum); }, 500);
+    })();
 
     // Mobile Drag Handle Touch Interaction
     var dragHandle = document.getElementById('sidebar-drag-handle');
