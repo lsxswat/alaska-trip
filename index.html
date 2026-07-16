@@ -264,7 +264,7 @@
         pois:[{name:"Portage Lake",coord:[60.7860,-148.9200],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Whittier",coord:[60.7730,-148.6830],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Seward Eats",coord:[60.1040,-149.4430],type:"dining",icon:"fa-utensils",color:"#e65100",desc:"",images:[]},{name:"Airbnb Seward",coord:[60.1050,-149.4410],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
         routeCoords:[[61.3210,-149.5670],[60.7860,-148.9200],[60.7730,-148.6830],[60.1050,-149.4410]] },
       { day:9, dateStr:"DAY 9 · MON JUL 20", title:"Kenai Fjords Cruise", drivingInfo:"7.5h National Park boat tour from Seward", stay:"🏨 Same: Airbnb Seward",
-        pois:[{name:"Kenai Cruise",coord:[60.1043,-149.4388],type:"cruise",icon:"fa-ship",color:"#7b1fa2",desc:"",images:[],receipt:"receipts/Confirmation%20-%207.5%20HR%20Kenai%20Fjords%20National%20Park.pdf"}],
+        pois:[{name:"Lowell Point Beach",coord:[60.0675,-149.4390],type:"beach",icon:"fa-umbrella-beach",color:"#0891b2",desc:"",images:[]},{name:"Kenai Cruise",coord:[60.1043,-149.4388],type:"cruise",icon:"fa-ship",color:"#7b1fa2",desc:"",images:[],receipt:"receipts/Confirmation%20-%207.5%20HR%20Kenai%20Fjords%20National%20Park.pdf"}],
         boatRouteCoords:[[60.1043,-149.4388],[60.08,-149.43],[60.04,-149.42],[59.96,-149.43],[59.91,-149.48],[59.87,-149.55],[59.83,-149.63],[59.81,-149.70],[59.82,-149.74],[59.81,-149.70],[59.83,-149.63],[59.87,-149.55],[59.91,-149.48],[59.96,-149.43],[60.04,-149.42],[60.08,-149.43],[60.1043,-149.4388]] },
       { day:10, dateStr:"DAY 10 · TUE JUL 21", title:"Seward to Anchorage", drivingInfo:"Seward to Anchorage via Seward Hwy (~2.5h)", stay:"🏨 Stay: Motel 6 Midtown",
         pois:[{name:"Bear Glacier",coord:[60.1500,-149.3800],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[],receipt:"receipts/Bear%20Glacier%20Iceberg%20Kayaking.pdf"},{name:"Harding Icefield",coord:[60.0900,-149.6600],type:"hiking",icon:"fa-mountain",color:"#2e7d32",desc:"",images:[]},{name:"Motel 6 Midtown",coord:[61.1770,-149.8700],type:"hotel",icon:"fa-hotel",color:"#1565c0",desc:"",images:[]}],
@@ -388,7 +388,8 @@
       "Bear Glacier":"Bear Glacier Lagoon Kayaking",
       "Harding Icefield":"Harding Icefield Trail",
       "Fairbanks Downtown Visitor Center":"Morris Thompson Cultural & Visitor Center",
-      "Pioneer Park":"Pioneer Park (Alaskaland)"
+      "Pioneer Park":"Pioneer Park (Alaskaland)",
+      "Lowell Point Beach":"Lowell Point Beach Access and Parking",
     };
 
     var noteData = {};
@@ -403,6 +404,8 @@ var wildlifeData = {
   "Bear Glacier":"🦭 斑海豹 — 经常趴在潟湖的冰山上休息，把冰山当作捕鱼间隙的休息平台。🦅 白头海雕 — 在周围云杉林中筑巢。幼雕有斑驳的棕色羽毛。",
   "Harding Icefield":"🐻 黑熊 — 哈丁冰原步道上比较常见的访客。徒步时请制造噪音、携带防熊喷雾、结伴而行。最佳观赏时间为清晨。🐿️ 灰白旱獭 — 沿途岩石堆中经常听到它们互相吹哨警告同伴。",
   "Alaska Wildlife Conservation Center":"🦬 北美森林野牛、麋鹿、麝牛、熊 — 这里是野生动物救治中心，不是动物园。夏季午后可以在池塘边看到棕熊捕三文鱼。🦌 驼鹿 — 清晨常在池塘附近区域出现。",
+  
+  "Lowell Point Beach":"🦅 白头海雕 — 经常在海滩上空盘旋，低潮时在潮池中捕鱼。🦦 海獭 — 经常在海湾中仰面漂浮，尤其在海带床（Kelp Bed）附近最为常见。🦭 斑海豹 — 偶尔会游到岸边或趴在近海的岩石上晒太阳。🐟 三文鱼 — 7月下旬粉红鲑（Pink Salmon）洄游季节，在 Lowell Creek 入海口可以看到三文鱼跃出水面。🐻 黑熊 — 海滩及周边树林偶有出没，尤其是清晨和黄昏，请保持警惕。",
   "Alaska Zoo":"🐻‍❄️ 北极熊 — Ahpun（园区北极熊）在喂食时间（11am和3pm）最活跃。🐺 狼与猞猁 — 害羞的动物，建议清晨开门后第一时间前往观赏，人少的时候它们更愿意出来活动。",
   "Portage Lake":"🦅 白头海雕 — 经常站在湖中的冰山上捕鱼。傍晚的侧逆光是拍摄的最佳时机。🦦 水獭 — 很活泼，经常能看到它们沿着泥泞的河岸滑入水中嬉戏。",
   "Solomon Gulch":"🐟 三文鱼（粉红鲑 & 狗鲑） — 7-8月数百万条三文鱼洄游，观看它们在鱼梯上奋力跳跃的壮观场面。🐻 棕熊 — 三文鱼季节常在孵化场附近出没捕鱼，尤其是清晨和傍晚。",
@@ -443,6 +446,8 @@ var wildlifeData = {
       "Alaska Zoo":{desc:"阿拉斯加动物园（The Alaska Zoo）坐落于安克雷奇市区的东南部山麓，是一座独特且深受喜爱的极地特色专业动物园。该动物园致力于救助、康复和保护阿拉斯加本土以及全球寒冷气候地区的珍稀野生动物，园内明星包括高大雄壮的北极熊、极地狼、加拿大猞猁、雪鸮、麝牛、美洲黑熊、驼鹿和双峰驼等。",tips:"门票售价为 $18。整个园区深深嵌入郁郁葱葱的北方原始针叶林中，漫步其间的木栈道与林荫路十分惬意。推荐在下午参观，并提前关注园区每日的饲养员科普互动时间（Keeper Chats），能极好地了解这群极地生灵在严酷环境下的奇妙生存本领。"},
       "Portage Lake":{desc:"波特奇湖（Portage Lake）是一座由于波特奇冰川（Portage Glacier）急速退缩而形成的幽深高山冰川融水湖，坐落于风景如画的波特奇山谷深处。湖水由于富含冰川粉末而呈现出迷人的松石绿与奶蓝色。夏季湖面上经常漂浮着从远处冰川上崩塌落下的冰蓝色碎冰，天气晴朗时，周围雪山和波特奇冰川的倒影在如镜的湖面上交相辉映，美不胜收。",tips:"湖畔设有设施完善的贝吉奇·博格斯游客中心（Begich, Boggs Visitor Center），展示了冰川地质演变历史。夏季您可以选择乘坐官方的 Portage Glacier Cruise 游船（票价约 $40/人，耗时1小时），游船会带您一路驶近波特奇冰川高达百英尺的幽蓝冰墙前，可以近距离听到万年古冰碎裂的震撼声响。"},
       "Whittier":{desc:"惠蒂尔（Whittier）是阿拉斯加最神秘、最奇特的海滨小镇，坐落于威廉王子湾（Prince William Sound）的峡湾深处。进入该小镇的唯一陆路通道是一条全长 2.5 英里的安东·安德森纪念隧道（Anton Anderson Memorial Tunnel），这也是北美最长的单向公路铁路两用隧道，汽车和火车共用此道，实行整点与半点交替放行。最神奇的是，惠蒂尔全镇近 300 名居民几乎全部共同生活在一栋高 14 层的巨型苏联风格大楼（Begich Towers）内，大楼内甚至包含了邮局、诊所、超市和市政府。",tips:"规划行程时务必提前查询隧道的双向放行时间表，避免在隧道口长时间排队等待。惠蒂尔港口常年停靠着大型极地游轮，也是自驾游客租船出海垂钓阿拉斯加比目鱼（Halibut）和三文鱼的圣地。港口旁有多家供应超新鲜炸鱼薯条（Fish & Chips）的海边餐馆，极力推荐尝试。"},
+      
+      "Lowell Point Beach":{desc:"洛厄尔角海滩（Lowell Point Beach）位于苏厄德（Seward）以南约3英里，是 Resurrection Bay 沿岸最受欢迎的公共海滩。这里拥有黑色卵石海滩与远处白雪皑皑的基奈山脉相映成趣的壮丽景色，是当地人夏季戏水、野餐、观赏海湾日落的首选去处。海滩旁边设有免费停车场和简易洗手间设施，也是 Kayak 和 SUP 爱好者的热门下水点。",tips:"从 Seward 市区沿 Lowell Point Road 向南开车约10分钟即可到达。海滩停车场免费但车位有限，夏季周末建议尽早前往（早上9点前）。海滩水温极低（即使在盛夏也只有10°C左右），不建议长时间游泳。退潮时可以走到海滩更远的地方探索潮池（Tide Pools），观察海星、海胆、小螃蟹等潮间带生物。傍晚光线极美，是拍摄夕阳和雪山倒影的绝佳时间。注意：海滩周边偶尔有黑熊出没，请妥善处理垃圾和食物。"},
       "Seward Eats":{desc:"苏厄德（Seward）是基奈半岛（Kenai Peninsula）最著名的海滨历史小镇，也是复活湾（Resurrection Bay）的璀璨明珠。小镇常住人口约 2,800 人，历史底蕴深厚，是著名的阿拉斯加铁路南端终点站与艾迪塔罗德狗拉雪橇步道（Iditarod Trail）的起点。镇上聚集了众多优秀的画廊、手工艺品商店和顶级的海鲜餐厅，充满了阿拉斯加海港小镇独有的纯朴与活力。",tips:"极力推荐去小镇标志性的 Fifth Avenue Bistro 享用一顿极其奢华的帝王蟹（King Crab）与海鲜意大利面大餐。餐后去 Sweet Darlings 甜品店排队买一支纯正的阿拉斯加野生蓝莓口味手工冰淇淋（Wild Blueberry Ice Cream），绝对能让您的味蕾得到终极满足。港口滨海步道常能看到在水面漂浮睡觉的野生海獭（Sea Otters）。"},
       "Airbnb Seward":{desc:"这是一间坐落于苏厄德（Seward）市中心黄金地段、温馨舒适的极简风格 Airbnb 私人公寓。公寓内部装饰充满了原木温暖与现代北欧风情，配备了功能完备的独立厨房、餐具、咖啡机、独立的卫浴设施以及超舒适的羽绒床铺。从公寓窗外即可远眺复活湾的波光粼粼与高耸的复活雪山，是在经历了一整天海上航行与户外徒步后，最温馨、私密的休憩港湾。",tips:"公寓地理位置绝佳，步行即可前往 Seward 游船码头、阿拉斯加海洋生物中心（Alaska SeaLife Center）以及多座本地人气餐馆。自驾房客可享受专属的免费停车位。夏季属于苏厄德旅游极旺季，此公寓极其抢手，强烈建议提前数月完成预订。"},
       "Kenai Cruise":{desc:"基奈峡湾国家公园游船之旅（Kenai Fjords National Park Cruise）是探索阿拉斯加无与伦比海洋生态与入海冰川的终极体验。7.5 小时的航程从苏厄德港出发，一路驶向哈丁冰原倾泻入海的 Holgate 冰川或 Aialik 冰川。沿途两旁峡湾峭壁高耸，巨型冰川崩塌落海的声音如雷贯耳。这是观赏座头鲸喷水腾空、虎鲸（Orca）成群巡游、海鹦（Puffin）扇动褶子、以及成百上千只海狮、海獭在礁石上嬉戏的海洋生态圣殿。",tips:"票价约为每人 $170-200，夏季必须提前预约。复活湾外海风浪可能极大，即使平时不晕船的游客也强烈建议开船前半小时服用好晕船药（Dramamine）。甲板上海风极其刺骨寒冷，请务必全副武装：羽绒服、防风冲锋衣、防寒帽、手套和围巾一个都不能少。船上备有高倍望远镜租借，但建议自带高倍望远镜与长焦相机。"},
@@ -501,6 +506,8 @@ var wildlifeData = {
       "Kenai Cruise":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg"],
       "Bear Glacier":["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Resurrection_Bay_Bear_Glacier.jpg/500px-Resurrection_Bay_Bear_Glacier.jpg"],
       "Harding Icefield":["https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/HardingIcefield2.jpg/500px-HardingIcefield2.jpg"],
+      
+      "Lowell Point Beach":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Seward_harbor%2C_Alaska_%28AL%2BCA_804%29.jpg/500px-Seward_harbor%2C_Alaska_%28AL%2BCA_804%29.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg/500px-Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg"],
       "Fairbanks Downtown Visitor Center":["https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/By_ovedc_-_Fairbanks%2C_Alaska_-_18.jpg/500px-By_ovedc_-_Fairbanks%2C_Alaska_-_18.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Downtown_Fairbanks%2C_Chena_River.jpg/500px-Downtown_Fairbanks%2C_Chena_River.jpg"],
       "Pioneer Park":["https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA21.jpg/500px-Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA21.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA03.jpg/500px-Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA03.jpg"]
     };
@@ -1066,6 +1073,7 @@ var wildlifeData = {
           '<div class="legend-item"><i class="fa-solid fa-utensils" style="color:#e65100"></i> <span>Dining</span></div>' +
           '<div class="legend-item"><i class="fa-solid fa-plane-departure" style="color:#c62828"></i> <span>Airport</span></div>' +
           '<div class="legend-item"><i class="fa-solid fa-ship" style="color:#7b1fa2"></i> <span>Cruise</span></div>' +
+          '<div class="legend-item"><i class="fa-solid fa-umbrella-beach" style="color:#0891b2"></i> <span>Beach</span></div>' +
           '<div class="legend-item"><i class="fa-solid fa-tree" style="color:#1B5E20"></i> <span>National Park</span></div>';
         return c;
       }
