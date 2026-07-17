@@ -1,152 +1,4 @@
-<
-var nationalParksData = [
-  {
-    "name": "Denali NP",
-    "fullName": "Denali National Park & Preserve",
-    "coord": [
-      63.726,
-      -148.952
-    ],
-    "type": "park",
-    "icon": "fa-tree",
-    "color": "#2e7d32",
-    "desc": "迪纳利国家公园（Denali National Park & Preserve）是阿拉斯加最著名、游客最多的国家公园，占地超过 600 万英亩，是美国的第三大国家公园。公园的核心是海拔 20,310 英尺（6,190 米）的迪纳利峰——北美最高峰。公园内仅有唯一一条全长 92 英里的公园公路（Denali Park Road），私家车只能行驶至前 15 英里，之后需乘坐官方巴士深入。这里拥有极其丰富的野生动物资源，是近距离观察棕熊、驼鹿、驯鹿、大角羊和狼的全球顶级目的地。夏季苔原上野花烂漫，秋季则化为一片金红，四季均有不同壮丽风光。",
-    "tips": "入园门票 $15/人，建议提前在 recreation.gov 预定巴士票（Tundra Wilderness Tour 约 $150/人）。公园公路 Mile 15 处的 Savage River 是私家车可达的最深处。夏季蚊虫极多，务必携带防蚊网和防熊喷雾。最佳游览季节为 6-9 月，7 月野花盛开期尤为壮观。住宿可选择公园入口附近的 Cantwell 或 Healy 小镇。",
-    "wildlife": "🐻 棕熊 — 全球密度最高的棕熊栖息地之一，7-8 月山坡上吃野莓最常见。🦌 驼鹿 — 公园入口处和湖泊周边清晨最活跃。🦌 驯鹿（Caribou） — 经常成群穿越公路，Savage River 区域最多。🐑 多尔大角羊（Dall Sheep） — 山坡悬崖上吃草，Polychrome Pass 是最佳观察点。🐺 灰狼 — 虽然难见但确实存在，公园内部区域有稳定种群。",
-    "images": [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Wonder_Lake%2C_Denali2.jpg/500px-Wonder_Lake%2C_Denali2.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Reflection_in_Wonder_Lake.jpg/500px-Reflection_in_Wonder_Lake.jpg"
-    ]
-  },
-  {
-    "name": "Kenai Fjords NP",
-    "fullName": "Kenai Fjords National Park",
-    "coord": [
-      60.18,
-      -149.65
-    ],
-    "type": "park",
-    "icon": "fa-water",
-    "color": "#0891b2",
-    "desc": "基奈峡湾国家公园（Kenai Fjords National Park）位于基奈半岛南部，是阿拉斯加海洋生态系统的皇冠明珠。公园因其壮丽的峡湾地貌、巨型入海冰川和极其丰富的海洋野生动物而闻名于世。公园的核心是面积超过 700 平方英里的哈丁冰原（Harding Icefield），从中孕育出数十条入海冰川。其中 Exit Glacier 是唯一可通过公路到达的冰川，而要通过游船才能看到 Aialik Glacier 和 Holgate Glacier 崩塌入海的震撼场面。",
-    "tips": "公园门票 $15/人。7.5 小时基奈峡湾游船约 $170-200/人，必须提前网上预订。Exit Glacier 区域有 Harding Icefield Trail（往返 8.2 英里，极具挑战，需 6-8 小时）。出海务必服用晕船药，并穿羽绒服+防风外套，即使盛夏海风也极冷。Seward 小镇住宿建议提前数月预订。最佳观鲸季节为 6-8 月。",
-    "wildlife": "🐋 座头鲸和虎鲸 — Aialik Bay 附近最常见，座头鲸常集体气泡网捕食。🦅 海鹦 — 在峡湾峭壁筑巢，6-8 月最多。🦭 海狮与海獭 — 礁石上晒太阳，海獭仰面漂浮在海带床。🐻 黑熊 — Exit Glacier 步道沿途偶有出没。🦅 白头海雕 — 峡湾上空盘旋。",
-    "images": [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg"
-    ]
-  },
-  {
-    "name": "Katmai NP",
-    "fullName": "Katmai National Park & Preserve",
-    "coord": [
-      58.6222,
-      -155.1417
-    ],
-    "type": "park",
-    "icon": "fa-tree",
-    "color": "#e65100",
-    "desc": "卡特迈国家公园（Katmai National Park & Preserve）位于阿拉斯加西南部、阿拉斯加半岛上，是全球最著名的棕熊观赏圣地。公园内的布鲁克斯瀑布（Brooks Falls）是全世界拍摄棕熊捕食洄游三文鱼最经典的场景——每年 7 月和 9 月，数十只巨型棕熊聚集在瀑布上，用嘴接住跳跃而起的三文鱼。此外，公园还拥有著名的万烟谷（Valley of Ten Thousand Smokes），是 1912 年诺瓦鲁普塔火山喷发后形成的月球般荒凉景观。",
-    "tips": "无道路到达，必须从安克雷奇乘小飞机（约 1.5 小时，往返约 $600-800/人）。布鲁克斯营地（Brooks Camp）设有三个观熊平台，7 月和 9 月是最佳观熊月份。每天限流，需提前数月预约营地住宿或一日游。⚠️绝对遵守 ranger 安全指引，与熊保持至少 50 码距离。携带防熊喷雾，不要在户外进食。",
-    "wildlife": "🐻 阿拉斯加棕熊 — 全球最著名的观熊地，7 月三文鱼洄游期最多可同时看到 20+ 只熊在瀑布捕鱼。🦅 白头海雕 — 数量极多，常抢夺熊捕捉的三文鱼残渣。🐟 三文鱼 — 数百万条红鲑（Sockeye）在 6-7 月洄游，8-9 月为主力。🦊 赤狐 — 常在营地周边出现。",
-    "images": [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Katmai_Caldera._Katmai_National_Park%2C_Alaska_-_panoramio.jpg/500px-Katmai_Caldera._Katmai_National_Park%2C_Alaska_-_panoramio.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/21/Katmai_National_Park_%26_Preserve_%2830025690075%29.jpg/500px-Katmai_National_Park_%26_Preserve_%2830025690075%29.jpg"
-    ]
-  },
-  {
-    "name": "Glacier Bay NP",
-    "fullName": "Glacier Bay National Park & Preserve",
-    "coord": [
-      58.6658,
-      -136.9019
-    ],
-    "type": "park",
-    "icon": "fa-water",
-    "color": "#0891b2",
-    "desc": "冰川湾国家公园（Glacier Bay National Park & Preserve）位于阿拉斯加东南部内陆航道（Inside Passage），是联合国教科文组织世界遗产。公园以其震撼人心的峡湾和巨型入海冰川闻名——Margerie Glacier、Johns Hopkins Glacier 等冰川高达 200 英尺以上，频繁发生巨型冰块崩塌入海的壮观场面。这里在 250 年前还完全被冰川覆盖，是地球上冰川退缩速度最快、研究气候变化最重要的天然实验室。",
-    "tips": "无道路连接，主要通过游轮（Cruise Ship）或从 Juneau 乘小型游船/飞机抵达。游轮通常会在冰川前停留 1-2 小时供游客拍照观赏。国家公园管理处的日间游船从 Bartlett Cove 出发（约 $230/人，8 小时）。住宿极其有限，需提前数月预定 Bartlett Cove 的 Glacier Bay Lodge。最佳季节 6-8 月。",
-    "wildlife": "🐋 座头鲸 — 夏季在冰川湾峡湾中捕食磷虾和沙鳗，是最常见的鲸鱼种类。🦅 白头海雕 — 数量巨大，峡湾沿岸到处都是。🦭 斑海豹 — 经常趴在浮冰上晒太阳，尤其在冰川崩裂后的碎冰区域。🐻 棕熊与黑熊 — 海岸线和河口区域觅食，退潮时在潮间带翻找贝类。🦦 海獭 — 在海湾中仰面漂浮，数量已从濒危恢复至健康水平。",
-    "images": [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/de/Parque_Nacional_Bah%C3%ADa_del_Glaciar%2C_Alaska%2C_Estados_Unidos%2C_2017-08-19%2C_DD_111.jpg/500px-Parque_Nacional_Bah%C3%ADa_del_Glaciar%2C_Alaska%2C_Estados_Unidos%2C_2017-08-19%2C_DD_111.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Johns_Hopkins_Glacier_Bay_Mount_Orville_Mount_Wilbur_Alaska_2014.jpg/500px-Johns_Hopkins_Glacier_Bay_Mount_Orville_Mount_Wilbur_Alaska_2014.jpg"
-    ]
-  },
-  {
-    "name": "Wrangell-St. Elias NP",
-    "fullName": "Wrangell-St. Elias National Park & Preserve",
-    "coord": [
-      61.445,
-      -142.955
-    ],
-    "type": "park",
-    "icon": "fa-mountain",
-    "color": "#7b1fa2",
-    "desc": "兰格尔-圣伊莱亚斯国家公园（Wrangell-St. Elias National Park & Preserve）是美国最大的国家公园，面积高达 1,320 万英亩——比瑞士的国土面积还大！公园与加拿大克卢恩国家公园（Kluane NP）相连，共同组成了地球上最大的国际保护区。这里拥有北美第二大高峰圣伊莱亚斯峰（Mount St. Elias，18,008 英尺），以及美国最大冰川群。公园深处有一座完整保留的百年铜矿鬼城 Kennecott，是全世界工业考古爱好者的圣殿。",
-    "tips": "从安克雷奇出发沿 Richardson Hwy 到 Glennallen，转 McCarthy Road（60 英里碎石路，颠簸但可通行普通车辆）。公园免费入园。Kennecott Mines 国家历史地标是必看景点，可参加导览进入 14 层木结构铜矿大楼内部（$30-50/人）。Root Glacier 冰川徒步推荐跟随向导（$100-150/人）。📡 公园内基本无手机信号，需提前下载离线地图。",
-    "wildlife": "🐻 棕熊与黑熊 — 冰川河谷、河流沿岸遍布。🦌 驯鹿（Caribou） — 高山苔原上季节性迁徙经过。🦅 金雕 — 在山谷上升暖气流中翱翔。🐑 多尔大角羊 — 在裸露的山脊上吃草。🦫 河狸 — 大大小小的溪流中随处可见水坝。",
-    "images": [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/18/Lago_Plateado%2C_Parque_nacional_y_reserva_Wrangell-San_El%C3%ADas%2C_Alaska%2C_Estados_Unidos%2C_2017-08-22%2C_DD_122-127_PAN.jpg/500px-Lago_Plateado%2C_Parque_nacional_y_reserva_Wrangell-San_El%C3%ADas%2C_Alaska%2C_Estados_Unidos%2C_2017-08-22%2C_DD_122-127_PAN.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/46/Parque_nacional_y_reserva_Wrangell-San_El%C3%ADas%2C_Alaska%2C_Estados_Unidos%2C_2017-08-24%2C_DD_02.jpg/500px-Parque_nacional_y_reserva_Wrangell-San_El%C3%ADas%2C_Alaska%2C_Estados_Unidos%2C_2017-08-24%2C_DD_02.jpg"
-    ]
-  },
-  {
-    "name": "Lake Clark NP",
-    "fullName": "Lake Clark National Park & Preserve",
-    "coord": [
-      60.2781,
-      -153.5074
-    ],
-    "type": "park",
-    "icon": "fa-tree",
-    "color": "#2e7d32",
-    "desc": "克拉克湖国家公园（Lake Clark National Park & Preserve）位于安克雷奇西南的阿拉斯加半岛根部，被誉为'阿拉斯加的精华缩影'。这里汇聚了阿拉斯加的全部经典元素：碧蓝的克拉克湖、活跃的Redoubt和Iliamna两座火山、白雪皑皑的楚加奇山脉、广袤的苔原和丰富的野生动物。公园没有公路可达，是真正意义上的荒野——来这里看熊捕三文鱼比 Katmai 更加原始和低调。",
-    "tips": "无道路到达，必须从安克雷奇、Homer 或 Kenai 乘小飞机（约 $500-700/人往返）。Crescent Lake 和 Silver Salmon Creek 是最佳观熊地，6-8 月棕熊在海岸草甸上挖蛤蜊、捕三文鱼。建议参加向导带领的 Bear Viewing Day Trip。住宿为荒野木屋（Lodge），需提前半年以上预订。",
-    "wildlife": "🐻 棕熊 — 海岸草甸和河流沿岸极多，是除了 Katmai 外阿拉斯加最佳观熊地。🦌 驯鹿 — 数量众多的 Mulchatna 驯鹿群在此季节性地穿越苔原。🐺 灰狼 — 克拉克湖流域有健康稳定的狼群。🦅 白头海雕 — 湖面上空常见。🐟 三文鱼 — 夏季洄游规模壮观。",
-    "images": [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Lake_Clark_National_Park.jpg/500px-Lake_Clark_National_Park.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/View_at_Lake_Clark_National_Park_and_Preserve%2C_Alaska_%2828aa9caf-b197-4397-82fd-e5550f096383%29.jpg/500px-View_at_Lake_Clark_National_Park_and_Preserve%2C_Alaska_%2828aa9caf-b197-4397-82fd-e5550f096383%29.jpg"
-    ]
-  },
-  {
-    "name": "Gates of the Arctic NP",
-    "fullName": "Gates of the Arctic National Park & Preserve",
-    "coord": [
-      67.7862,
-      -153.2963
-    ],
-    "type": "park",
-    "icon": "fa-mountain",
-    "color": "#6d4c41",
-    "desc": "北极之门国家公园（Gates of the Arctic National Park & Preserve）位于北极圈以北，是完全没有任何公路、步道、营地或设施的纯粹原始荒野——这是全美最偏远、最难抵达的国家公园。公园的命名来源于两座标志性山峰 Frigid Crags 和 Boreal Mountain，它们像两扇巨大的石门守护着北极荒野。这里有广袤的布鲁克斯山脉（Brooks Range）、一望无际的苔原和六个国家野生风景河流。",
-    "tips": "没有公路、没有步道、没有营地——完全荒野。抵达方式极其有限：从 Fairbanks 或 Bettles 乘丛林小飞机（约 $800-1200/人往返）降落于荒野湖泊或砾石河滩。只适合极有经验的户外探险者，必须完全自给自足。最佳季节 6-8 月（极昼，气温 10-20°C）。必须携带卫星电话（无手机信号）、防熊装备和全套野外生存器材。国家公园免门票。",
-    "wildlife": "🐻 棕熊 — 布鲁克斯山脉北坡和河流沿岸觅食。🐺 灰狼 — 全美最健康的狼群之一在北极之门自由漫游。🦌 驯鹿 — 西极驯鹿群（Western Arctic Caribou Herd）数量超过 20 万头，季节迁移壮观无比。🐑 多尔大角羊 — 高山裸岩区域可见。🦅 金雕 — 在山谷上空翱翔。🦉 雪鸮 — 夏季在苔原上筑巢。",
-    "images": [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/GatesofArctic.jpg/500px-GatesofArctic.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Thunder_Valley._Gates_of_the_Arctic_National_Park%2C_Brooks_Range%2C_Alaska.jpg/500px-Thunder_Valley._Gates_of_the_Arctic_National_Park%2C_Brooks_Range%2C_Alaska.jpg"
-    ]
-  },
-  {
-    "name": "Kobuk Valley NP",
-    "fullName": "Kobuk Valley National Park",
-    "coord": [
-      67.3317,
-      -158.8933
-    ],
-    "type": "park",
-    "icon": "fa-tree",
-    "color": "#e65100",
-    "desc": "科伯克谷国家公园（Kobuk Valley National Park）位于北极圈以北 75 英里，是全美最不为人知、游客最少的国家公园之一——每年访客不到 15,000 人。公园的核心奇观是三大沙丘群（Great Kobuk Sand Dunes），这些高达 100 英尺的活性沙丘绵延 25 平方英里，是被冰川研磨后在风力作用下堆积而成的——在北极圈看到沙漠景象，令人难以置信！每年春秋两季，约 50 万头西极驯鹿穿过科伯克河（Kobuk River）进行大迁徙，是地球上最壮观的自然奇观之一。",
-    "tips": "完全没有公路到达，仅能通过从 Kotzebue 或 Bettles 乘小飞机进出（约 $500-800/人）。公园没有服务站、步道或营地，100% 荒野体验。最佳季节 6-8 月（极昼，气温 15-25°C）。沙丘区夏季可达 30°C以上——北极圈居然要防晒！驯鹿迁徙最佳观赏期为春季（4-5 月）和秋季（9-10 月）。必须携带全套野外生存装备和卫星通信设备。",
-    "wildlife": "🦌 驯鹿 — 西极驯鹿群（50 万+）春秋两季迁徙穿过科伯克河，是地球上最壮观的野生动物奇观之一。🐻 棕熊 — 河流沿岸和沙丘边缘觅食。🐺 灰狼 — 公园内有健康狼群。🦊 北极狐 — 夏季褐毛冬季白毛，是沙丘和苔原之间的常见身影。🐟 鲑鱼 — 科伯克河中洄游。🦉 雪鸮 — 夏季在开阔苔原筑巢。",
-    "images": [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kobuk_Valley_National_Park_%288491258040%29.jpg/500px-Kobuk_Valley_National_Park_%288491258040%29.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kobuk_Valley_National_Park_banner.jpg/500px-Kobuk_Valley_National_Park_banner.jpg"
-    ]
-  }
-];
-
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -422,6 +274,152 @@ var nationalParksData = [
         routeCoords:[[61.1770,-149.8700],[61.1742,-149.9964]] }
     ];
 
+var nationalParksData = [
+  {
+    "name": "Denali NP",
+    "fullName": "Denali National Park & Preserve",
+    "coord": [
+      63.726,
+      -148.952
+    ],
+    "type": "park",
+    "icon": "fa-tree",
+    "color": "#2e7d32",
+    "desc": "迪纳利国家公园（Denali National Park & Preserve）是阿拉斯加最著名、游客最多的国家公园，占地超过 600 万英亩，是美国的第三大国家公园。公园的核心是海拔 20,310 英尺（6,190 米）的迪纳利峰——北美最高峰。公园内仅有唯一一条全长 92 英里的公园公路（Denali Park Road），私家车只能行驶至前 15 英里，之后需乘坐官方巴士深入。这里拥有极其丰富的野生动物资源，是近距离观察棕熊、驼鹿、驯鹿、大角羊和狼的全球顶级目的地。夏季苔原上野花烂漫，秋季则化为一片金红，四季均有不同壮丽风光。",
+    "tips": "入园门票 $15/人，建议提前在 recreation.gov 预定巴士票（Tundra Wilderness Tour 约 $150/人）。公园公路 Mile 15 处的 Savage River 是私家车可达的最深处。夏季蚊虫极多，务必携带防蚊网和防熊喷雾。最佳游览季节为 6-9 月，7 月野花盛开期尤为壮观。住宿可选择公园入口附近的 Cantwell 或 Healy 小镇。",
+    "wildlife": "🐻 棕熊 — 全球密度最高的棕熊栖息地之一，7-8 月山坡上吃野莓最常见。🦌 驼鹿 — 公园入口处和湖泊周边清晨最活跃。🦌 驯鹿（Caribou） — 经常成群穿越公路，Savage River 区域最多。🐑 多尔大角羊（Dall Sheep） — 山坡悬崖上吃草，Polychrome Pass 是最佳观察点。🐺 灰狼 — 虽然难见但确实存在，公园内部区域有稳定种群。",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Wonder_Lake%2C_Denali2.jpg/500px-Wonder_Lake%2C_Denali2.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Reflection_in_Wonder_Lake.jpg/500px-Reflection_in_Wonder_Lake.jpg"
+    ]
+  },
+  {
+    "name": "Kenai Fjords NP",
+    "fullName": "Kenai Fjords National Park",
+    "coord": [
+      60.18,
+      -149.65
+    ],
+    "type": "park",
+    "icon": "fa-water",
+    "color": "#0891b2",
+    "desc": "基奈峡湾国家公园（Kenai Fjords National Park）位于基奈半岛南部，是阿拉斯加海洋生态系统的皇冠明珠。公园因其壮丽的峡湾地貌、巨型入海冰川和极其丰富的海洋野生动物而闻名于世。公园的核心是面积超过 700 平方英里的哈丁冰原（Harding Icefield），从中孕育出数十条入海冰川。其中 Exit Glacier 是唯一可通过公路到达的冰川，而要通过游船才能看到 Aialik Glacier 和 Holgate Glacier 崩塌入海的震撼场面。",
+    "tips": "公园门票 $15/人。7.5 小时基奈峡湾游船约 $170-200/人，必须提前网上预订。Exit Glacier 区域有 Harding Icefield Trail（往返 8.2 英里，极具挑战，需 6-8 小时）。出海务必服用晕船药，并穿羽绒服+防风外套，即使盛夏海风也极冷。Seward 小镇住宿建议提前数月预订。最佳观鲸季节为 6-8 月。",
+    "wildlife": "🐋 座头鲸和虎鲸 — Aialik Bay 附近最常见，座头鲸常集体气泡网捕食。🦅 海鹦 — 在峡湾峭壁筑巢，6-8 月最多。🦭 海狮与海獭 — 礁石上晒太阳，海獭仰面漂浮在海带床。🐻 黑熊 — Exit Glacier 步道沿途偶有出没。🦅 白头海雕 — 峡湾上空盘旋。",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg"
+    ]
+  },
+  {
+    "name": "Katmai NP",
+    "fullName": "Katmai National Park & Preserve",
+    "coord": [
+      58.6222,
+      -155.1417
+    ],
+    "type": "park",
+    "icon": "fa-tree",
+    "color": "#e65100",
+    "desc": "卡特迈国家公园（Katmai National Park & Preserve）位于阿拉斯加西南部、阿拉斯加半岛上，是全球最著名的棕熊观赏圣地。公园内的布鲁克斯瀑布（Brooks Falls）是全世界拍摄棕熊捕食洄游三文鱼最经典的场景——每年 7 月和 9 月，数十只巨型棕熊聚集在瀑布上，用嘴接住跳跃而起的三文鱼。此外，公园还拥有著名的万烟谷（Valley of Ten Thousand Smokes），是 1912 年诺瓦鲁普塔火山喷发后形成的月球般荒凉景观。",
+    "tips": "无道路到达，必须从安克雷奇乘小飞机（约 1.5 小时，往返约 $600-800/人）。布鲁克斯营地（Brooks Camp）设有三个观熊平台，7 月和 9 月是最佳观熊月份。每天限流，需提前数月预约营地住宿或一日游。⚠️绝对遵守 ranger 安全指引，与熊保持至少 50 码距离。携带防熊喷雾，不要在户外进食。",
+    "wildlife": "🐻 阿拉斯加棕熊 — 全球最著名的观熊地，7 月三文鱼洄游期最多可同时看到 20+ 只熊在瀑布捕鱼。🦅 白头海雕 — 数量极多，常抢夺熊捕捉的三文鱼残渣。🐟 三文鱼 — 数百万条红鲑（Sockeye）在 6-7 月洄游，8-9 月为主力。🦊 赤狐 — 常在营地周边出现。",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Katmai_Caldera._Katmai_National_Park%2C_Alaska_-_panoramio.jpg/500px-Katmai_Caldera._Katmai_National_Park%2C_Alaska_-_panoramio.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/21/Katmai_National_Park_%26_Preserve_%2830025690075%29.jpg/500px-Katmai_National_Park_%26_Preserve_%2830025690075%29.jpg"
+    ]
+  },
+  {
+    "name": "Glacier Bay NP",
+    "fullName": "Glacier Bay National Park & Preserve",
+    "coord": [
+      58.6658,
+      -136.9019
+    ],
+    "type": "park",
+    "icon": "fa-water",
+    "color": "#0891b2",
+    "desc": "冰川湾国家公园（Glacier Bay National Park & Preserve）位于阿拉斯加东南部内陆航道（Inside Passage），是联合国教科文组织世界遗产。公园以其震撼人心的峡湾和巨型入海冰川闻名——Margerie Glacier、Johns Hopkins Glacier 等冰川高达 200 英尺以上，频繁发生巨型冰块崩塌入海的壮观场面。这里在 250 年前还完全被冰川覆盖，是地球上冰川退缩速度最快、研究气候变化最重要的天然实验室。",
+    "tips": "无道路连接，主要通过游轮（Cruise Ship）或从 Juneau 乘小型游船/飞机抵达。游轮通常会在冰川前停留 1-2 小时供游客拍照观赏。国家公园管理处的日间游船从 Bartlett Cove 出发（约 $230/人，8 小时）。住宿极其有限，需提前数月预定 Bartlett Cove 的 Glacier Bay Lodge。最佳季节 6-8 月。",
+    "wildlife": "🐋 座头鲸 — 夏季在冰川湾峡湾中捕食磷虾和沙鳗，是最常见的鲸鱼种类。🦅 白头海雕 — 数量巨大，峡湾沿岸到处都是。🦭 斑海豹 — 经常趴在浮冰上晒太阳，尤其在冰川崩裂后的碎冰区域。🐻 棕熊与黑熊 — 海岸线和河口区域觅食，退潮时在潮间带翻找贝类。🦦 海獭 — 在海湾中仰面漂浮，数量已从濒危恢复至健康水平。",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/de/Parque_Nacional_Bah%C3%ADa_del_Glaciar%2C_Alaska%2C_Estados_Unidos%2C_2017-08-19%2C_DD_111.jpg/500px-Parque_Nacional_Bah%C3%ADa_del_Glaciar%2C_Alaska%2C_Estados_Unidos%2C_2017-08-19%2C_DD_111.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Johns_Hopkins_Glacier_Bay_Mount_Orville_Mount_Wilbur_Alaska_2014.jpg/500px-Johns_Hopkins_Glacier_Bay_Mount_Orville_Mount_Wilbur_Alaska_2014.jpg"
+    ]
+  },
+  {
+    "name": "Wrangell-St. Elias NP",
+    "fullName": "Wrangell-St. Elias National Park & Preserve",
+    "coord": [
+      61.445,
+      -142.955
+    ],
+    "type": "park",
+    "icon": "fa-mountain",
+    "color": "#7b1fa2",
+    "desc": "兰格尔-圣伊莱亚斯国家公园（Wrangell-St. Elias National Park & Preserve）是美国最大的国家公园，面积高达 1,320 万英亩——比瑞士的国土面积还大！公园与加拿大克卢恩国家公园（Kluane NP）相连，共同组成了地球上最大的国际保护区。这里拥有北美第二大高峰圣伊莱亚斯峰（Mount St. Elias，18,008 英尺），以及美国最大冰川群。公园深处有一座完整保留的百年铜矿鬼城 Kennecott，是全世界工业考古爱好者的圣殿。",
+    "tips": "从安克雷奇出发沿 Richardson Hwy 到 Glennallen，转 McCarthy Road（60 英里碎石路，颠簸但可通行普通车辆）。公园免费入园。Kennecott Mines 国家历史地标是必看景点，可参加导览进入 14 层木结构铜矿大楼内部（$30-50/人）。Root Glacier 冰川徒步推荐跟随向导（$100-150/人）。📡 公园内基本无手机信号，需提前下载离线地图。",
+    "wildlife": "🐻 棕熊与黑熊 — 冰川河谷、河流沿岸遍布。🦌 驯鹿（Caribou） — 高山苔原上季节性迁徙经过。🦅 金雕 — 在山谷上升暖气流中翱翔。🐑 多尔大角羊 — 在裸露的山脊上吃草。🦫 河狸 — 大大小小的溪流中随处可见水坝。",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/18/Lago_Plateado%2C_Parque_nacional_y_reserva_Wrangell-San_El%C3%ADas%2C_Alaska%2C_Estados_Unidos%2C_2017-08-22%2C_DD_122-127_PAN.jpg/500px-Lago_Plateado%2C_Parque_nacional_y_reserva_Wrangell-San_El%C3%ADas%2C_Alaska%2C_Estados_Unidos%2C_2017-08-22%2C_DD_122-127_PAN.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/46/Parque_nacional_y_reserva_Wrangell-San_El%C3%ADas%2C_Alaska%2C_Estados_Unidos%2C_2017-08-24%2C_DD_02.jpg/500px-Parque_nacional_y_reserva_Wrangell-San_El%C3%ADas%2C_Alaska%2C_Estados_Unidos%2C_2017-08-24%2C_DD_02.jpg"
+    ]
+  },
+  {
+    "name": "Lake Clark NP",
+    "fullName": "Lake Clark National Park & Preserve",
+    "coord": [
+      60.2781,
+      -153.5074
+    ],
+    "type": "park",
+    "icon": "fa-tree",
+    "color": "#2e7d32",
+    "desc": "克拉克湖国家公园（Lake Clark National Park & Preserve）位于安克雷奇西南的阿拉斯加半岛根部，被誉为'阿拉斯加的精华缩影'。这里汇聚了阿拉斯加的全部经典元素：碧蓝的克拉克湖、活跃的Redoubt和Iliamna两座火山、白雪皑皑的楚加奇山脉、广袤的苔原和丰富的野生动物。公园没有公路可达，是真正意义上的荒野——来这里看熊捕三文鱼比 Katmai 更加原始和低调。",
+    "tips": "无道路到达，必须从安克雷奇、Homer 或 Kenai 乘小飞机（约 $500-700/人往返）。Crescent Lake 和 Silver Salmon Creek 是最佳观熊地，6-8 月棕熊在海岸草甸上挖蛤蜊、捕三文鱼。建议参加向导带领的 Bear Viewing Day Trip。住宿为荒野木屋（Lodge），需提前半年以上预订。",
+    "wildlife": "🐻 棕熊 — 海岸草甸和河流沿岸极多，是除了 Katmai 外阿拉斯加最佳观熊地。🦌 驯鹿 — 数量众多的 Mulchatna 驯鹿群在此季节性地穿越苔原。🐺 灰狼 — 克拉克湖流域有健康稳定的狼群。🦅 白头海雕 — 湖面上空常见。🐟 三文鱼 — 夏季洄游规模壮观。",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Lake_Clark_National_Park.jpg/500px-Lake_Clark_National_Park.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/View_at_Lake_Clark_National_Park_and_Preserve%2C_Alaska_%2828aa9caf-b197-4397-82fd-e5550f096383%29.jpg/500px-View_at_Lake_Clark_National_Park_and_Preserve%2C_Alaska_%2828aa9caf-b197-4397-82fd-e5550f096383%29.jpg"
+    ]
+  },
+  {
+    "name": "Gates of the Arctic NP",
+    "fullName": "Gates of the Arctic National Park & Preserve",
+    "coord": [
+      67.7862,
+      -153.2963
+    ],
+    "type": "park",
+    "icon": "fa-mountain",
+    "color": "#6d4c41",
+    "desc": "北极之门国家公园（Gates of the Arctic National Park & Preserve）位于北极圈以北，是完全没有任何公路、步道、营地或设施的纯粹原始荒野——这是全美最偏远、最难抵达的国家公园。公园的命名来源于两座标志性山峰 Frigid Crags 和 Boreal Mountain，它们像两扇巨大的石门守护着北极荒野。这里有广袤的布鲁克斯山脉（Brooks Range）、一望无际的苔原和六个国家野生风景河流。",
+    "tips": "没有公路、没有步道、没有营地——完全荒野。抵达方式极其有限：从 Fairbanks 或 Bettles 乘丛林小飞机（约 $800-1200/人往返）降落于荒野湖泊或砾石河滩。只适合极有经验的户外探险者，必须完全自给自足。最佳季节 6-8 月（极昼，气温 10-20°C）。必须携带卫星电话（无手机信号）、防熊装备和全套野外生存器材。国家公园免门票。",
+    "wildlife": "🐻 棕熊 — 布鲁克斯山脉北坡和河流沿岸觅食。🐺 灰狼 — 全美最健康的狼群之一在北极之门自由漫游。🦌 驯鹿 — 西极驯鹿群（Western Arctic Caribou Herd）数量超过 20 万头，季节迁移壮观无比。🐑 多尔大角羊 — 高山裸岩区域可见。🦅 金雕 — 在山谷上空翱翔。🦉 雪鸮 — 夏季在苔原上筑巢。",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/GatesofArctic.jpg/500px-GatesofArctic.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Thunder_Valley._Gates_of_the_Arctic_National_Park%2C_Brooks_Range%2C_Alaska.jpg/500px-Thunder_Valley._Gates_of_the_Arctic_National_Park%2C_Brooks_Range%2C_Alaska.jpg"
+    ]
+  },
+  {
+    "name": "Kobuk Valley NP",
+    "fullName": "Kobuk Valley National Park",
+    "coord": [
+      67.3317,
+      -158.8933
+    ],
+    "type": "park",
+    "icon": "fa-tree",
+    "color": "#e65100",
+    "desc": "科伯克谷国家公园（Kobuk Valley National Park）位于北极圈以北 75 英里，是全美最不为人知、游客最少的国家公园之一——每年访客不到 15,000 人。公园的核心奇观是三大沙丘群（Great Kobuk Sand Dunes），这些高达 100 英尺的活性沙丘绵延 25 平方英里，是被冰川研磨后在风力作用下堆积而成的——在北极圈看到沙漠景象，令人难以置信！每年春秋两季，约 50 万头西极驯鹿穿过科伯克河（Kobuk River）进行大迁徙，是地球上最壮观的自然奇观之一。",
+    "tips": "完全没有公路到达，仅能通过从 Kotzebue 或 Bettles 乘小飞机进出（约 $500-800/人）。公园没有服务站、步道或营地，100% 荒野体验。最佳季节 6-8 月（极昼，气温 15-25°C）。沙丘区夏季可达 30°C以上——北极圈居然要防晒！驯鹿迁徙最佳观赏期为春季（4-5 月）和秋季（9-10 月）。必须携带全套野外生存装备和卫星通信设备。",
+    "wildlife": "🦌 驯鹿 — 西极驯鹿群（50 万+）春秋两季迁徙穿过科伯克河，是地球上最壮观的野生动物奇观之一。🐻 棕熊 — 河流沿岸和沙丘边缘觅食。🐺 灰狼 — 公园内有健康狼群。🦊 北极狐 — 夏季褐毛冬季白毛，是沙丘和苔原之间的常见身影。🐟 鲑鱼 — 科伯克河中洄游。🦉 雪鸮 — 夏季在开阔苔原筑巢。",
+    "images": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kobuk_Valley_National_Park_%288491258040%29.jpg/500px-Kobuk_Valley_National_Park_%288491258040%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kobuk_Valley_National_Park_banner.jpg/500px-Kobuk_Valley_National_Park_banner.jpg"
+    ]
+  }
+];
 
     var sunlightData = {
       1: {sunrise:"04:22", sunset:"23:18", daylight:"~18h56min"},
@@ -547,7 +545,7 @@ var nationalParksData = [
       "Lake Clark NP":"Lake Clark National Park & Preserve",
       "Gates of the Arctic NP":"Gates of the Arctic National Park & Preserve",
       "Kobuk Valley NP":"Kobuk Valley National Park",
-};
+    };
 
     var noteData = {};
 
@@ -576,6 +574,14 @@ var wildlifeData = {
   "Santa Claus House":"🦌 驼鹿 — 北极镇（North Pole）郊区在夏季傍晚经常能看到驼鹿在路边吃草。驾车请注意避让。",
   "Fairbanks Downtown Visitor Center":"🦌 驼鹿 — 切纳河沿岸是费尔班克斯市区最常见的驼鹿观赏区。🦅 白头海雕 — 切纳河上常能看到白头海雕在上空盘旋觅食。🦫 河狸 — 两岸经常能看到河狸啃断的树木和水坝。",
   "Pioneer Park":"🐿️ 北极地松鼠 — 公园草坪上到处能看到它们跳来跳去，活泼好动不怕人。🦆 水鸟 — 园内湖泊和小溪吸引了许多野生水鸟栖息。🦅 白头海雕 — 偶尔飞越公园上空，尤其在切纳河方向。",
+  "Denali NP":"🐻 棕熊 — 全球密度最高的棕熊栖息地之一，7-8 月山坡上吃野莓最常见。🦌 驼鹿 — 公园入口处和湖泊周边清晨最活跃。🦌 驯鹿（Caribou） — 经常成群穿越公路，Savage River 区域最多。🐑 多尔大角羊（Dall Sheep） — 山坡悬崖上吃草，Polychrome Pass 是最佳观察点。🐺 灰狼 — 虽然难见但确实存在，公园内部区域有稳定种群。",
+  "Kenai Fjords NP":"🐋 座头鲸和虎鲸 — Aialik Bay 附近最常见，座头鲸常集体气泡网捕食。🦅 海鹦 — 在峡湾峭壁筑巢，6-8 月最多。🦭 海狮与海獭 — 礁石上晒太阳，海獭仰面漂浮在海带床。🐻 黑熊 — Exit Glacier 步道沿途偶有出没。🦅 白头海雕 — 峡湾上空盘旋。",
+  "Katmai NP":"🐻 阿拉斯加棕熊 — 全球最著名的观熊地，7 月三文鱼洄游期最多可同时看到 20+ 只熊在瀑布捕鱼。🦅 白头海雕 — 数量极多，常抢夺熊捕捉的三文鱼残渣。🐟 三文鱼 — 数百万条红鲑（Sockeye）在 6-7 月洄游，8-9 月为主力。🦊 赤狐 — 常在营地周边出现。",
+  "Glacier Bay NP":"🐋 座头鲸 — 夏季在冰川湾峡湾中捕食磷虾和沙鳗，是最常见的鲸鱼种类。🦅 白头海雕 — 数量巨大，峡湾沿岸到处都是。🦭 斑海豹 — 经常趴在浮冰上晒太阳，尤其在冰川崩裂后的碎冰区域。🐻 棕熊与黑熊 — 海岸线和河口区域觅食，退潮时在潮间带翻找贝类。🦦 海獭 — 在海湾中仰面漂浮，数量已从濒危恢复至健康水平。",
+  "Wrangell-St. Elias NP":"🐻 棕熊与黑熊 — 冰川河谷、河流沿岸遍布。🦌 驯鹿（Caribou） — 高山苔原上季节性迁徙经过。🦅 金雕 — 在山谷上升暖气流中翱翔。🐑 多尔大角羊 — 在裸露的山脊上吃草。🦫 河狸 — 大大小小的溪流中随处可见水坝。",
+  "Lake Clark NP":"🐻 棕熊 — 海岸草甸和河流沿岸极多，是除了 Katmai 外阿拉斯加最佳观熊地。🦌 驯鹿 — 数量众多的 Mulchatna 驯鹿群在此季节性地穿越苔原。🐺 灰狼 — 克拉克湖流域有健康稳定的狼群。🦅 白头海雕 — 湖面上空常见。🐟 三文鱼 — 夏季洄游规模壮观。",
+  "Gates of the Arctic NP":"🐻 棕熊 — 布鲁克斯山脉北坡和河流沿岸觅食。🐺 灰狼 — 全美最健康的狼群之一在北极之门自由漫游。🦌 驯鹿 — 西极驯鹿群（Western Arctic Caribou Herd）数量超过 20 万头，季节迁移壮观无比。🐑 多尔大角羊 — 高山裸岩区域可见。🦅 金雕 — 在山谷上空翱翔。🦉 雪鸮 — 夏季在苔原上筑巢。",
+  "Kobuk Valley NP":"🦌 驯鹿 — 西极驯鹿群（50 万+）春秋两季迁徙穿过科伯克河，是地球上最壮观的野生动物奇观之一。🐻 棕熊 — 河流沿岸和沙丘边缘觅食。🐺 灰狼 — 公园内有健康狼群。🦊 北极狐 — 夏季褐毛冬季白毛，是沙丘和苔原之间的常见身影。🐟 鲑鱼 — 科伯克河中洄游。🦉 雪鸮 — 夏季在开阔苔原筑巢。",
 };
 
 
@@ -614,7 +620,7 @@ var wildlifeData = {
       "Harding Icefield":{desc:"哈丁冰原步道（Harding Icefield Trail）是全美最震撼、最壮丽、同时也最具挑战性的殿堂级徒步路线之一。步道单向长 4.1 英里（往返 8.2 英里），从出口冰川（Exit Glacier）谷底出发，垂直海拔爬升高达 3,000 英尺（约 914 米）。步道穿过茂密的灌木丛、高山草甸，一路上攀，最终抵达山顶，在悬崖边缘眺望无垠的哈丁冰原——一片面积超过 700 平方英里、孕育了数十条巨大冰川的茫茫万年古冰原，景色宏伟苍茫，震撼人心。",tips:"步道难度极大，全程往返通常需要 6 至 8 小时，极度考验体能。⚠️安全防范：山顶可能常年积雪，气候变化无常，必须穿着专业的硬底登山靴，携带防雨保暖层衣物，并带足3升水和高能量路餐。此区域是黑熊和黑尾鹿的活跃区，徒步时请保持结伴同行，大声交谈，并随身携带防熊喷雾（Bear Spray）。"},
       "Fairbanks Downtown Visitor Center":{desc:"莫里斯·汤普森文化及游客中心（Morris Thompson Cultural & Visitor Center）坐落于费尔班克斯市中心，坐拥美丽的切纳河（Chena River）河畔景观。这是阿拉斯加内陆最顶级的游客信息与文化体验综合体，内部设有宽敞的阿拉斯加原住民文化展览厅，展示了阿萨巴斯卡印第安人、因纽特人与其他原住民族群的精美传统手工艺品、历史照片和交互式多媒体展览。馆内还设有季节性开放的免费阿拉斯加本土植物花园，是了解费尔班克斯历史、规划内陆探险路线的不二之选。",tips:"完全免费入场！中心工作人员极其热情，可以为您提供费尔班克斯及阿拉斯加内陆最新、最详尽的公路状况、极光预报、徒步路线和野生动物观测情报。建议旅程首日就来这里获取免费地图和旅游资讯。中心纪念品商店售卖大量的本土艺术家手工制作的阿拉斯加原住民工艺品，货真价实。"},
       "Pioneer Park":{desc:"先锋公园（Pioneer Park，原名 Alaskaland）是费尔班克斯最著名、最受本地居民与游客喜爱的历史文化主题公园与户外休闲综合体。占地44英亩的巨大园区内，陈列着大量来自阿拉斯加淘金热时代（Gold Rush Era）的珍贵历史建筑与原木小屋，包括旧法院、百年老教堂、蒸汽机火车博物馆，以及停泊在公园中央的 SS Nenana 号——一艘被列入美国国家历史地标的百年蒸汽明轮船（Sternwheeler）。此外，园区内还有免费开放的先锋航空博物馆（Pioneer Air Museum）、众多本土艺术画廊、特色餐厅和儿童游乐场。",tips:"公园完全免费入场，免费停车。建议预留 3 至 4 小时充分享受。园内 Salmon Bake 餐厅供应正宗的阿拉斯加烤三文鱼自助大餐，在充满历史气息的原木餐厅用餐是绝佳的阿拉斯加体验。夏季晚间常有免费露天音乐会和本土舞蹈表演，具体时间表可在入口处查阅。迷你高尔夫球场和古董旋转木马也非常受家庭游客的欢迎。"},
-          "Denali NP":{desc:"迪纳利国家公园（Denali National Park & Preserve）是阿拉斯加最著名、游客最多的国家公园，占地超过 600 万英亩，是美国的第三大国家公园。公园的核心是海拔 20,310 英尺（6,190 米）的迪纳利峰——北美最高峰。公园内仅有唯一一条全长 92 英里的公园公路（Denali Park Road），私家车只能行驶至前 15 英里，之后需乘坐官方巴士深入。这里拥有极其丰富的野生动物资源，是近距离观察棕熊、驼鹿、驯鹿、大角羊和狼的全球顶级目的地。夏季苔原上野花烂漫，秋季则化为一片金红，四季均有不同壮丽风光。",tips:"入园门票 $15/人，建议提前在 recreation.gov 预定巴士票（Tundra Wilderness Tour 约 $150/人）。公园公路 Mile 15 处的 Savage River 是私家车可达的最深处。夏季蚊虫极多，务必携带防蚊网和防熊喷雾。最佳游览季节为 6-9 月，7 月野花盛开期尤为壮观。住宿可选择公园入口附近的 Cantwell 或 Healy 小镇。"},
+      "Denali NP":{desc:"迪纳利国家公园（Denali National Park & Preserve）是阿拉斯加最著名、游客最多的国家公园，占地超过 600 万英亩，是美国的第三大国家公园。公园的核心是海拔 20,310 英尺（6,190 米）的迪纳利峰——北美最高峰。公园内仅有唯一一条全长 92 英里的公园公路（Denali Park Road），私家车只能行驶至前 15 英里，之后需乘坐官方巴士深入。这里拥有极其丰富的野生动物资源，是近距离观察棕熊、驼鹿、驯鹿、大角羊和狼的全球顶级目的地。夏季苔原上野花烂漫，秋季则化为一片金红，四季均有不同壮丽风光。",tips:"入园门票 $15/人，建议提前在 recreation.gov 预定巴士票（Tundra Wilderness Tour 约 $150/人）。公园公路 Mile 15 处的 Savage River 是私家车可达的最深处。夏季蚊虫极多，务必携带防蚊网和防熊喷雾。最佳游览季节为 6-9 月，7 月野花盛开期尤为壮观。住宿可选择公园入口附近的 Cantwell 或 Healy 小镇。"},
       "Kenai Fjords NP":{desc:"基奈峡湾国家公园（Kenai Fjords National Park）位于基奈半岛南部，是阿拉斯加海洋生态系统的皇冠明珠。公园因其壮丽的峡湾地貌、巨型入海冰川和极其丰富的海洋野生动物而闻名于世。公园的核心是面积超过 700 平方英里的哈丁冰原（Harding Icefield），从中孕育出数十条入海冰川。其中 Exit Glacier 是唯一可通过公路到达的冰川，而要通过游船才能看到 Aialik Glacier 和 Holgate Glacier 崩塌入海的震撼场面。",tips:"公园门票 $15/人。7.5 小时基奈峡湾游船约 $170-200/人，必须提前网上预订。Exit Glacier 区域有 Harding Icefield Trail（往返 8.2 英里，极具挑战，需 6-8 小时）。出海务必服用晕船药，并穿羽绒服+防风外套，即使盛夏海风也极冷。Seward 小镇住宿建议提前数月预订。最佳观鲸季节为 6-8 月。"},
       "Katmai NP":{desc:"卡特迈国家公园（Katmai National Park & Preserve）位于阿拉斯加西南部、阿拉斯加半岛上，是全球最著名的棕熊观赏圣地。公园内的布鲁克斯瀑布（Brooks Falls）是全世界拍摄棕熊捕食洄游三文鱼最经典的场景——每年 7 月和 9 月，数十只巨型棕熊聚集在瀑布上，用嘴接住跳跃而起的三文鱼。此外，公园还拥有著名的万烟谷（Valley of Ten Thousand Smokes），是 1912 年诺瓦鲁普塔火山喷发后形成的月球般荒凉景观。",tips:"无道路到达，必须从安克雷奇乘小飞机（约 1.5 小时，往返约 $600-800/人）。布鲁克斯营地（Brooks Camp）设有三个观熊平台，7 月和 9 月是最佳观熊月份。每天限流，需提前数月预约营地住宿或一日游。⚠️绝对遵守 ranger 安全指引，与熊保持至少 50 码距离。携带防熊喷雾，不要在户外进食。"},
       "Glacier Bay NP":{desc:"冰川湾国家公园（Glacier Bay National Park & Preserve）位于阿拉斯加东南部内陆航道（Inside Passage），是联合国教科文组织世界遗产。公园以其震撼人心的峡湾和巨型入海冰川闻名——Margerie Glacier、Johns Hopkins Glacier 等冰川高达 200 英尺以上，频繁发生巨型冰块崩塌入海的壮观场面。这里在 250 年前还完全被冰川覆盖，是地球上冰川退缩速度最快、研究气候变化最重要的天然实验室。",tips:"无道路连接，主要通过游轮（Cruise Ship）或从 Juneau 乘小型游船/飞机抵达。游轮通常会在冰川前停留 1-2 小时供游客拍照观赏。国家公园管理处的日间游船从 Bartlett Cove 出发（约 $230/人，8 小时）。住宿极其有限，需提前数月预定 Bartlett Cove 的 Glacier Bay Lodge。最佳季节 6-8 月。"},
@@ -622,7 +628,7 @@ var wildlifeData = {
       "Lake Clark NP":{desc:"克拉克湖国家公园（Lake Clark National Park & Preserve）位于安克雷奇西南的阿拉斯加半岛根部，被誉为'阿拉斯加的精华缩影'。这里汇聚了阿拉斯加的全部经典元素：碧蓝的克拉克湖、活跃的Redoubt和Iliamna两座火山、白雪皑皑的楚加奇山脉、广袤的苔原和丰富的野生动物。公园没有公路可达，是真正意义上的荒野——来这里看熊捕三文鱼比 Katmai 更加原始和低调。",tips:"无道路到达，必须从安克雷奇、Homer 或 Kenai 乘小飞机（约 $500-700/人往返）。Crescent Lake 和 Silver Salmon Creek 是最佳观熊地，6-8 月棕熊在海岸草甸上挖蛤蜊、捕三文鱼。建议参加向导带领的 Bear Viewing Day Trip。住宿为荒野木屋（Lodge），需提前半年以上预订。"},
       "Gates of the Arctic NP":{desc:"北极之门国家公园（Gates of the Arctic National Park & Preserve）位于北极圈以北，是完全没有任何公路、步道、营地或设施的纯粹原始荒野——这是全美最偏远、最难抵达的国家公园。公园的命名来源于两座标志性山峰 Frigid Crags 和 Boreal Mountain，它们像两扇巨大的石门守护着北极荒野。这里有广袤的布鲁克斯山脉（Brooks Range）、一望无际的苔原和六个国家野生风景河流。",tips:"没有公路、没有步道、没有营地——完全荒野。抵达方式极其有限：从 Fairbanks 或 Bettles 乘丛林小飞机（约 $800-1200/人往返）降落于荒野湖泊或砾石河滩。只适合极有经验的户外探险者，必须完全自给自足。最佳季节 6-8 月（极昼，气温 10-20°C）。必须携带卫星电话（无手机信号）、防熊装备和全套野外生存器材。国家公园免门票。"},
       "Kobuk Valley NP":{desc:"科伯克谷国家公园（Kobuk Valley National Park）位于北极圈以北 75 英里，是全美最不为人知、游客最少的国家公园之一——每年访客不到 15,000 人。公园的核心奇观是三大沙丘群（Great Kobuk Sand Dunes），这些高达 100 英尺的活性沙丘绵延 25 平方英里，是被冰川研磨后在风力作用下堆积而成的——在北极圈看到沙漠景象，令人难以置信！每年春秋两季，约 50 万头西极驯鹿穿过科伯克河（Kobuk River）进行大迁徙，是地球上最壮观的自然奇观之一。",tips:"完全没有公路到达，仅能通过从 Kotzebue 或 Bettles 乘小飞机进出（约 $500-800/人）。公园没有服务站、步道或营地，100% 荒野体验。最佳季节 6-8 月（极昼，气温 15-25°C）。沙丘区夏季可达 30°C以上——北极圈居然要防晒！驯鹿迁徙最佳观赏期为春季（4-5 月）和秋季（9-10 月）。必须携带全套野外生存装备和卫星通信设备。"},
-};
+    };
 
     var map = L.map('map', { zoomControl: true, minZoom: 4, maxZoom: 16 }).setView([62.2, -148.0], 6);
     var positronTile = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>' });
@@ -678,7 +684,7 @@ var wildlifeData = {
       "Lowell Point Beach":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Seward_harbor%2C_Alaska_%28AL%2BCA_804%29.jpg/500px-Seward_harbor%2C_Alaska_%28AL%2BCA_804%29.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg/500px-Seward%2C_Alaska%2C_Estados_Unidos%2C_2017-08-21%2C_DD_09.jpg"],
       "Fairbanks Downtown Visitor Center":["https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/By_ovedc_-_Fairbanks%2C_Alaska_-_18.jpg/500px-By_ovedc_-_Fairbanks%2C_Alaska_-_18.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Downtown_Fairbanks%2C_Chena_River.jpg/500px-Downtown_Fairbanks%2C_Chena_River.jpg"],
       "Pioneer Park":["https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA21.jpg/500px-Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA21.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA03.jpg/500px-Pioneer_Park_%28Fairbanks%2C_Alaska%29_ENBLA03.jpg"],
-          "Denali NP":["https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Wonder_Lake%2C_Denali2.jpg/500px-Wonder_Lake%2C_Denali2.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Reflection_in_Wonder_Lake.jpg/500px-Reflection_in_Wonder_Lake.jpg"],
+      "Denali NP":["https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Wonder_Lake%2C_Denali2.jpg/500px-Wonder_Lake%2C_Denali2.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Reflection_in_Wonder_Lake.jpg/500px-Reflection_in_Wonder_Lake.jpg"],
       "Kenai Fjords NP":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_1.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg/500px-By_ovedc_-_Kenai_Fjords_National_Park_-_2.jpg"],
       "Katmai NP":["https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Katmai_Caldera._Katmai_National_Park%2C_Alaska_-_panoramio.jpg/500px-Katmai_Caldera._Katmai_National_Park%2C_Alaska_-_panoramio.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/21/Katmai_National_Park_%26_Preserve_%2830025690075%29.jpg/500px-Katmai_National_Park_%26_Preserve_%2830025690075%29.jpg"],
       "Glacier Bay NP":["https://upload.wikimedia.org/wikipedia/commons/thumb/de/Parque_Nacional_Bah%C3%ADa_del_Glaciar%2C_Alaska%2C_Estados_Unidos%2C_2017-08-19%2C_DD_111.jpg/500px-Parque_Nacional_Bah%C3%ADa_del_Glaciar%2C_Alaska%2C_Estados_Unidos%2C_2017-08-19%2C_DD_111.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Johns_Hopkins_Glacier_Bay_Mount_Orville_Mount_Wilbur_Alaska_2014.jpg/500px-Johns_Hopkins_Glacier_Bay_Mount_Orville_Mount_Wilbur_Alaska_2014.jpg"],
@@ -686,7 +692,7 @@ var wildlifeData = {
       "Lake Clark NP":["https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Lake_Clark_National_Park.jpg/500px-Lake_Clark_National_Park.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/View_at_Lake_Clark_National_Park_and_Preserve%2C_Alaska_%2828aa9caf-b197-4397-82fd-e5550f096383%29.jpg/500px-View_at_Lake_Clark_National_Park_and_Preserve%2C_Alaska_%2828aa9caf-b197-4397-82fd-e5550f096383%29.jpg"],
       "Gates of the Arctic NP":["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/GatesofArctic.jpg/500px-GatesofArctic.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Thunder_Valley._Gates_of_the_Arctic_National_Park%2C_Brooks_Range%2C_Alaska.jpg/500px-Thunder_Valley._Gates_of_the_Arctic_National_Park%2C_Brooks_Range%2C_Alaska.jpg"],
       "Kobuk Valley NP":["https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kobuk_Valley_National_Park_%288491258040%29.jpg/500px-Kobuk_Valley_National_Park_%288491258040%29.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kobuk_Valley_National_Park_banner.jpg/500px-Kobuk_Valley_National_Park_banner.jpg"],
-};
+    };
 
     var uniquePois = [];
     var seenNames = {};
@@ -799,6 +805,26 @@ var wildlifeData = {
           }
         }); })(items[i]);
       }
+      // --- National Parks Reference Section ---
+      var parksSection = document.createElement('div');
+      parksSection.style.cssText = 'margin-top:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;';
+      parksSection.innerHTML = '<div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">🏔️ Alaska 8 National Parks</div>';
+      for (var pi = 0; pi < nationalParksData.length; pi++) {
+        var park = nationalParksData[pi];
+        var parkItem = document.createElement('div');
+        parkItem.style.cssText = 'cursor:pointer;padding:6px 8px;border-radius:6px;display:flex;align-items:center;gap:10px;';
+        parkItem.onmouseover = function() { this.style.backgroundColor = '#e2e8f0'; };
+        parkItem.onmouseout = function() { this.style.backgroundColor = ''; };
+        parkItem.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:' + park.color + ';flex-shrink:0;"></span><span style="font-size:12px;font-weight:600;color:#0f172a;">' + park.fullName + '</span>';
+        (function(pk) {
+          parkItem.addEventListener('click', function() {
+            map.flyTo(pk.coord, 11, { duration: 1.2 });
+            openParkDetails(pk);
+          });
+        })(park);
+        parksSection.appendChild(parkItem);
+      }
+      sidebarContent.appendChild(parksSection);
     }
 
     function createSidebar() {
@@ -818,6 +844,16 @@ var wildlifeData = {
 
     function renderPois() {
       markerGroup.clearLayers();
+      // --- National Parks Markers ---
+      for (var npi = 0; npi < nationalParksData.length; npi++) {
+        var npk = nationalParksData[npi];
+        var npkIcon = L.divIcon({ html: '<i class="fa-solid ' + npk.icon + '" style="color:' + npk.color + ';font-size:28px;transform:translate(-50%,-50%);"></i>', className: 'custom-poi-marker', iconSize: [28, 28], iconAnchor: [14, 14] });
+        var npkMarker = L.marker(npk.coord, { icon: npkIcon });
+        markerGroup.addLayer(npkMarker);
+        (function(pk) {
+          npkMarker.on('click', function(e) { L.DomEvent.stopPropagation(e); map.flyTo(pk.coord, 11, { duration: 1.2 }); openParkDetails(pk); });
+        })(npk);
+      }
       var currentZoom = map.getZoom();
       for (var i = 0; i < uniquePois.length; i++) {
         var poi = uniquePois[i];
@@ -831,19 +867,7 @@ var wildlifeData = {
       }
     }
 
-    
-
-  // --- National Parks Markers ---
-  for (var pi = 0; pi < nationalParksData.length; pi++) {
-    var park = nationalParksData[pi];
-    var parkIcon = L.divIcon({ html: '<i class="fa-solid ' + park.icon + '" style="color:' + park.color + ';font-size:28px;transform:translate(-50%,-50%);"></i>', className: 'custom-poi-marker', iconSize: [28, 28], iconAnchor: [14, 14] });
-    var parkMarker = L.marker(park.coord, { icon: parkIcon });
-    markerGroup.addLayer(parkMarker);
-    (function(pk) {
-      parkMarker.on('click', function(e) { L.DomEvent.stopPropagation(e); map.flyTo(pk.coord, 11, { duration: 1.2 }); openParkDetails(pk); });
-    })(park);
-  }
-function renderAnnotations() {
+    function renderAnnotations() {
       leaderLineGroup.clearLayers();
       textLabelGroup.clearLayers();
       var currentZoom = map.getZoom();
@@ -922,43 +946,42 @@ function renderAnnotations() {
       updateNoteDisplay(poi.name);
     };
     var closePanelTimeout = null;
-    
-  function openParkDetails(park) {
-    var overlay = document.getElementById('detail-overlay');
-    var panel = document.getElementById('detail-content');
-    var imagesHtml = '';
-    if (park.images && park.images.length > 0) {
-      for (var ii = 0; ii < park.images.length; ii++) {
-        imagesHtml += '<img src="' + park.images[ii] + '" alt="' + park.name + '" style="width:100%;height:250px;object-fit:cover;display:' + (ii === 0 ? 'block' : 'none') + ';cursor:pointer;" class="park-carousel-img" data-idx="' + ii + '">';
+    function openParkDetails(park) {
+      var overlay = document.getElementById('detail-overlay');
+      var panel = document.getElementById('detail-content');
+      var imagesHtml = '';
+      if (park.images && park.images.length > 0) {
+        for (var ii = 0; ii < park.images.length; ii++) {
+          imagesHtml += '<img src="' + park.images[ii] + '" alt="' + park.name + '" style="width:100%;height:250px;object-fit:cover;display:' + (ii === 0 ? 'block' : 'none') + ';cursor:pointer;" class="park-carousel-img" data-idx="' + ii + '">';
+        }
       }
+      var wildlifeHtml = park.wildlife ? '<div class="detail-section wildlife-section" style="border:2px solid #16A34A;background-color:#F0FDF4;"><h4>🐾 Wildlife</h4><p style="font-size:15px;line-height:1.7;color:#166534;">' + park.wildlife + '</p></div>' : '';
+      var npsCode = park.name.toLowerCase().replace(/ /g, '').replace(/[^a-z]/g, '');
+      panel.innerHTML = ''
+        + '<div class="detail-carousel" style="position:relative;width:100%;height:250px;overflow:hidden;flex-shrink:0;">'
+        + imagesHtml
+        + (park.images && park.images.length > 1 ? '<button class="carousel-nav carousel-prev" onclick="event.stopPropagation();moveParkCarousel(-1)"><i class="fa-solid fa-chevron-left"></i></button><button class="carousel-nav carousel-next" onclick="event.stopPropagation();moveParkCarousel(1)"><i class="fa-solid fa-chevron-right"></i></button>' : '')
+        + '</div>'
+        + '<div class="detail-body" style="padding:24px;display:flex;flex-direction:column;gap:18px;">'
+        + '<div class="detail-day-indicator">🏔️ ALASKA NATIONAL PARK</div>'
+        + '<div class="detail-title-container"><i class="fa-solid ' + park.icon + '" style="color:' + park.color + ';font-size:20px;"></i><h2>' + park.fullName + '</h2></div>'
+        + '<div class="detail-section description-section"><h4>📖 About</h4><p style="font-size:16px;line-height:1.7;color:#334155;">' + park.desc + '</p></div>'
+        + '<div class="detail-section tips-section"><h4>💡 Tips</h4><p style="font-size:15px;line-height:1.7;color:#78350F;">' + park.tips + '</p></div>'
+        + wildlifeHtml
+        + '<div class="detail-actions" style="margin-top:12px;"><a class="detail-gmaps-btn" href="https://www.nps.gov/' + (park.name.toLowerCase().replace(/ /g,'').replace(/[^a-z]/g,'')) + '/index.htm" target="_blank">🔗 Visit NPS Website</a></div>'
+        + '</div>';
+      overlay.style.display = 'block';
+      setTimeout(function(){ overlay.classList.add('open'); }, 10);
+      window._parkCarouselIdx = 0;
+      window._parkImages = park.images || [];
     }
-    var wildlifeHtml = park.wildlife ? '<div class="detail-section wildlife-section" style="background-color:#F0FDF4;border:2px solid #16A34A;"><h4>🐾 野生动物观察</h4><p style="font-size:15px;line-height:1.7;color:#166534;">' + park.wildlife + '</p></div>' : '';
-    panel.innerHTML = ''
-      + '<div class="detail-carousel" style="position:relative;width:100%;height:250px;overflow:hidden;flex-shrink:0;">'
-      + imagesHtml
-      + (park.images && park.images.length > 1 ? '<button class="carousel-nav carousel-prev" onclick="event.stopPropagation();moveParkCarousel(-1)"><i class="fa-solid fa-chevron-left"></i></button><button class="carousel-nav carousel-next" onclick="event.stopPropagation();moveParkCarousel(1)"><i class="fa-solid fa-chevron-right"></i></button>' : '')
-      + '</div>'
-      + '<div class="detail-body" style="padding:24px;display:flex;flex-direction:column;gap:18px;">'
-      + '<div class="detail-day-indicator">🏔️ ALASKA NATIONAL PARK</div>'
-      + '<div class="detail-title-container"><i class="fa-solid ' + park.icon + '" style="color:' + park.color + ';font-size:20px;"></i><h2>' + park.fullName + '</h2></div>'
-      + '<div class="detail-section description-section"><h4>📖 公园介绍</h4><p style="font-size:16px;line-height:1.7;color:#334155;">' + park.desc + '</p></div>'
-      + '<div class="detail-section tips-section"><h4>💡 游览贴士</h4><p style="font-size:15px;line-height:1.7;color:#78350F;">' + park.tips + '</p></div>'
-      + wildlifeHtml
-      + '<div class="detail-actions" style="margin-top:12px;">'
-      + '<a class="detail-gmaps-btn" href="https://www.nps.gov/' + park.name.toLowerCase().replace(/ /g, '').replace(/[^a-z]/g, '') + '/index.htm" target="_blank">🔗 访问 NPS 官网</a>'
-      + '</div></div>';
-    overlay.style.display = 'block';
-    setTimeout(function(){ overlay.classList.add('open'); }, 10);
-    window._parkCarouselIdx = 0;
-    window._parkImages = park.images || [];
-  }
-  window.moveParkCarousel = function(dir) {
-    var imgs = document.querySelectorAll('.park-carousel-img');
-    if (!imgs.length) return;
-    window._parkCarouselIdx = (window._parkCarouselIdx + dir + imgs.length) % imgs.length;
-    for (var i = 0; i < imgs.length; i++) { imgs[i].style.display = (i === window._parkCarouselIdx) ? 'block' : 'none'; }
-  };
-  window.closeDetailPanel = function() { var o = document.getElementById('detail-overlay'); if (o) { if (closePanelTimeout) clearTimeout(closePanelTimeout); o.classList.remove('open'); closePanelTimeout = setTimeout(function(){o.style.display='none';closePanelTimeout=null;},250); } };
+    window.moveParkCarousel = function(dir) {
+      var imgs = document.querySelectorAll('.park-carousel-img');
+      if (!imgs.length) return;
+      window._parkCarouselIdx = (window._parkCarouselIdx + dir + imgs.length) % imgs.length;
+      for (var i = 0; i < imgs.length; i++) { imgs[i].style.display = (i === window._parkCarouselIdx) ? 'block' : 'none'; }
+    };
+    window.closeDetailPanel = function() { var o = document.getElementById('detail-overlay'); if (o) { if (closePanelTimeout) clearTimeout(closePanelTimeout); o.classList.remove('open'); closePanelTimeout = setTimeout(function(){o.style.display='none';closePanelTimeout=null;},250); } };
 
     window.changeImage = function(btn, dir) {
       var c = btn.parentNode; var imgs = c.getElementsByTagName('img'); var dots = c.getElementsByClassName('carousel-dot');
@@ -979,29 +1002,7 @@ function renderAnnotations() {
       imgEl = document.getElementById('fullscreen-img'); imgEl.src = src; zs = 1.0; tx = 0; ty = 0;
       imgEl.style.transform = 'translate(0px,0px) scale(1)';
       document.addEventListener('keydown', function(e) { if (e.key === 'Escape' || e.key === 'Esc') closeFullscreenDirect(); });
-  
-    // --- National Parks Reference Section ---
-    var parksSection = document.createElement('div');
-    parksSection.style.cssText = 'margin-top:8px;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;';
-    parksSection.innerHTML = '<div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">🏔️ Alaska 8 National Parks</div>';
-    for (var pi = 0; pi < nationalParksData.length; pi++) {
-      var park = nationalParksData[pi];
-      var parkItem = document.createElement('div');
-      parkItem.style.cssText = 'cursor:pointer;padding:6px 8px;border-radius:6px;display:flex;align-items:center;gap:10px;transition:all 0.2s ease;';
-      parkItem.onmouseover = function() { this.style.backgroundColor = '#e2e8f0'; };
-      parkItem.onmouseout = function() { this.style.backgroundColor = ''; };
-      parkItem.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:' + park.color + ';flex-shrink:0;"></span><span style="font-size:12px;font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + park.fullName + '</span><i class="fa-solid fa-chevron-right" style="font-size:9px;color:#94a3b8;margin-left:auto;"></i>';
-      (function(pk) {
-        parkItem.addEventListener('click', function() {
-          map.flyTo(pk.coord, 11, { duration: 1.2 });
-          // Build a detail view for the park
-          openParkDetails(pk);
-        });
-      })(park);
-      parksSection.appendChild(parkItem);
-    }
-    sidebarContent.appendChild(parksSection);
-  };
+    };
     window.closeFullscreenDirect = function(e) { if (e) e.stopPropagation(); document.getElementById('fullscreen-overlay').style.display = 'none'; };
 
     window.toggleNoteInput = function(n) { var sid = getSanitizedId(n); var ic = document.getElementById('note-input-container-' + sid); if (ic) { if (ic.style.display === 'none') { ic.style.display = 'flex'; var ta = document.getElementById('note-textarea-' + sid); if (ta) { ta.value = noteData[n] || ''; ta.focus(); } } else { ic.style.display = 'none'; } } };
@@ -1434,12 +1435,4 @@ function renderAnnotations() {
     });
   </script>
 </body>
-</html  "Denali NP":"🐻 棕熊 — 全球密度最高的棕熊栖息地之一，7-8 月山坡上吃野莓最常见。🦌 驼鹿 — 公园入口处和湖泊周边清晨最活跃。🦌 驯鹿（Caribou） — 经常成群穿越公路，Savage River 区域最多。🐑 多尔大角羊（Dall Sheep） — 山坡悬崖上吃草，Polychrome Pass 是最佳观察点。🐺 灰狼 — 虽然难见但确实存在，公园内部区域有稳定种群。",
-  "Kenai Fjords NP":"🐋 座头鲸和虎鲸 — Aialik Bay 附近最常见，座头鲸常集体气泡网捕食。🦅 海鹦 — 在峡湾峭壁筑巢，6-8 月最多。🦭 海狮与海獭 — 礁石上晒太阳，海獭仰面漂浮在海带床。🐻 黑熊 — Exit Glacier 步道沿途偶有出没。🦅 白头海雕 — 峡湾上空盘旋。",
-  "Katmai NP":"🐻 阿拉斯加棕熊 — 全球最著名的观熊地，7 月三文鱼洄游期最多可同时看到 20+ 只熊在瀑布捕鱼。🦅 白头海雕 — 数量极多，常抢夺熊捕捉的三文鱼残渣。🐟 三文鱼 — 数百万条红鲑（Sockeye）在 6-7 月洄游，8-9 月为主力。🦊 赤狐 — 常在营地周边出现。",
-  "Glacier Bay NP":"🐋 座头鲸 — 夏季在冰川湾峡湾中捕食磷虾和沙鳗，是最常见的鲸鱼种类。🦅 白头海雕 — 数量巨大，峡湾沿岸到处都是。🦭 斑海豹 — 经常趴在浮冰上晒太阳，尤其在冰川崩裂后的碎冰区域。🐻 棕熊与黑熊 — 海岸线和河口区域觅食，退潮时在潮间带翻找贝类。🦦 海獭 — 在海湾中仰面漂浮，数量已从濒危恢复至健康水平。",
-  "Wrangell-St. Elias NP":"🐻 棕熊与黑熊 — 冰川河谷、河流沿岸遍布。🦌 驯鹿（Caribou） — 高山苔原上季节性迁徙经过。🦅 金雕 — 在山谷上升暖气流中翱翔。🐑 多尔大角羊 — 在裸露的山脊上吃草。🦫 河狸 — 大大小小的溪流中随处可见水坝。",
-  "Lake Clark NP":"🐻 棕熊 — 海岸草甸和河流沿岸极多，是除了 Katmai 外阿拉斯加最佳观熊地。🦌 驯鹿 — 数量众多的 Mulchatna 驯鹿群在此季节性地穿越苔原。🐺 灰狼 — 克拉克湖流域有健康稳定的狼群。🦅 白头海雕 — 湖面上空常见。🐟 三文鱼 — 夏季洄游规模壮观。",
-  "Gates of the Arctic NP":"🐻 棕熊 — 布鲁克斯山脉北坡和河流沿岸觅食。🐺 灰狼 — 全美最健康的狼群之一在北极之门自由漫游。🦌 驯鹿 — 西极驯鹿群（Western Arctic Caribou Herd）数量超过 20 万头，季节迁移壮观无比。🐑 多尔大角羊 — 高山裸岩区域可见。🦅 金雕 — 在山谷上空翱翔。🦉 雪鸮 — 夏季在苔原上筑巢。",
-  "Kobuk Valley NP":"🦌 驯鹿 — 西极驯鹿群（50 万+）春秋两季迁徙穿过科伯克河，是地球上最壮观的野生动物奇观之一。🐻 棕熊 — 河流沿岸和沙丘边缘觅食。🐺 灰狼 — 公园内有健康狼群。🦊 北极狐 — 夏季褐毛冬季白毛，是沙丘和苔原之间的常见身影。🐟 鲑鱼 — 科伯克河中洄游。🦉 雪鸮 — 夏季在开阔苔原筑巢。",
->
+</html>
